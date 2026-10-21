@@ -11,9 +11,9 @@
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preload" href="fonts/figtree-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="theme.css?v=8">
-  <script vite-ignore src="common.js?v=8"></script>
-  <script vite-ignore src="meditate-content.js?v=8"></script>
+  <link rel="stylesheet" href="theme.css?v=9">
+  <script vite-ignore src="common.js?v=9"></script>
+  <script vite-ignore src="meditate-content.js?v=9"></script>
   <style>
     .med-main {
       padding-top: 12px;
@@ -1170,7 +1170,7 @@
       // ── save a course's recorded voice for offline use (like Medito downloads)
       function courseFiles(c) {
         const set = new Set();
-        c.sessions.forEach(s => LIB.textsFor(s).forEach(t => { if (VOICE && VOICE[t]) set.add(VOICE[t]); }));
+        c.sessions.forEach(s => { if (VOICE && VOICE[s.id]) set.add(VOICE[s.id].file); });
         return [...set];
       }
       async function isSaved(files) {
@@ -1192,7 +1192,7 @@
           row.innerHTML = '<span class="t-small">✓ Saved for offline — the voice plays even without internet.</span>';
           return;
         }
-        row.innerHTML = '<button type="button" class="btn btn-soft btn-sm" id="dl-btn">Download for offline</button><span class="t-small" id="dl-note">About ' + Math.max(1, Math.round(files.length * 35 / 1024)) + ' MB · voice plays without internet</span>';
+        row.innerHTML = '<button type="button" class="btn btn-soft btn-sm" id="dl-btn">Download for offline</button><span class="t-small" id="dl-note">About ' + Math.max(1, Math.round(c.sessions.reduce((n, s) => n + ((VOICE && VOICE[s.id] && VOICE[s.id].bytes) || 0), 0) / 1048576)) + ' MB · voice plays without internet</span>';
         document.getElementById('dl-btn').onclick = async () => {
           const btn = document.getElementById('dl-btn'), note = document.getElementById('dl-note');
           btn.disabled = true;
@@ -1377,15 +1377,20 @@
 
       // ── voice guidance: recorded clips (scripts/generate-voice.mjs) when available,
       //    the device's own voice otherwise. Captions are always on screen.
-      let VOICE = null; // { text: file }
+      // one recording per lesson: { lessonId: { file, bytes, clips: { text: [start, end] } } }
+      let VOICE = null;
       const clipUrls = new Map(); // file → object URL (fetched whole: no range requests, works offline)
       const voiceReady = fetch('audio/voice/manifest.json', { cache: 'no-cache' })
         .then(r => r.ok ? r.json() : null)
-        .then(m => { VOICE = m && m.files && Object.keys(m.files).length ? m.files : null; return VOICE; })
+        .then(m => { VOICE = m && m.lessons && Object.keys(m.lessons).length ? m.lessons : null; return VOICE; })
         .catch(() => null);
       const clipPath = f => 'audio/voice/' + f;
-      function getClip(text) {
-        const f = VOICE && VOICE[text];
+      function lineFor(text) {
+        const l = VOICE && run && run.session && VOICE[run.session.id];
+        const c = l && l.clips[text];
+        return c ? { file: l.file, start: c[0], end: c[1] } : null;
+      }
+      function getClip(f) {
         if (!f) return Promise.resolve(null);
         if (clipUrls.has(f)) return clipUrls.get(f);
         const p = fetch(clipPath(f)).then(r => r.ok ? r.blob() : null).then(b => b ? URL.createObjectURL(b) : null).catch(() => null);
@@ -1398,6 +1403,22 @@
       clip.addEventListener('play', () => MJ.sound.duck(true));
       clip.addEventListener('pause', () => MJ.sound.duck(false));
       clip.addEventListener('ended', () => MJ.sound.duck(false));
+      let clipEnd = 0; // stop at the end of the current line inside the lesson's recording
+      clip.addEventListener('timeupdate', () => { if (clipEnd && clip.currentTime >= clipEnd) { clipEnd = 0; clip.pause(); } });
+      function playLine(url, v) {
+        const go = () => {
+          clip.currentTime = v.start;
+          clipEnd = v.end + 0.2;
+          return clip.play();
+        };
+        if (clip.dataset.url === url && clip.readyState >= 1) return go();
+        clip.dataset.url = url;
+        clip.src = url;
+        return new Promise((res, rej) => {
+          clip.addEventListener('loadedmetadata', () => { const p = go(); p ? p.then(res, rej) : res(); }, { once: true });
+          clip.addEventListener('error', rej, { once: true });
+        });
+      }
       // iPhone only lets audio play after a tap: play a blip of silence during the Begin tap
       const SILENCE = (() => {
         const n = 2400, buf = new ArrayBuffer(44 + n * 2), v = new DataView(buf);
@@ -1407,7 +1428,7 @@
         v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, 'data'); v.setUint32(40, n * 2, true);
         return URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
       })();
-      function unlockClip() { try { clip.src = SILENCE; const p = clip.play(); if (p) p.catch(() => { }); } catch (e) { } }
+      function unlockClip() { try { clipEnd = 0; clip.dataset.url = ''; clip.src = SILENCE; const p = clip.play(); if (p) p.catch(() => { }); } catch (e) { } }
       let sayToken = 0;
 
       let voicePick = null;
@@ -1424,12 +1445,12 @@
       function say(text) {
         if (!voiceOn() || !run || run.kind !== 'guided') return;
         const token = ++sayToken;
-        if (VOICE && VOICE[text]) {
-          getClip(text).then(url => {
+        const v = lineFor(text);
+        if (v) {
+          getClip(v.file).then(url => {
             if (token !== sayToken || !run || run.paused || run.finished) return;
             if (!url) { speak(text); return; }
-            clip.src = url;
-            const p = clip.play();
+            const p = playLine(url, v);
             if (p) p.catch(() => speak(text));
           });
           return;
@@ -1457,6 +1478,7 @@
 
       function stopVoice() {
         sayToken++;
+        clipEnd = 0;
         try { clip.pause(); } catch (e) { }
         if ('speechSynthesis' in window) speechSynthesis.cancel();
         MJ.sound.duck(false);
@@ -1500,7 +1522,7 @@
         P.voice.hidden = cfg.kind !== 'guided' || !voiceAvailable();
         if (cfg.kind === 'guided') {
           unlockClip();
-          if (VOICE) cfg.cues.forEach(c => getClip(c.text));
+          if (VOICE && VOICE[cfg.session.id]) getClip(VOICE[cfg.session.id].file);
         }
         P.voice.setAttribute('aria-pressed', String(voiceOn()));
         resetStage();

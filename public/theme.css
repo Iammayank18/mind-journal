@@ -1495,6 +1495,130 @@ details.disclose > :not(summary) {
   font-weight: 600;
 }
 
+/* ── the daily hello ── */
+.mj-hello {
+  position: fixed;
+  top: 84px;
+  left: 50%;
+  z-index: 140;
+  width: min(460px, calc(100vw - 24px));
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 14px 18px 16px;
+  border-radius: var(--r-xl);
+  background-color: var(--card);
+  background-image: radial-gradient(120% 120% at 0% 0%, color-mix(in srgb, var(--brand) 22%, transparent) 0, transparent 60%);
+  box-shadow: var(--shadow-3), inset 0 0 0 1px var(--line);
+  overflow: hidden;
+  opacity: 0;
+  transform: translate(-50%, -24px) scale(.96);
+  transition: opacity var(--t-slow) var(--ease), transform var(--t-slow) var(--ease-bounce);
+}
+
+.mj-hello.show {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+}
+
+.mj-hello-orb {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.mj-hello-emoji {
+  position: absolute;
+  right: -8px;
+  bottom: -6px;
+  font-size: 24px;
+  line-height: 1;
+  animation: helloWave 1.6s var(--ease) .6s 2;
+  transform-origin: 70% 80%;
+}
+
+@keyframes helloWave {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(16deg) scale(1.1); }
+  40% { transform: rotate(-10deg); }
+  60% { transform: rotate(12deg); }
+  80% { transform: rotate(-4deg); }
+}
+
+.mj-hello-body {
+  flex: 1;
+  min-width: 0;
+  padding-top: 2px;
+}
+
+.mj-hello-body b {
+  display: block;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  padding-right: 24px;
+}
+
+.mj-hello-body p {
+  margin-top: 4px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.mj-hello-body .btn {
+  margin-top: 12px;
+}
+
+.mj-hello-x {
+  -webkit-appearance: none;
+  appearance: none;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink-3);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.mj-hello-x:hover {
+  background: var(--brand-tint);
+  color: var(--ink);
+}
+
+.mj-hello-bar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 100%;
+  background: var(--brand);
+  opacity: .55;
+  transform-origin: left;
+  animation: helloBar 9s linear forwards;
+}
+
+.mj-hello.hold .mj-hello-bar {
+  animation-play-state: paused;
+}
+
+@keyframes helloBar {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+@media (max-width: 860px) {
+  .mj-hello {
+    top: calc(72px + env(safe-area-inset-top, 0px));
+  }
+}
+
 .kbd {
   display: inline-block;
   padding: 1px 6px;

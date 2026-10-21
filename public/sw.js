@@ -5,7 +5,7 @@
    Offline support. Pages and shared code: network first (so updates always arrive
    together), cache as fallback. Fonts/icons/hashed assets: cache first.
    Bump VERSION when you change the list of files below. */
-const VERSION = "mj-v8";
+const VERSION = "mj-v11";
 // recorded meditation voice lives in its own cache, so app updates never wipe downloads
 const AUDIO_CACHE = "mj-audio";
 const ASSETS = [
@@ -14,9 +14,9 @@ const ASSETS = [
   "./planner.html",
   "./journal.html",
   "./meditate.html",
-  "./meditate-content.js?v=8",
-  "./common.js?v=8",
-  "./theme.css?v=8",
+  "./meditate-content.js?v=9",
+  "./common.js?v=9",
+  "./theme.css?v=9",
   "./fonts/figtree-latin-wght-normal.woff2",
   "./fonts/figtree-latin-ext-wght-normal.woff2",
   "./manifest.webmanifest",

@@ -28,6 +28,8 @@
     sound: "mindjournal_sound",
     persistAsked: "mindjournal_persistAsked",
     iosHintSeen: "mindjournal_iosHintSeen",
+    helloDay: "mindjournal_helloDay",
+    lastVisit: "mindjournal_lastVisit",
     planner: "plannerData_v2",
     meditate: "mindjournal_meditate"
   };
@@ -972,6 +974,109 @@
     return true;
   }
 
+  // ---------- a warm hello, once a day ----------
+  // Picks the most personal true thing it can say (a comeback, a streak, yesterday's wins,
+  // something from the Wins Jar), else a gentle line for the time of day.
+  function helloMessage(gapDays) {
+    var name = displayName();
+    var hasName = !!getName();
+    var nm = hasName ? ", " + name : "";
+    var h = new Date().getHours();
+    var today = localISO(), yesterday = addDaysISO(today, -1);
+    var jToday = Object.keys(journalDay(today)).length > 0;
+    var js = journalStreak() || (Object.keys(journalDay(yesterday)).length ? (function () { var n = 0, d = yesterday; while (Object.keys(journalDay(d)).length) { n++; d = addDaysISO(d, -1); } return n; })() : 0);
+    var pt = plannerTotals();
+    var mt = meditateTotals();
+    var doneY = plannerDoneOn(yesterday).length;
+    var wins = [];
+    journalDates().forEach(function (d) { var g = journalDay(d).gratitude; if (g && g.win && g.win.trim()) wins.push({ text: g.win.trim(), d: d }); });
+    var checkIn = { label: "Check in · 2 min", href: "journal.html#checkin" };
+    var plan = { label: "Plan my day", href: "planner.html" };
+    var sit = { label: "Sit for 3 minutes", href: "meditate.html" };
+    var cta = !jToday ? checkIn : (pt.streak === 0 ? plan : sit);
+
+    if (!hasAnyData()) {
+      return { emoji: "🌱", mood: "good", title: "Welcome to your quiet corner" + nm + "!",
+        text: "Start tiny — tell us how you feel today. It takes two minutes and there are no wrong answers.", cta: checkIn };
+    }
+    if (gapDays >= 3) {
+      return { emoji: "👋", mood: "light", title: "Welcome back" + nm + "!",
+        text: "No catching up, no guilt — today is a fresh page. Even one small check-in is a lovely restart. 🌿", cta: checkIn };
+    }
+    var personal = [];
+    if (js >= 2) personal.push({ emoji: "🔥", mood: "joy", title: jToday ? js + "-day streak" + nm + "!" : "Day " + (js + 1) + " is waiting",
+      text: jToday ? "You've shown up for yourself " + js + " days running" + nm + ". That's real, quiet strength." : "You've shown up " + js + " days running. Keep the little flame going today? 🕯️", cta: jToday ? sit : checkIn });
+    if (mt.streak >= 2) personal.push({ emoji: "🧘", mood: "calm", title: mt.streak + " days of stillness",
+      text: "You've sat " + mt.streak + " days in a row" + nm + ". Your calm is becoming a habit. ✨", cta: mt.didToday ? cta : sit });
+    if (doneY >= 2) personal.push({ emoji: "✅", mood: "good", title: "Yesterday you finished " + doneY + " things",
+      text: "That's " + doneY + " promises kept to yourself. Today's you is already ahead. 💪", cta: plan });
+    if (wins.length >= 2) {
+      var w = wins[(new Date().getDate()) % wins.length];
+      personal.push({ emoji: "🫙", mood: "light", title: "A note from your Wins Jar",
+        text: "“" + w.text + "” — you did that on " + prettyDate(w.d, { day: "numeric", month: "short" }) + ". Never forget it. 💛", cta: { label: "Open Wins Jar", href: "journal.html#wins" } });
+    }
+    if (pt.total >= 10 && pt.total % 10 < 3) personal.push({ emoji: "🏆", mood: "joy", title: pt.total + " tasks done so far",
+      text: "Every one of them was something you said you'd do — and did. Proud of you" + nm + ". 🌟", cta: plan });
+
+    var dow = new Date().getDay();
+    var pool = [
+      h < 12 ? { emoji: "☀️", title: "Good morning" + nm + "!", text: "One small, kind thing today is enough. The rest is a bonus. 🌼" }
+        : h < 17 ? { emoji: "🌤️", title: "Hey" + nm + "!", text: "Halfway through the day — a two-minute pause can reset the whole afternoon. 🍵" }
+          : { emoji: "🌙", title: "Good evening" + nm + "!", text: "Whatever today held, you made it here. Let's close the day gently. ✨" },
+      dow === 1 ? { emoji: "🌱", title: "Happy Monday" + nm + "!", text: "A new week, a gentle start. No need to do it all — just the next small thing." } : null,
+      dow === 5 ? { emoji: "🎉", title: "It's Friday" + nm + "!", text: "You carried a whole week. Notice one thing that went okay. 💛" } : null,
+      dow === 0 || dow === 6 ? { emoji: "🛋️", title: "Weekend mode" + nm, text: "Rest is productive too. Your mind deserves a slow day. 🌿" } : null,
+      { emoji: "🧠", title: "Little brain fact", text: "Naming a feeling — even just “anxious” — can make it a little quieter. Want to try? 🙂" },
+      { emoji: "🐢", title: "Slow is still progress", text: "You don't have to be fast. You just have to keep coming back. And here you are. 🌿" },
+      { emoji: "🌈", title: "Hi" + nm + "!", text: "Small steps, every day, add up to a whole different life. Let's take one. ✨" },
+      { emoji: "💧", title: "Quick check", text: "Had some water? Taken a breath? Okay — now you're ready for anything. 😌" }
+    ].filter(Boolean);
+
+    var dayN = Math.floor(Date.now() / 86400000);
+    // something true about *you* always beats a general line
+    var pick = personal.length ? personal[dayN % personal.length] : pool[dayN % pool.length];
+    pick.mood = pick.mood || ["good", "calm", "light", "okay"][dayN % 4];
+    pick.cta = pick.cta || cta;
+    return pick;
+  }
+
+  function showHello(m) {
+    var old = document.getElementById("mj-hello");
+    if (old) old.remove();
+    var here = location.pathname.split("/").pop() || "index.html";
+    var ctaHere = m.cta && m.cta.href.split("#")[0] === here && !m.cta.href.split("#")[1];
+    var box = el("div", { id: "mj-hello", "class": "mj-hello", role: "status", "aria-live": "polite" },
+      '<div class="mj-hello-orb">' + orb({ mood: m.mood, size: 52, cls: "orb-bounce" }) + '<span class="mj-hello-emoji" aria-hidden="true">' + m.emoji + '</span></div>' +
+      '<div class="mj-hello-body"><b>' + esc(m.title) + '</b><p>' + esc(m.text) + '</p>' +
+      (m.cta && !ctaHere ? '<a class="btn btn-primary btn-sm" href="' + m.cta.href + '">' + esc(m.cta.label) + '</a>' : '') + '</div>' +
+      '<button type="button" class="mj-hello-x" aria-label="Close">' + ICON.close + '</button>' +
+      '<span class="mj-hello-bar" aria-hidden="true"></span>');
+    document.body.appendChild(box);
+    var timer, left = 9000, started = Date.now();
+    function hide() { clearTimeout(timer); box.classList.remove("show"); setTimeout(function () { box.remove(); }, 600); }
+    function arm() { started = Date.now(); timer = setTimeout(hide, left); box.classList.remove("hold"); }
+    box.querySelector(".mj-hello-x").onclick = hide;
+    var a = box.querySelector("a"); if (a) a.addEventListener("click", hide);
+    // hovering or touching it pauses the timer
+    ["mouseenter", "focusin", "touchstart"].forEach(function (ev) { box.addEventListener(ev, function () { clearTimeout(timer); left -= Date.now() - started; box.classList.add("hold"); }, { passive: true }); });
+    box.addEventListener("mouseleave", function () { if (left > 1500) arm(); else hide(); });
+    requestAnimationFrame(function () { requestAnimationFrame(function () { box.classList.add("show"); }); });
+    arm();
+  }
+
+  function maybeHello() {
+    var today = localISO();
+    var last = lsGet(KEYS.lastVisit);
+    var gap = last ? Math.round((new Date(today + "T12:00:00") - new Date(last + "T12:00:00")) / 86400000) : 0;
+    lsSet(KEYS.lastVisit, today);
+    if (lsGet(KEYS.helloDay) === today) return false;
+    var h = location.hash.slice(1);
+    if (h && ["today", "home", "wins"].indexOf(h) === -1) return false; // deep link: they're on their way somewhere
+    lsSet(KEYS.helloDay, today);
+    setTimeout(function () { showHello(helloMessage(gap)); }, 900);
+    return true;
+  }
+
   // ---------- app shell ----------
   var NAV = [
     { id: "today", label: "Today", href: "journal.html#today", icon: ICON.sun },
@@ -1089,7 +1194,7 @@
 
     if (!document.body.hasAttribute("data-mj-page")) return;
     // first visit: say hello; otherwise maybe a milestone / Sunday letter
-    if (!checkMilestones()) maybeAutoLetter();
+    if (!checkMilestones() && !maybeAutoLetter()) maybeHello();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();
@@ -1118,6 +1223,7 @@
     openModal: function (h, o) { openModal(h, o); }, closeModal: function () { closeModal(); },
     afterSave: afterSave, openSupport: openSupport, supportHTML: SUPPORT_HTML,
     showReps: showReps, exportMarkdown: exportMarkdown,
+    hello: function () { showHello(helloMessage(0)); },
     shouldShowIOSHint: shouldShowIOSHint, dismissIOSHint: dismissIOSHint,
     hasAnyData: hasAnyData, ls: { get: lsGet, set: lsSet, json: lsJSON },
     getTheme: getTheme, setTheme: setTheme,

@@ -18,7 +18,7 @@ window.MEDITATE_LIBRARY = (function () {
           id: "learn-1", title: "Arriving", sub: "Day 1 · resting with the breath", lens: [3, 5, 10], len: 5, breath: [4, 6],
           about: "There's nothing to get right. Today you simply arrive, and notice yourself breathing.",
           intro: [
-            [0, "Welcome. Find a position that feels steady and comfortable — sitting or lying down."],
+            [0, "Find a position that feels steady and comfortable — sitting or lying down."],
             [10, "Let your eyes close, or rest your gaze softly on the floor."],
             [22, "Take one deeper breath in… and a long, slow breath out."],
             [36, "Now let the breath find its own rhythm. You don't need to control it."],
@@ -350,9 +350,10 @@ window.MEDITATE_LIBRARY = (function () {
   function cuesFor(s, mins) {
     var total = mins * 60;
     var outro = s.outro || OUTRO;
-    var cues = [];
-    s.intro.forEach(function (c) { if (c[0] < total - 20) cues.push({ at: c[0], text: c[1] }); });
-    var introEnd = s.intro.length ? s.intro[s.intro.length - 1][0] + 20 : 0;
+    var lead = 9; // the lesson's name is spoken first, then the intro begins
+    var cues = [{ at: 0, text: "Welcome to today's lesson — " + s.title + "." }];
+    s.intro.forEach(function (c) { if (c[0] + lead < total - 20) cues.push({ at: c[0] + lead, text: c[1] }); });
+    var introEnd = s.intro.length ? s.intro[s.intro.length - 1][0] + lead + 20 : 0;
     var outroStart = total - Math.max.apply(null, outro.map(function (c) { return c[0]; })) - 10;
     var room = outroStart - introEnd;
     if (s.reminders.length && room > 40) {

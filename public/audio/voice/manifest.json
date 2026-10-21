@@ -1,4 +1,1012 @@
 {
- "voice": null,
- "files": {}
+ "voice": "kokoro-heart-bella-warm",
+ "format": "lessons",
+ "lessons": {
+  "learn-1": {
+   "file": "learn-1.94e4f50b.mp3",
+   "bytes": 841389,
+   "clips": {
+    "Welcome to today's lesson — Arriving.": [
+     0.3,
+     4.216
+    ],
+    "Find a position that feels steady and comfortable — sitting or lying down.": [
+     5.716,
+     11.76
+    ],
+    "Let your eyes close, or rest your gaze softly on the floor.": [
+     13.26,
+     18.18
+    ],
+    "Take one deeper breath in… and a long, slow breath out.": [
+     19.68,
+     25.228
+    ],
+    "Now let the breath find its own rhythm. You don't need to control it.": [
+     26.728,
+     32.307
+    ],
+    "Notice where you feel the breath most clearly. The nose, the chest, or the belly.": [
+     33.807,
+     40.804
+    ],
+    "Slowly, begin to let the practice go. Let the breath be completely natural.": [
+     42.304,
+     49.205
+    ],
+    "Notice how you feel right now. There's nothing to change.": [
+     50.705,
+     56.036
+    ],
+    "In a moment you'll hear the bell. Take your time coming back.": [
+     57.536,
+     62.945
+    ],
+    "Just rest your attention there, on the feeling of breathing.": [
+     64.445,
+     69.026
+    ],
+    "If your mind has wandered, that's completely normal. Gently come back to the breath.": [
+     70.526,
+     77.824
+    ],
+    "Each time you notice and return — that is the practice.": [
+     79.324,
+     84.172
+    ],
+    "Breathing in, knowing you're breathing in. Breathing out, knowing you're breathing out.": [
+     85.672,
+     92.567
+    ],
+    "Let the body be heavy and supported.": [
+     94.067,
+     96.995
+    ],
+    "No need to chase calm. Just keep the breath company.": [
+     98.495,
+     103.584
+    ]
+   }
+  },
+  "learn-2": {
+   "file": "learn-2.270d17b4.mp3",
+   "bytes": 762093,
+   "clips": {
+    "Welcome to today's lesson — Counting breaths.": [
+     0.3,
+     4.638
+    ],
+    "Settle in. Let your shoulders drop and your jaw soften.": [
+     6.138,
+     11.823
+    ],
+    "A few slow breaths to arrive. In… and out.": [
+     13.323,
+     19.585
+    ],
+    "Now start counting each out-breath. One… two… three… up to ten.": [
+     21.085,
+     31.197
+    ],
+    "When you reach ten, start again from one. If you lose count, simply start again. No problem at all.": [
+     32.697,
+     42.397
+    ],
+    "Counting each breath out, quietly, in your mind.": [
+     43.897,
+     47.826
+    ],
+    "Lost count? That's okay. Begin again at one.": [
+     49.326,
+     55.412
+    ],
+    "Let the numbers be soft, almost a whisper.": [
+     56.912,
+     60.641
+    ],
+    "Slowly, begin to let the practice go. Let the breath be completely natural.": [
+     62.141,
+     69.042
+    ],
+    "Notice how you feel right now. There's nothing to change.": [
+     70.542,
+     75.874
+    ],
+    "In a moment you'll hear the bell. Take your time coming back.": [
+     77.374,
+     82.783
+    ],
+    "Notice the little pause at the end of each out-breath.": [
+     84.283,
+     88.29
+    ],
+    "If you're past ten, smile, and return to one.": [
+     89.79,
+     93.683
+    ]
+   }
+  },
+  "learn-3": {
+   "file": "learn-3.728ffbf6.mp3",
+   "bytes": 858093,
+   "clips": {
+    "Welcome to today's lesson — The body.": [
+     0.3,
+     4.207
+    ],
+    "Get comfortable, and let the body be fully supported.": [
+     5.707,
+     10.016
+    ],
+    "Bring your attention to the top of your head. Just notice what's there.": [
+     11.516,
+     17.404
+    ],
+    "Move down to your forehead, your eyes, your cheeks. Let them soften.": [
+     18.904,
+     25.08
+    ],
+    "Your jaw. Let it unclench a little. Your tongue resting in your mouth.": [
+     26.58,
+     33.598
+    ],
+    "Now your neck and shoulders. Notice any tightness, and let it be.": [
+     35.098,
+     41.129
+    ],
+    "Down through your arms, to your hands. Can you feel your fingertips?": [
+     42.629,
+     48.454
+    ],
+    "Your chest and upper back, rising and falling with the breath.": [
+     49.954,
+     54.694
+    ],
+    "Slowly, begin to let the practice go. Let the breath be completely natural.": [
+     56.194,
+     63.095
+    ],
+    "Notice how you feel right now. There's nothing to change.": [
+     64.595,
+     69.926
+    ],
+    "In a moment you'll hear the bell. Take your time coming back.": [
+     71.426,
+     76.835
+    ],
+    "Your belly. Let it be soft.": [
+     78.335,
+     81.892
+    ],
+    "Your lower back, your hips, the places you're touching the floor or chair.": [
+     83.392,
+     89.11
+    ],
+    "Down through your legs, to your knees, your calves.": [
+     90.61,
+     94.308
+    ],
+    "Your feet. The soles of your feet, your toes.": [
+     95.808,
+     100.5
+    ],
+    "Now feel the whole body at once, breathing.": [
+     102.0,
+     105.683
+    ]
+   }
+  },
+  "learn-4": {
+   "file": "learn-4.e56a2282.mp3",
+   "bytes": 728109,
+   "clips": {
+    "Welcome to today's lesson — Thoughts are visitors.": [
+     0.3,
+     4.815
+    ],
+    "Settle in, and rest with the breath for a few moments.": [
+     6.315,
+     10.651
+    ],
+    "Sooner or later, a thought will come. That's what minds do.": [
+     12.151,
+     17.743
+    ],
+    "When you notice you're thinking, silently say 'thinking'. Then return to the breath.": [
+     19.243,
+     26.005
+    ],
+    "Imagine thoughts as clouds passing across a wide sky. You are the sky.": [
+     27.505,
+     34.55
+    ],
+    "Noticing a thought… 'thinking'… and coming back.": [
+     36.05,
+     42.254
+    ],
+    "No need to push thoughts away. Just don't climb aboard.": [
+     43.754,
+     48.992
+    ],
+    "Planning, remembering, worrying — all just visitors.": [
+     50.492,
+     55.243
+    ],
+    "Slowly, begin to let the practice go. Let the breath be completely natural.": [
+     56.743,
+     63.644
+    ],
+    "Notice how you feel right now. There's nothing to change.": [
+     65.144,
+     70.475
+    ],
+    "In a moment you'll hear the bell. Take your time coming back.": [
+     71.975,
+     77.384
+    ],
+    "The moment you notice is a moment of awareness. Well done.": [
+     78.884,
+     84.853
+    ],
+    "Back to the simple feeling of breathing.": [
+     86.353,
+     89.435
+    ]
+   }
+  },
+  "learn-5": {
+   "file": "learn-5.1694cfc2.mp3",
+   "bytes": 625773,
+   "clips": {
+    "Welcome to today's lesson — Listening.": [
+     0.3,
+     4.236
+    ],
+    "Find your posture, and take a slow breath.": [
+     5.736,
+     9.287
+    ],
+    "Now open your attention to sound. Whatever you can hear.": [
+     10.787,
+     16.097
+    ],
+    "Sounds near you. Sounds far away. Even the quiet between sounds.": [
+     17.597,
+     24.647
+    ],
+    "No need to name them or like them. Just hear them arrive and fade.": [
+     26.147,
+     32.131
+    ],
+    "Letting sounds come to you, like waves to the shore.": [
+     33.631,
+     37.858
+    ],
+    "If you're lost in thought, simply listen again.": [
+     39.358,
+     43.206
+    ],
+    "Notice the quietest sound you can hear.": [
+     44.706,
+     47.774
+    ],
+    "Slowly, begin to let the practice go. Let the breath be completely natural.": [
+     49.274,
+     56.175
+    ],
+    "Notice how you feel right now. There's nothing to change.": [
+     57.675,
+     63.007
+    ],
+    "In a moment you'll hear the bell. Take your time coming back.": [
+     64.507,
+     69.916
+    ],
+    "Every sound is happening right now. Let it bring you here.": [
+     71.416,
+     76.629
+    ]
+   }
+  },
+  "learn-6": {
+   "file": "learn-6.a94d2873.mp3",
+   "bytes": 670125,
+   "clips": {
+    "Welcome to today's lesson — Kindness.": [
+     0.3,
+     4.268
+    ],
+    "Settle in. If it feels okay, place a hand on your heart.": [
+     5.768,
+     11.525
+    ],
+    "Think of how you'd speak to a good friend who's having a hard day.": [
+     13.025,
+     18.029
+    ],
+    "Now offer that same warmth to yourself. Silently repeat: May I be kind to myself.": [
+     19.529,
+     27.088
+    ],
+    "May I be gentle with myself. May I be at ease.": [
+     28.588,
+     33.641
+    ],
+    "May I be kind to myself.": [
+     35.141,
+     37.602
+    ],
+    "May I accept myself as I am, right now.": [
+     39.102,
+     42.97
+    ],
+    "If it feels awkward, that's fine. Just let the words be there.": [
+     44.47,
+     50.04
+    ],
+    "Slowly, begin to let the practice go. Let the breath be completely natural.": [
+     51.54,
+     58.442
+    ],
+    "Notice how you feel right now. There's nothing to change.": [
+     59.942,
+     65.273
+    ],
+    "In a moment you'll hear the bell. Take your time coming back.": [
+     66.773,
+     72.182
+    ],
+    "May I be at ease.": [
+     73.682,
+     75.581
+    ],
+    "Feel the warmth of your hand. You're looking after yourself.": [
+     77.081,
+     82.177
+    ]
+   }
+  },
+  "learn-7": {
+   "file": "learn-7.be5efb1b.mp3",
+   "bytes": 471981,
+   "clips": {
+    "Welcome to today's lesson — On your own.": [
+     0.3,
+     4.31
+    ],
+    "Welcome back. This time you'll sit mostly in silence.": [
+     5.81,
+     11.28
+    ],
+    "Settle with the breath. Return whenever you wander.": [
+     12.78,
+     17.757
+    ],
+    "Use any anchor you like — breath, body, or sound. I'll be quiet now.": [
+     19.257,
+     26.027
+    ],
+    "Gently, back to your anchor.": [
+     27.527,
+     30.229
+    ],
+    "Slowly, begin to let the practice go. Let the breath be completely natural.": [
+     31.729,
+     38.63
+    ],
+    "Notice how you feel right now. There's nothing to change.": [
+     40.13,
+     45.462
+    ],
+    "In a moment you'll hear the bell. Take your time coming back.": [
+     46.962,
+     52.371
+    ],
+    "Still here. Still breathing.": [
+     53.871,
+     57.401
+    ]
+   }
+  },
+  "sos-1": {
+   "file": "sos-1.4d706efd.mp3",
+   "bytes": 527661,
+   "clips": {
+    "Welcome to today's lesson — 5-4-3-2-1 grounding.": [
+     0.3,
+     7.546
+    ],
+    "You're safe to slow down now. Keep your eyes open.": [
+     9.046,
+     14.078
+    ],
+    "Look around and find five things you can see. Name them quietly.": [
+     15.578,
+     21.86
+    ],
+    "Now four things you can feel. Your feet on the floor, your clothes, the air.": [
+     23.36,
+     29.737
+    ],
+    "Three things you can hear.": [
+     31.237,
+     33.387
+    ],
+    "Two things you can smell, or like the smell of.": [
+     34.887,
+     38.555
+    ],
+    "And one slow breath you can taste — in through the nose, out through the mouth.": [
+     40.055,
+     46.081
+    ],
+    "You're here. In this room. In this moment.": [
+     47.581,
+     53.066
+    ],
+    "Notice your feet on the ground. Steady.": [
+     54.566,
+     58.858
+    ],
+    "Whenever you're ready, carry this steadiness with you.": [
+     60.358,
+     64.374
+    ]
+   }
+  },
+  "sos-2": {
+   "file": "sos-2.d93ab597.mp3",
+   "bytes": 554733,
+   "clips": {
+    "Welcome to today's lesson — The longer out-breath.": [
+     0.3,
+     4.982
+    ],
+    "Let's slow the breath together. Follow the circle on the screen.": [
+     6.482,
+     11.881
+    ],
+    "Breathe in for four… and out for eight. As slowly as feels okay.": [
+     13.381,
+     20.681
+    ],
+    "If eight is too long, make it six. Longer out than in — that's all.": [
+     22.181,
+     28.919
+    ],
+    "In for four… out, slowly, for eight.": [
+     30.419,
+     34.725
+    ],
+    "Slowly, begin to let the practice go. Let the breath be completely natural.": [
+     36.225,
+     43.126
+    ],
+    "Notice how you feel right now. There's nothing to change.": [
+     44.626,
+     49.957
+    ],
+    "In a moment you'll hear the bell. Take your time coming back.": [
+     51.457,
+     56.866
+    ],
+    "Let the shoulders drop on each out-breath.": [
+     58.366,
+     61.834
+    ],
+    "You're doing this. Your body is listening.": [
+     63.334,
+     67.754
+    ]
+   }
+  },
+  "sos-3": {
+   "file": "sos-3.a50661ff.mp3",
+   "bytes": 674157,
+   "clips": {
+    "Welcome to today's lesson — Soften and allow.": [
+     0.3,
+     4.65
+    ],
+    "Settle in, and notice where you feel the anxiety in your body.": [
+     6.15,
+     11.328
+    ],
+    "Maybe tightness in the chest, a knot in the stomach, a buzzing.": [
+     12.828,
+     17.958
+    ],
+    "Breathe gently into that place. Soften around it, like a warm hand.": [
+     19.458,
+     25.908
+    ],
+    "You can say quietly: it's okay to feel this. It will pass.": [
+     27.408,
+     33.44
+    ],
+    "Soften… allow… let it be here.": [
+     34.94,
+     40.283
+    ],
+    "Feelings rise and fall, like waves. You can ride this one.": [
+     41.783,
+     47.656
+    ],
+    "Breathing into the tight places. Breathing out, softening.": [
+     49.156,
+     54.56
+    ],
+    "Slowly, begin to let the practice go. Let the breath be completely natural.": [
+     56.06,
+     62.962
+    ],
+    "Notice how you feel right now. There's nothing to change.": [
+     64.462,
+     69.793
+    ],
+    "In a moment you'll hear the bell. Take your time coming back.": [
+     71.293,
+     76.702
+    ],
+    "You don't have to like it. Just make a little room.": [
+     78.202,
+     82.676
+    ]
+   }
+  },
+  "sleep-1": {
+   "file": "sleep-1.557e4ae9.mp3",
+   "bytes": 614445,
+   "clips": {
+    "Welcome to today's lesson — Body scan for sleep.": [
+     0.3,
+     4.99
+    ],
+    "Lie down and let the bed hold all of your weight.": [
+     6.49,
+     10.44
+    ],
+    "Let your breath slow down by itself. You've done enough for today.": [
+     11.94,
+     17.602
+    ],
+    "Bring your attention to your feet. Let them grow heavy and warm.": [
+     19.102,
+     24.58
+    ],
+    "Your ankles and calves, heavy and soft.": [
+     26.08,
+     29.781
+    ],
+    "Your knees and thighs, sinking into the bed.": [
+     31.281,
+     34.985
+    ],
+    "Your hips and lower back, letting go.": [
+     36.485,
+     39.569
+    ],
+    "Your belly, rising and falling, slow and easy.": [
+     41.069,
+     45.258
+    ],
+    "Your chest, your shoulders, melting down.": [
+     46.758,
+     50.083
+    ],
+    "Your arms, your hands, completely still.": [
+     51.583,
+     54.989
+    ],
+    "Your neck, your face, your eyes. Soft.": [
+     56.489,
+     60.608
+    ],
+    "The whole body, heavy, warm, resting.": [
+     62.108,
+     65.679
+    ],
+    "There's nowhere you need to be. Let sleep come when it's ready.": [
+     67.179,
+     72.245
+    ],
+    "Rest now.": [
+     73.745,
+     75.223
+    ]
+   }
+  },
+  "sleep-2": {
+   "file": "sleep-2.10f60afb.mp3",
+   "bytes": 478893,
+   "clips": {
+    "Welcome to today's lesson — Counting down.": [
+     0.3,
+     4.471
+    ],
+    "Lie comfortably and close your eyes.": [
+     5.971,
+     9.303
+    ],
+    "With each out-breath, count down silently, starting at fifty.": [
+     10.803,
+     16.011
+    ],
+    "Fifty… forty-nine… forty-eight… If you lose your place, start again anywhere.": [
+     17.511,
+     27.1
+    ],
+    "Counting down, one number for each slow breath out.": [
+     28.6,
+     33.073
+    ],
+    "Let each number feel heavier and slower than the last.": [
+     34.573,
+     38.912
+    ],
+    "Lost the count? Begin again. It doesn't matter at all.": [
+     40.412,
+     46.687
+    ],
+    "Sinking a little deeper with every number.": [
+     48.187,
+     51.494
+    ],
+    "Let the numbers fade away now.": [
+     52.994,
+     55.54
+    ],
+    "Rest.": [
+     57.04,
+     58.26
+    ]
+   }
+  },
+  "sleep-3": {
+   "file": "sleep-3.14e9b71a.mp3",
+   "bytes": 513069,
+   "clips": {
+    "Welcome to today's lesson — Let the day go.": [
+     0.3,
+     4.535
+    ],
+    "Lie down, and take a long breath out — like a sigh.": [
+     6.035,
+     11.059
+    ],
+    "Think of today. Whatever happened, it's over now.": [
+     12.559,
+     17.657
+    ],
+    "Picture placing each thought from today into a box, and closing the lid.": [
+     19.157,
+     25.059
+    ],
+    "Tomorrow's things can wait for tomorrow. They'll still be there.": [
+     26.559,
+     32.1
+    ],
+    "If a thought from today returns, place it gently back in the box.": [
+     33.6,
+     39.099
+    ],
+    "Thank your body for carrying you through today.": [
+     40.599,
+     44.217
+    ],
+    "Nothing more to do. Nothing more to solve tonight.": [
+     45.717,
+     50.621
+    ],
+    "Breathing slowly, sinking into rest.": [
+     52.121,
+     55.465
+    ],
+    "Let go of the practice, too.": [
+     56.965,
+     59.518
+    ],
+    "Sleep well.": [
+     61.018,
+     62.551
+    ]
+   }
+  },
+  "focus-1": {
+   "file": "focus-1.a7122a64.mp3",
+   "bytes": 394413,
+   "clips": {
+    "Welcome to today's lesson — Two-minute reset.": [
+     0.3,
+     4.67
+    ],
+    "Pause what you're doing. Hands still. Shoulders down.": [
+     6.17,
+     12.235
+    ],
+    "Three slow breaths. In… and out.": [
+     13.735,
+     19.24
+    ],
+    "Let the last task finish in your mind. It's done.": [
+     20.74,
+     25.446
+    ],
+    "Feel your feet. Feel your hands. You're here.": [
+     26.946,
+     32.614
+    ],
+    "Now choose the one thing you'll do next.": [
+     34.114,
+     37.297
+    ],
+    "Begin it slowly, with full attention.": [
+     38.797,
+     42.047
+    ],
+    "Just breathing. Nothing else for now.": [
+     43.547,
+     47.702
+    ]
+   }
+  },
+  "focus-2": {
+   "file": "focus-2.05a31d24.mp3",
+   "bytes": 615789,
+   "clips": {
+    "Welcome to today's lesson — One point of attention.": [
+     0.3,
+     5.031
+    ],
+    "Sit upright, alert but relaxed.": [
+     6.531,
+     9.701
+    ],
+    "Bring your attention to the very tip of your nose, where the air enters.": [
+     11.201,
+     16.483
+    ],
+    "Feel the coolness of the in-breath, the warmth of the out-breath.": [
+     17.983,
+     23.135
+    ],
+    "Keep your attention right there. When it slips, bring it back. That's a rep.": [
+     24.635,
+     31.792
+    ],
+    "Right at the tip of the nose.": [
+     33.292,
+     35.743
+    ],
+    "Each return is a rep. You're getting stronger.": [
+     37.243,
+     41.77
+    ],
+    "Cool air in… warm air out.": [
+     43.27,
+     47.176
+    ],
+    "Slowly, begin to let the practice go. Let the breath be completely natural.": [
+     48.676,
+     55.577
+    ],
+    "Notice how you feel right now. There's nothing to change.": [
+     57.077,
+     62.408
+    ],
+    "In a moment you'll hear the bell. Take your time coming back.": [
+     63.908,
+     69.317
+    ],
+    "Distracted? Gently, firmly, back.": [
+     70.817,
+     75.382
+    ]
+   }
+  },
+  "focus-3": {
+   "file": "focus-3.1547cc9d.mp3",
+   "bytes": 445677,
+   "clips": {
+    "Welcome to today's lesson — Before deep work.": [
+     0.3,
+     4.726
+    ],
+    "Close your eyes and take a few full breaths.": [
+     6.226,
+     9.876
+    ],
+    "Notice any buzz in the mind — messages, to-dos, noise. Let it settle like silt in water.": [
+     11.376,
+     19.765
+    ],
+    "Now ask: what is the one thing that matters most in the next hour?": [
+     21.265,
+     26.796
+    ],
+    "Picture yourself doing it calmly, with care.": [
+     28.296,
+     32.004
+    ],
+    "Resting with the breath, the water settling.": [
+     33.504,
+     37.031
+    ],
+    "Returning to your one thing.": [
+     38.531,
+     40.825
+    ],
+    "Calm attention. One thing at a time.": [
+     42.325,
+     46.445
+    ],
+    "Hold your intention lightly.": [
+     47.945,
+     50.322
+    ],
+    "When the bell rings, begin.": [
+     51.822,
+     54.111
+    ]
+   }
+  },
+  "kind-1": {
+   "file": "kind-1.c817d0b8.mp3",
+   "bytes": 516333,
+   "clips": {
+    "Welcome to today's lesson — For yourself.": [
+     0.3,
+     4.34
+    ],
+    "Settle in, and let a soft smile come to your face if it wants to.": [
+     5.84,
+     11.138
+    ],
+    "Picture yourself as you are right now.": [
+     12.638,
+     15.797
+    ],
+    "Silently offer: May I be safe. May I be well. May I be at ease.": [
+     17.297,
+     24.828
+    ],
+    "May I be safe.": [
+     26.328,
+     28.151
+    ],
+    "May I be healthy and strong.": [
+     29.651,
+     32.036
+    ],
+    "May I be at ease.": [
+     33.536,
+     35.436
+    ],
+    "Slowly, begin to let the practice go. Let the breath be completely natural.": [
+     36.936,
+     43.837
+    ],
+    "Notice how you feel right now. There's nothing to change.": [
+     45.337,
+     50.668
+    ],
+    "In a moment you'll hear the bell. Take your time coming back.": [
+     52.168,
+     57.577
+    ],
+    "May I be kind to myself, just as I am.": [
+     59.077,
+     62.964
+    ]
+   }
+  },
+  "kind-2": {
+   "file": "kind-2.b77953de.mp3",
+   "bytes": 523821,
+   "clips": {
+    "Welcome to today's lesson — For someone you love.": [
+     0.3,
+     4.766
+    ],
+    "Settle in, and take a few slow breaths.": [
+     6.266,
+     9.757
+    ],
+    "Bring to mind someone you love easily. See their face.": [
+     11.257,
+     16.395
+    ],
+    "Silently wish them well: May you be safe. May you be happy.": [
+     17.895,
+     23.741
+    ],
+    "May you be safe.": [
+     25.241,
+     26.949
+    ],
+    "May you be happy.": [
+     28.449,
+     30.251
+    ],
+    "May you be healthy.": [
+     31.751,
+     33.533
+    ],
+    "Slowly, begin to let the practice go. Let the breath be completely natural.": [
+     35.033,
+     41.934
+    ],
+    "Notice how you feel right now. There's nothing to change.": [
+     43.434,
+     48.765
+    ],
+    "In a moment you'll hear the bell. Take your time coming back.": [
+     50.265,
+     55.674
+    ],
+    "May you be at ease.": [
+     57.174,
+     59.007
+    ],
+    "Notice how it feels to wish someone well.": [
+     60.507,
+     63.88
+    ]
+   }
+  },
+  "kind-3": {
+   "file": "kind-3.6b61dccf.mp3",
+   "bytes": 636141,
+   "clips": {
+    "Welcome to today's lesson — For everyone.": [
+     0.3,
+     4.376
+    ],
+    "Begin by offering kindness to yourself. May I be well.": [
+     5.876,
+     11.334
+    ],
+    "Now someone you love. May you be well.": [
+     12.834,
+     16.892
+    ],
+    "Now someone you barely know — a shopkeeper, a neighbour. May you be well too.": [
+     18.392,
+     25.314
+    ],
+    "Now, if you can, someone you find difficult. May you be free from suffering.": [
+     26.814,
+     33.53
+    ],
+    "If that's hard, return to yourself for a while. That's okay.": [
+     35.03,
+     40.998
+    ],
+    "Now everyone in your city.": [
+     42.498,
+     44.858
+    ],
+    "Slowly, begin to let the practice go. Let the breath be completely natural.": [
+     46.358,
+     53.26
+    ],
+    "Notice how you feel right now. There's nothing to change.": [
+     54.76,
+     60.091
+    ],
+    "In a moment you'll hear the bell. Take your time coming back.": [
+     61.591,
+     67.0
+    ],
+    "Everyone in the world. May all beings be well.": [
+     68.5,
+     73.211
+    ],
+    "May all beings be happy and at ease.": [
+     74.711,
+     77.936
+    ]
+   }
+  }
+ }
 }

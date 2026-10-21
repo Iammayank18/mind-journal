@@ -1878,12 +1878,13 @@
       const per = period();
       let order;
       if (per === 'evening') order = ['gratitude', 'evening'];
-      else if (mood === 'anxious' || mood === 'restless') order = ['worry', 'braindump', 'reframe', 'gratitude'];
+      else if (mood === 'anxious' || mood === 'restless') order = ['braindump', 'worry', 'reframe', 'gratitude'];
       else if (mood === 'heavy' || mood === 'flat') order = ['reframe', 'braindump', 'gratitude'];
       else if (per === 'morning') order = ['braindump', 'worry', 'gratitude'];
       else order = ['braindump', 'gratitude', 'worry'];
       let id = order.find(x => !done(x));
       let why = WHY[id];
+      if (id === 'braindump' && (mood === 'anxious' || mood === 'restless')) why = 'Busy head? Spill it all onto the page first — no order, no editing.';
       if (id === 'worry' && mood === 'anxious') why = 'Anxious minds loop. Park each worry for later — it really helps.';
       if (id === 'reframe' && (mood === 'heavy' || mood === 'flat')) why = 'Feeling ' + MJ.MOODS[mood].label.toLowerCase() + '? Untangle one thought — no forced positivity.';
       if (!id) {

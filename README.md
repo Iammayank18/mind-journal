@@ -1,6 +1,7 @@
 # Mind Journal 🌿
 
-A gentle daily **journal** and **day planner** that celebrate your progress.
+A gentle daily **journal** and **day planner** that celebrate your progress —
+warm, playful and unhurried, with little mood characters and optional calm sounds.
 Plain HTML/CSS/JS, built with Vite as a multi-page site. No backend, no account.
 
 ```
@@ -8,8 +9,10 @@ index.html          home page
 journal.html        check-in, brain dump, worry parking, reframe, gratitude,
                     evening wind-down, breathing, Wins Jar, history
 planner.html        sections & tasks, live timeline, focus timer, interview reps, analytics
-public/common.js    shared: your name, settings, backup/restore, dark mode, share,
-                    milestones, weekly letter, planner <-> journal data
+public/theme.css    the "Sunny" design system: colours, type (Figtree), buttons, cards,
+                    mood orbs, motion, app shell, light + dark
+public/common.js    shared: app shell + tab bar, mood-orb characters, calm sounds & chimes,
+                    your name, settings, backup/restore, milestones, weekly letter
 public/sw.js        offline support (+ manifest.webmanifest, icons/ → installable app)
 vite.config.ts      lists the three pages as build inputs
 vercel.json         redirects from the old file names + headers

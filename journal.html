@@ -3,560 +3,589 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Mind Journal</title>
   <meta name="description" content="A gentle daily journal to put your thoughts down and feel lighter. Private — everything stays on your device.">
-  <meta name="theme-color" content="#f7f5f0">
+  <meta name="theme-color" content="#FFF6EA">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="theme.css">
   <script vite-ignore src="common.js"></script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    .journal {
+      padding-top: 12px;
+      padding-bottom: 64px;
     }
 
-    :root {
-      --bg: #f7f5f0;
-      --surface: #ffffff;
-      --surface2: #f0ede8;
-      --border: #e4dfd7;
-      --text: #2c2825;
-      --text-soft: #7a7068;
-      --text-muted: #b0a89e;
-      --accent: #6b8f71;
-      --accent-light: #e8f0e9;
-      --accent2: #8b7355;
-      --accent2-light: #f5ede0;
-      --red: #c0504d;
-      --red-light: #fdf0ef;
-      --blue: #5b7fa6;
-      --blue-light: #edf2f8;
-      --purple: #7b6fa0;
-      --purple-light: #f0edf8;
-      --warm: #c8894a;
-      --warm-light: #fdf3e8;
-      --radius: 14px;
-      --radius-sm: 8px;
-      --shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.10);
-      --on-accent: #ffffff;
-      --accent-strong: #3d6b44;
-      --insight-border: #c5dac8;
-      --insight-text: #3d6b44;
-      --warm-text: #7a4f24;
-      color-scheme: light;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root:not([data-theme="light"]) {
-      color-scheme: dark;
-      --bg: #1b1a18;
-      --surface: #24221f;
-      --surface2: #2c2925;
-      --border: #3b3732;
-      --text: #ece7df;
-      --text-soft: #b5aca0;
-      --text-muted: #8a8276;
-      --accent: #8fb795;
-      --accent-light: #25322a;
-      --accent2: #c9a57d;
-      --accent2-light: #352c22;
-      --red: #e58a86;
-      --red-light: #3b2524;
-      --blue: #8fb0d6;
-      --blue-light: #222c38;
-      --purple: #b0a5d6;
-      --purple-light: #2b2838;
-      --warm: #d9a066;
-      --warm-light: #362a1d;
-      --shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
-      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-      --on-accent: #13201a;
-      --accent-strong: #b3d4b8;
-      --insight-border: #3a5240;
-      --insight-text: #b9d6be;
-      --warm-text: #e7bf8f;
-      }
-    }
-
-    :root[data-theme="dark"] {
-      color-scheme: dark;
-      --bg: #1b1a18;
-      --surface: #24221f;
-      --surface2: #2c2925;
-      --border: #3b3732;
-      --text: #ece7df;
-      --text-soft: #b5aca0;
-      --text-muted: #8a8276;
-      --accent: #8fb795;
-      --accent-light: #25322a;
-      --accent2: #c9a57d;
-      --accent2-light: #352c22;
-      --red: #e58a86;
-      --red-light: #3b2524;
-      --blue: #8fb0d6;
-      --blue-light: #222c38;
-      --purple: #b0a5d6;
-      --purple-light: #2b2838;
-      --warm: #d9a066;
-      --warm-light: #362a1d;
-      --shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
-      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-      --on-accent: #13201a;
-      --accent-strong: #b3d4b8;
-      --insight-border: #3a5240;
-      --insight-text: #b9d6be;
-      --warm-text: #e7bf8f;
-    }
-
-    body {
-      font-family: 'Georgia', serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
-
-    /* HEADER */
-    .header {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 0 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 64px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .logo {
-      font-size: 20px;
-      font-weight: normal;
-      color: var(--text);
-      letter-spacing: -0.3px;
-    }
-
-    .logo span {
-      color: var(--accent);
-    }
-
-    .date-nav {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-family: 'Georgia', serif;
-    }
-
-    .date-nav button {
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 4px 10px;
-      cursor: pointer;
-      color: var(--text-soft);
-      font-size: 16px;
-      transition: all 0.15s;
-    }
-
-    .date-nav button:hover {
-      background: var(--surface2);
-    }
-
-    #current-date {
-      font-size: 14px;
-      color: var(--text-soft);
-      min-width: 160px;
-      text-align: center;
-    }
-
-    .streak {
-      font-size: 13px;
-      color: var(--accent);
-      background: var(--accent-light);
-      padding: 4px 12px;
-      border-radius: 20px;
-    }
-
-    /* TABS */
-    .tabs {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 0 32px;
-      display: flex;
-      gap: 0;
-      overflow-x: auto;
-    }
-
-    .tab {
-      padding: 14px 20px;
-      font-size: 13px;
-      font-family: 'Georgia', serif;
-      cursor: pointer;
-      color: var(--text-soft);
-      border-bottom: 2px solid transparent;
-      transition: all 0.2s;
-      white-space: nowrap;
-      background: none;
-      border-top: none;
-      border-left: none;
-      border-right: none;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .tab:hover {
-      color: var(--text);
-    }
-
-    .tab.active {
-      color: var(--accent);
-      border-bottom-color: var(--accent);
-    }
-
-    .tab .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--text-muted);
-    }
-
-    .tab.done .dot {
-      background: var(--accent);
-    }
-
-    /* MAIN */
-    .main {
-      max-width: 780px;
-      margin: 0 auto;
-      padding: 40px 24px 80px;
-    }
-
-    /* SECTIONS */
-    .section {
+    .view {
       display: none;
     }
 
-    .section.active {
+    .view.active {
       display: block;
+      animation: viewIn var(--t-slow) var(--ease);
     }
 
-    .section-header {
-      margin-bottom: 28px;
+    @keyframes viewIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: none; }
     }
 
-    .section-title {
-      font-size: 26px;
-      font-weight: normal;
-      color: var(--text);
-      margin-bottom: 6px;
-    }
+    .gap-lg > * + * { margin-top: 20px; }
 
-    .section-desc {
-      font-size: 14px;
-      color: var(--text-soft);
-      line-height: 1.6;
-    }
-
-    /* CARD */
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      margin-bottom: 20px;
-      box-shadow: var(--shadow);
-    }
-
-    .card-label {
-      font-size: 11px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 12px;
+    /* ── today hub ── */
+    .day-bar {
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 22px;
     }
 
-    .card-label .icon {
-      font-size: 14px;
+    .date-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      background: var(--card);
+      border-radius: var(--pill);
+      padding: 4px;
+      box-shadow: var(--shadow-1);
     }
 
-    /* MOOD PICKER */
-    .mood-grid {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .mood-btn {
-      padding: 10px 18px;
-      border-radius: 30px;
-      border: 1.5px solid var(--border);
-      background: none;
+    .date-pill button {
+      -webkit-appearance: none;
+      appearance: none;
+      border: none;
+      background: transparent;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
       cursor: pointer;
-      font-size: 14px;
-      font-family: 'Georgia', serif;
-      color: var(--text-soft);
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      display: grid;
+      place-items: center;
+      color: var(--ink-2);
     }
 
-    .mood-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
+    .date-pill button:hover:not(:disabled) {
+      background: var(--brand-tint);
+      color: var(--ink);
     }
 
-    .mood-btn.selected {
-      background: var(--accent-light);
-      border-color: var(--accent);
-      color: var(--accent);
+    .date-pill button:disabled {
+      opacity: .3;
+      cursor: default;
     }
 
-    /* ENERGY SLIDER */
-    .energy-row {
+    #current-date {
+      padding: 0 8px;
+      font-weight: 700;
+      font-size: 15px;
+      white-space: nowrap;
+    }
+
+    .hello-greet {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--ink-2);
+    }
+
+    .name-btn {
+      -webkit-appearance: none;
+      appearance: none;
+      border: none;
+      background: none;
+      padding: 0;
+      font: inherit;
+      letter-spacing: inherit;
+      color: inherit;
+      cursor: pointer;
+      text-decoration: underline;
+      text-decoration-thickness: 3px;
+      text-underline-offset: 8px;
+      text-decoration-color: var(--brand-soft);
+      transition: text-decoration-color var(--t-fast);
+    }
+
+    .name-btn:hover {
+      text-decoration-color: var(--brand);
+    }
+
+    .cheer {
+      margin-top: 10px;
+      font-size: 17px;
+      line-height: 1.6;
+      color: var(--ink-2);
+      max-width: 560px;
+    }
+
+    .mood-card {
+      margin-top: 26px;
+      padding: 24px;
+    }
+
+    .mood-card .mood-head {
       display: flex;
       align-items: center;
       gap: 16px;
+    }
+
+    .mood-strip {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 4px;
+      margin-top: 20px;
+    }
+
+    .mood-mini {
+      -webkit-appearance: none;
+      appearance: none;
+      border: none;
+      background: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 0;
+      border-radius: var(--r-md);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-2);
+      transition: background var(--t-fast) var(--ease);
+    }
+
+    .mood-mini:hover {
+      background: var(--brand-tint);
+    }
+
+    .mood-mini:hover .orb {
+      transform: translateY(-3px) scale(1.06);
+    }
+
+    .mood-mini .orb {
+      transition: transform var(--t-med) var(--ease-bounce);
+    }
+
+    .checked-in {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: var(--r-lg);
+      background: var(--brand-tint);
+      font-size: 15px;
+    }
+
+    .section-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin: 34px 4px 14px;
+    }
+
+    .ritual-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .ritual-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 18px 14px 14px;
+      border-radius: var(--r-lg);
+      background: var(--card);
+      box-shadow: var(--shadow-1);
+      text-decoration: none;
+      color: var(--ink);
+      transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease), background var(--t-med);
+    }
+
+    .ritual-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-2);
+    }
+
+    .ritual-card .r-title {
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .ritual-card .r-sub {
+      font-size: 14px;
+      color: var(--ink-2);
+      line-height: 1.4;
+    }
+
+    .ritual-card.done .r-title {
+      color: var(--ink-2);
+    }
+
+    .ritual-card.next {
+      background: var(--brand);
+      color: var(--on-brand);
+      padding: 18px 18px 18px 14px;
+    }
+
+    .ritual-card.next .r-sub {
+      color: var(--on-brand);
+      opacity: .8;
+      font-weight: 600;
+    }
+
+    .ritual-card.next .pill {
+      background: var(--canvas);
+    }
+
+    .done-mark {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--mint);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      color: #1F1D1B;
+    }
+
+    .play-mark {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--dark);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      color: var(--brand);
+    }
+
+    .duo {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .duo a {
+      text-decoration: none;
+      color: var(--ink);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 20px;
+    }
+
+    .quote-card {
+      margin-top: 28px;
+      padding: 28px;
+      text-align: center;
+    }
+
+    .quote-card #daily-quote {
+      font-size: 19px;
+      line-height: 1.6;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .quote-card .insight-author {
+      margin-top: 10px;
+      font-size: 14px;
+      color: var(--brand-ink);
+    }
+
+    .hub-links {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    /* ── ritual views ── */
+    .ritual-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .ritual-head {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 26px;
+    }
+
+    .ritual-head .t-lead {
+      max-width: 560px;
+    }
+
+    .steps {
+      display: flex;
+      gap: 6px;
+    }
+
+    .steps i {
+      width: 22px;
+      height: 6px;
+      border-radius: var(--pill);
+      background: var(--line-2);
+      display: block;
+    }
+
+    .steps i.on {
+      background: var(--brand);
+    }
+
+    .steps i.done {
+      background: var(--mint);
+    }
+
+    .ritual-body > * + * {
       margin-top: 16px;
     }
 
-    .energy-label {
-      font-size: 13px;
-      color: var(--text-soft);
-      width: 80px;
+    .ritual-foot {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 14px;
+      margin-top: 26px;
     }
 
-    input[type="range"] {
-      -webkit-appearance: none;
-      flex: 1;
-      height: 4px;
-      background: var(--border);
-      border-radius: 4px;
-      outline: none;
+    .saved-note {
+      font-size: 14px;
+      color: var(--ink-3);
+      opacity: 0;
+      transition: opacity var(--t-med);
     }
 
-    input[type="range"]::-webkit-slider-thumb {
+    .saved-note.show {
+      opacity: 1;
+    }
+
+    .done-panel {
+      margin-top: 22px;
+      padding: 28px 24px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .done-panel[hidden] {
+      display: none;
+    }
+
+    .done-panel .t-h2 {
+      max-width: 460px;
+    }
+
+    .done-panel .row {
+      justify-content: center;
+      margin-top: 8px;
+    }
+
+    /* check-in */
+    .mood-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .mood-btn {
       -webkit-appearance: none;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: var(--accent);
+      appearance: none;
+      border: none;
+      background: var(--card-2);
+      border-radius: var(--r-lg);
+      padding: 16px 6px 12px;
       cursor: pointer;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink-2);
+      transition: background var(--t-fast) var(--ease), box-shadow var(--t-fast), color var(--t-fast);
+    }
+
+    .mood-btn:hover {
+      background: var(--brand-tint);
+    }
+
+    .mood-btn.selected {
+      background: var(--brand-tint);
+      color: var(--ink);
+      box-shadow: inset 0 0 0 2.5px var(--brand);
+    }
+
+    .energy {
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
 
     .energy-val {
-      font-size: 14px;
-      color: var(--accent);
-      width: 30px;
+      min-width: 92px;
       text-align: right;
-      font-family: 'Georgia', serif;
-    }
-
-    /* TEXTAREA */
-    .journal-area {
-      width: 100%;
-      min-height: 160px;
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 16px;
-      font-family: 'Georgia', serif;
+      font-weight: 800;
       font-size: 15px;
-      line-height: 1.8;
-      color: var(--text);
-      background: var(--surface);
-      resize: vertical;
-      outline: none;
-      transition: border-color 0.2s;
     }
 
-    .journal-area:focus {
-      border-color: var(--accent);
-    }
-
-    .journal-area::placeholder {
-      color: var(--text-muted);
-      font-style: italic;
-    }
-
-    .char-count {
+    .energy-val small {
+      display: block;
+      font-weight: 600;
+      color: var(--ink-3);
       font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 6px;
-      text-align: right;
     }
 
-    /* TIMER */
-    .timer-row {
+    /* brain dump */
+    .timer-card {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 14px;
+      gap: 14px;
+      flex-wrap: wrap;
     }
 
     .timer-display {
-      font-size: 22px;
-      font-family: monospace;
-      color: var(--accent);
-      min-width: 60px;
+      font-size: 40px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+      min-width: 120px;
     }
 
-    .timer-btn {
-      padding: 6px 16px;
-      border-radius: 20px;
-      border: 1.5px solid var(--accent);
-      background: none;
-      color: var(--accent);
-      font-size: 13px;
-      cursor: pointer;
-      font-family: 'Georgia', serif;
-      transition: all 0.2s;
-    }
-
-    .timer-btn:hover,
     .timer-btn.running {
-      background: var(--accent);
-      color: var(--on-accent);
+      background: var(--dark);
+      color: var(--on-dark);
     }
 
-    .timer-hint {
-      font-size: 12px;
-      color: var(--text-muted);
+    .prompt-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
-    /* WORRY LIST */
+    .char-count {
+      font-size: 13px;
+      color: var(--ink-3);
+      text-align: right;
+      margin-top: 8px;
+    }
+
+    /* worry */
     .worry-input-row {
       display: flex;
       gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .worry-input {
-      flex: 1;
-      padding: 10px 14px;
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius-sm);
-      font-size: 14px;
-      font-family: 'Georgia', serif;
-      color: var(--text);
-      background: var(--surface);
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .worry-input:focus {
-      border-color: var(--red);
-    }
-
-    .add-btn {
-      padding: 10px 18px;
-      background: var(--accent);
-      color: var(--on-accent);
-      border: none;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-size: 14px;
-      font-family: 'Georgia', serif;
-      transition: opacity 0.2s;
-    }
-
-    .add-btn:hover {
-      opacity: 0.85;
     }
 
     .worry-list {
       list-style: none;
+      margin: 14px 0 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     .worry-item {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       gap: 10px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
-      animation: slideIn 0.2s ease;
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(-6px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .worry-item:last-child {
-      border-bottom: none;
+      padding: 12px 12px 12px 18px;
+      border-radius: var(--r-lg);
+      background: var(--card-2);
+      animation: viewIn var(--t-med) var(--ease);
     }
 
     .worry-text {
       flex: 1;
-      font-size: 14px;
-      line-height: 1.6;
-      color: var(--text);
+      min-width: 0;
+      font-size: 16px;
+      line-height: 1.4;
+      transition: opacity var(--t-med);
     }
 
     .worry-text.parked {
-      text-decoration: line-through;
-      color: var(--text-muted);
+      opacity: .55;
     }
 
     .park-btn {
-      padding: 4px 10px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: none;
-      font-size: 12px;
+      -webkit-appearance: none;
+      appearance: none;
+      border: none;
+      min-height: 36px;
+      padding: 6px 14px;
+      border-radius: var(--pill);
+      background: var(--brand-tint);
+      font-size: 13px;
+      font-weight: 700;
       cursor: pointer;
-      color: var(--text-soft);
       white-space: nowrap;
-      transition: all 0.2s;
-    }
-
-    .park-btn:hover {
-      background: var(--accent-light);
-      color: var(--accent);
-      border-color: var(--accent);
+      transition: background var(--t-fast);
     }
 
     .park-btn.parked {
-      background: var(--accent-light);
-      color: var(--accent);
-      border-color: var(--accent);
+      background: var(--mint);
+      color: #1F1D1B;
     }
 
-    .delete-btn {
-      background: none;
+    .icon-x {
+      -webkit-appearance: none;
+      appearance: none;
       border: none;
-      color: var(--text-muted);
+      background: transparent;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
       cursor: pointer;
-      font-size: 16px;
-      padding: 2px 4px;
-      transition: color 0.2s;
+      color: var(--ink-3);
+      font-size: 18px;
+      display: grid;
+      place-items: center;
     }
 
-    .delete-btn:hover {
-      color: var(--red);
+    .icon-x:hover {
+      background: var(--danger-soft);
+      color: var(--danger);
     }
 
-    /* GRATITUDE */
-    .gratitude-inputs {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+    #worry-empty {
+      text-align: center;
+      padding: 18px 0 6px;
+      color: var(--ink-3);
+      font-size: 15px;
+    }
+
+    /* numbered steps (reframe / gratitude) */
+    .num {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 15px;
+      color: #1F1D1B;
+      flex-shrink: 0;
+    }
+
+    .step-card .row {
+      align-items: flex-start;
+      margin-bottom: 12px;
     }
 
     .g-row {
@@ -565,525 +594,188 @@
       gap: 12px;
     }
 
-    .g-num {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: var(--accent-light);
-      color: var(--accent);
+    .g-row + .g-row {
+      margin-top: 10px;
+    }
+
+    /* evening: done list */
+    .done-list {
+      list-style: none;
+      margin: 0 0 8px;
+      padding: 0;
+    }
+
+    .done-list li {
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      flex-shrink: 0;
-    }
-
-    .g-input {
-      flex: 1;
-      padding: 10px 14px;
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius-sm);
-      font-size: 14px;
-      font-family: 'Georgia', serif;
-      color: var(--text);
-      background: var(--surface);
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .g-input:focus {
-      border-color: var(--warm);
-    }
-
-    /* REFRAME */
-    .reframe-step {
-      margin-bottom: 16px;
-    }
-
-    .reframe-q {
-      font-size: 13px;
-      color: var(--text-soft);
-      margin-bottom: 8px;
-      font-style: italic;
-    }
-
-    /* PROMPTS */
-    .prompt-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-
-    .prompt-chip {
-      padding: 6px 14px;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      background: var(--surface2);
-      font-size: 12px;
-      cursor: pointer;
-      color: var(--text-soft);
-      font-family: 'Georgia', serif;
-      transition: all 0.2s;
-    }
-
-    .prompt-chip:hover {
-      background: var(--accent-light);
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    /* PROGRESS BAR */
-    .progress-bar {
-      height: 4px;
-      background: var(--border);
-      border-radius: 4px;
-      overflow: hidden;
-      margin-top: 8px;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: var(--accent);
-      border-radius: 4px;
-      transition: width 0.3s ease;
-    }
-
-    /* INSIGHT CARD */
-    .insight {
-      background: var(--accent-light);
-      border: 1px solid var(--insight-border);
-      border-radius: var(--radius);
-      padding: 20px 24px;
-      margin-bottom: 20px;
-    }
-
-    .insight p {
-      font-size: 14px;
-      color: var(--insight-text);
-      line-height: 1.7;
-      font-style: italic;
-    }
-
-    .insight-author {
-      font-size: 12px;
-      color: var(--accent);
-      margin-top: 8px;
-    }
-
-    /* SAVE BTN */
-    .save-row {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 24px;
       gap: 10px;
-    }
-
-    .save-btn {
-      padding: 12px 28px;
-      background: var(--accent);
-      color: var(--on-accent);
-      border: none;
-      border-radius: 30px;
-      font-size: 14px;
-      font-family: 'Georgia', serif;
-      cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 2px 8px rgba(107, 143, 113, 0.3);
-    }
-
-    .save-btn:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
-    }
-
-    .save-btn:active {
-      transform: translateY(0);
-    }
-
-    .saved-badge {
-      display: none;
-      font-size: 13px;
-      color: var(--accent);
-      align-items: center;
-      gap: 6px;
-    }
-
-    .saved-badge.show {
-      display: flex;
-    }
-
-    /* HISTORY VIEW */
-    /* HISTORY */
-    .history-entry {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      margin-bottom: 12px;
-      overflow: hidden;
-      transition: box-shadow 0.2s;
-    }
-
-    .history-entry:hover {
-      box-shadow: var(--shadow);
-    }
-
-    .history-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 18px 24px;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .history-header:hover {
-      background: var(--surface2);
-    }
-
-    .history-header-left {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .history-date {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .history-mood {
-      font-size: 14px;
-      color: var(--text-soft);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .history-energy {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .history-chevron {
+      padding: 6px 0;
       font-size: 16px;
-      color: var(--text-muted);
-      transition: transform 0.25s ease;
-      flex-shrink: 0;
     }
 
-    .history-entry.open .history-chevron {
-      transform: rotate(180deg);
-    }
-
-    .history-body {
-      display: none;
-      border-top: 1px solid var(--border);
-      padding: 20px 24px;
-    }
-
-    .history-body-inner {
-      overflow: hidden;
-    }
-
-    .hist-section {
-      margin-bottom: 18px;
-      padding-bottom: 18px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .hist-section:last-child {
-      margin-bottom: 0;
-      padding-bottom: 0;
-      border-bottom: none;
-    }
-
-    .hist-section-label {
-      font-size: 10px;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-    }
-
-    .hist-section-content {
-      font-size: 14px;
-      color: var(--text-soft);
-      line-height: 1.75;
-      white-space: pre-wrap;
-    }
-
-    .hist-mood-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      color: var(--accent);
-      background: var(--accent-light);
-      padding: 4px 12px;
-      border-radius: 20px;
-      margin-bottom: 6px;
-    }
-
-    .hist-worry-item {
-      font-size: 13px;
-      color: var(--text-soft);
-      padding: 4px 0;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .hist-worry-item.parked {
-      color: var(--text-muted);
-      text-decoration: line-through;
-    }
-
-    .hist-worry-item::before {
-      content: '·';
-      color: var(--text-muted);
-    }
-
-    .hist-gratitude-item {
-      font-size: 13px;
-      color: var(--text-soft);
-      padding: 3px 0;
-      display: flex;
-      gap: 8px;
-    }
-
-    .hist-g-num {
-      color: var(--accent);
-      flex-shrink: 0;
-    }
-
-    /* EMPTY STATE */
-    .empty {
-      text-align: center;
-      padding: 60px 24px;
-      color: var(--text-muted);
-    }
-
-    .empty .icon {
-      font-size: 48px;
-      margin-bottom: 16px;
-    }
-
-    .empty p {
-      font-size: 15px;
-      line-height: 1.7;
-    }
-
-    /* COMPLETION RING */
-    .completion-ring {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-top: 16px;
-    }
-
-    .ring-dot {
-      width: 10px;
-      height: 10px;
+    .done-list li::before {
+      content: "";
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
-      background: var(--border);
-      title: attr(data-label);
+      background: var(--mint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%231F1D1B' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center no-repeat;
+      flex-shrink: 0;
     }
 
-    .ring-dot.filled {
-      background: var(--accent);
+    .done-list .sec {
+      font-size: 13px;
+      color: var(--ink-3);
     }
 
-    /* BREATHE */
-    .breathe-container {
+    .done-note {
+      font-size: 15px;
+      color: var(--ink-2);
+      line-height: 1.6;
+    }
+
+    /* breathe */
+    .breathe-stage {
+      position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 30px;
+      text-align: center;
+      padding: 40px 20px 32px;
+      overflow: hidden;
     }
 
-    .breathe-circle {
-      width: 120px;
-      height: 120px;
+    .breathe-halo {
+      position: relative;
+      width: 280px;
+      height: 280px;
+      display: grid;
+      place-items: center;
+    }
+
+    .breathe-halo::before,
+    .breathe-halo::after {
+      content: "";
+      position: absolute;
+      inset: 0;
       border-radius: 50%;
-      background: var(--accent-light);
-      border: 3px solid var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      color: var(--accent);
-      transition: all 4s ease-in-out;
-      margin-bottom: 20px;
+      background: var(--mint);
+      opacity: .18;
+      transform: scale(.7);
+      transition: transform 4s var(--ease-breath), opacity 4s;
     }
 
-    .breathe-circle.expand {
-      width: 180px;
-      height: 180px;
-      background: var(--accent);
-      color: var(--on-accent);
+    .breathe-halo::after {
+      inset: 30px;
+      opacity: .25;
+    }
+
+    .breathe-halo.expand::before {
+      transform: scale(1.08);
+      opacity: .28;
+    }
+
+    .breathe-halo.expand::after {
+      transform: scale(1.02);
+    }
+
+    #breathe-circle {
+      position: relative;
+      z-index: 1;
+      transform: scale(.82);
+      transition: transform 4s var(--ease-breath);
+    }
+
+    #breathe-circle.expand {
+      transform: scale(1.08);
+    }
+
+    #breathe-circle.out {
+      transition-duration: 8s;
     }
 
     .breathe-text {
-      font-size: 18px;
-      color: var(--text-soft);
-      margin-bottom: 8px;
+      margin-top: 18px;
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
     }
 
     .breathe-subtext {
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-
-    .breathe-btn {
-      margin-top: 20px;
-      padding: 10px 24px;
-      background: var(--accent);
-      color: var(--on-accent);
-      border: none;
-      border-radius: 24px;
-      font-size: 14px;
-      font-family: 'Georgia', serif;
-      cursor: pointer;
-      transition: opacity 0.2s;
-    }
-
-    .breathe-btn:hover {
-      opacity: 0.85;
-    }
-
-    /* TOAST */
-    .toast {
-      position: fixed;
-      bottom: 32px;
-      right: 32px;
-      background: var(--text);
-      color: var(--bg);
-      padding: 14px 20px;
-      border-radius: 10px;
-      font-size: 14px;
-      font-family: 'Georgia', serif;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: all 0.3s;
-      pointer-events: none;
-      z-index: 999;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* YOUR NAME + APPRECIATION */
-    .name-btn {
-      font: inherit;
-      color: var(--insight-text);
-      background: none;
-      border: none;
-      padding: 0;
-      cursor: pointer;
-      border-bottom: 1.5px dashed var(--border);
-      transition: border-color 0.2s, color 0.2s;
-    }
-
-    .name-btn:hover,
-    .name-btn:focus-visible {
-      border-bottom-color: var(--accent);
-      color: var(--accent);
-      outline: none;
-    }
-
-    .name-edit {
+      margin-top: 4px;
+      color: var(--ink-2);
       font-size: 15px;
-      color: var(--text-muted);
-      background: none;
-      border: none;
-      cursor: pointer;
-      margin-left: 8px;
-      vertical-align: middle;
-      opacity: 0.6;
-      transition: opacity 0.2s, color 0.2s;
     }
 
-    .name-edit:hover,
-    .name-edit:focus-visible {
-      opacity: 1;
-      color: var(--accent);
-      outline: none;
+    #breathe-btn {
+      margin-top: 22px;
     }
 
-    .appreciation {
-      margin-top: 14px;
-      padding: 12px 16px;
-      background: var(--warm-light);
-      border-left: 3px solid var(--warm);
-      border-radius: var(--radius-sm);
-      color: var(--warm-text);
-      font-size: 14px;
-      line-height: 1.6;
-      font-style: italic;
-    }
-
-    .appreciation:empty {
-      display: none;
-    }
-
-    .toast {
-      max-width: min(380px, calc(100vw - 48px));
-      line-height: 1.5;
-    }
-
-    /* WINS JAR */
+    /* wins */
     .wins-hero {
       text-align: center;
-      background: var(--warm-light);
-      border-color: transparent;
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
     }
 
+    .wins-cluster {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 0;
+      height: 110px;
+    }
+
+    .wins-cluster .orb:nth-child(1) { margin-right: -14px; }
+    .wins-cluster .orb:nth-child(3) { margin-left: -14px; }
+
     .wins-count {
-      font-size: 15px;
-      color: var(--warm-text);
+      font-size: 17px;
       line-height: 1.6;
+      color: var(--brand-ink);
+      max-width: 460px;
+    }
+
+    .wins-count b {
+      color: var(--ink);
     }
 
     .wins-pick {
-      font-size: 19px;
-      line-height: 1.6;
-      color: var(--text);
-      font-style: italic;
-      margin: 18px auto 6px;
+      font-size: 24px;
+      line-height: 1.4;
+      font-weight: 700;
+      letter-spacing: -0.02em;
       max-width: 520px;
+      margin-top: 6px;
     }
 
-    .wins-pick:empty {
+    .wins-pick:empty,
+    .wins-pick-date:empty {
       display: none;
     }
 
     .wins-pick-date {
-      font-size: 12px;
-      color: var(--text-soft);
-      margin-bottom: 14px;
-    }
-
-    .wins-hero .save-btn {
-      margin-top: 14px;
+      font-size: 14px;
+      color: var(--brand-ink);
     }
 
     .wins-list {
       list-style: none;
+      margin: 0;
+      padding: 0;
     }
 
     .wins-list li {
-      padding: 10px 0;
-      border-top: 1px solid var(--border);
-      font-size: 14.5px;
-      line-height: 1.6;
-      color: var(--text);
       display: flex;
-      gap: 12px;
       justify-content: space-between;
       align-items: baseline;
+      gap: 14px;
+      padding: 12px 0;
+      border-top: 1px solid var(--line);
+      font-size: 16px;
+      line-height: 1.5;
     }
 
     .wins-list li:first-child {
@@ -1091,131 +783,169 @@
     }
 
     .wins-list .when {
-      font-size: 11.5px;
-      color: var(--text-muted);
+      font-size: 13px;
+      color: var(--ink-3);
       white-space: nowrap;
     }
 
-    .wins-more {
-      background: none;
-      border: none;
-      color: var(--accent);
-      font: 13px Georgia, serif;
-      cursor: pointer;
-      margin-top: 8px;
-    }
-
     .wins-empty {
-      font-size: 13.5px;
-      color: var(--text-muted);
-      font-style: italic;
+      color: var(--ink-3);
     }
 
-    /* EVENING: what you got done (from the planner) */
-    .done-list {
-      list-style: none;
-      margin-bottom: 10px;
+    .wins-more {
+      margin-top: 6px;
     }
 
-    .done-list li {
-      font-size: 14px;
-      padding: 5px 0;
-      color: var(--text);
+    .card-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 12px;
     }
 
-    .done-list li::before {
-      content: "✓";
-      color: var(--accent);
-      margin-right: 10px;
+    /* history */
+    .history-entry {
+      background: var(--card);
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadow-1);
+      overflow: hidden;
     }
 
-    .done-list .sec {
-      font-size: 11.5px;
-      color: var(--text-muted);
-      margin-left: 6px;
+    .history-entry + .history-entry {
+      margin-top: 10px;
     }
 
-    .done-note {
-      font-size: 13.5px;
-      color: var(--text-soft);
-      line-height: 1.6;
-      font-style: italic;
-    }
-
-    .letter-link {
-      margin-top: 12px;
+    .history-header {
+      -webkit-appearance: none;
+      appearance: none;
+      border: none;
       background: none;
-      border: 1.5px solid var(--border);
-      border-radius: 24px;
-      padding: 8px 16px;
-      font: 13px Georgia, serif;
-      color: var(--text-soft);
+      width: 100%;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
       cursor: pointer;
+      color: var(--ink);
     }
 
-    .letter-link:hover {
-      border-color: var(--accent);
-      color: var(--accent);
+    .history-date {
+      font-weight: 700;
+      font-size: 16px;
     }
 
-    /* RESPONSIVE */
+    .history-mood {
+      font-size: 14px;
+      color: var(--ink-2);
+    }
+
+    .history-chevron {
+      margin-left: auto;
+      width: 10px;
+      height: 10px;
+      border-right: 2.5px solid var(--ink-2);
+      border-bottom: 2.5px solid var(--ink-2);
+      transform: rotate(45deg);
+      transition: transform var(--t-med) var(--ease);
+    }
+
+    .history-entry.open .history-chevron {
+      transform: rotate(-135deg);
+    }
+
+    .history-body {
+      display: none;
+      padding: 0 18px 18px;
+    }
+
+    .history-entry.open .history-body {
+      display: block;
+      animation: viewIn var(--t-med) var(--ease);
+    }
+
+    .hist-section {
+      padding: 12px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .hist-section-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 6px;
+    }
+
+    .hist-section-content {
+      font-size: 15px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    .hist-small-label {
+      font-size: 13px;
+      color: var(--ink-3);
+      margin: 8px 0 2px;
+    }
+
+    .hist-worry-item.parked {
+      opacity: .6;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 36px 20px;
+      color: var(--ink-2);
+    }
+
+    .empty .orb {
+      margin: 0 auto 12px;
+    }
+
     @media (max-width: 600px) {
-      .header {
-        padding: 0 16px;
+      .mood-strip {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        row-gap: 10px;
       }
 
-      .tabs {
-        padding: 0 16px;
-      }
-
-      .main {
-        padding: 24px 16px 80px;
-      }
-
-      .section-title {
-        font-size: 22px;
-      }
-
-      .header {
-        gap: 8px;
-      }
-
-      .logo {
-        font-size: 17px;
-        white-space: nowrap;
-      }
-
-      .date-nav {
+      .mood-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 6px;
       }
 
-      .date-nav button {
-        padding: 3px 8px;
-      }
-
-      #current-date {
-        min-width: 0;
-        font-size: 12.5px;
-        white-space: nowrap;
-      }
-
-      .streak {
+      .mood-btn {
+        padding: 12px 2px 10px;
         font-size: 12px;
-        padding: 4px 10px;
-        white-space: nowrap;
       }
 
-      .toast {
-        right: 16px;
-        left: 16px;
-        bottom: 20px;
-        max-width: none;
+      .worry-input-row {
+        flex-direction: column;
       }
-    }
 
-    @media (max-width: 380px) {
-      .logo span {
-        display: none;
+      .ritual-foot {
+        flex-direction: column-reverse;
+        align-items: stretch;
+      }
+
+      .ritual-foot .btn {
+        width: 100%;
+      }
+
+      .saved-note {
+        text-align: center;
+      }
+
+      .duo {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .timer-display {
+        font-size: 34px;
+        min-width: 100px;
       }
     }
   </style>
@@ -1223,414 +953,338 @@
 
 <body data-mj-page="journal">
 
-  <!-- HEADER -->
-  <header class="header">
-    <div class="logo">mind <span>journal</span></div>
-    <div class="date-nav">
-      <button onclick="changeDay(-1)">‹</button>
-      <div id="current-date"></div>
-      <button onclick="changeDay(1)">›</button>
-    </div>
-    <div class="streak" id="streak-badge">🌱 Day 1</div>
-  </header>
+  <main class="wrap-narrow journal" id="main">
 
-  <!-- TABS -->
-  <nav class="tabs">
-    <button class="tab active" onclick="showTab('checkin')" id="tab-checkin">
-      <span class="dot" id="dot-checkin"></span> Check-in
-    </button>
-    <button class="tab" onclick="showTab('braindump')" id="tab-braindump">
-      <span class="dot" id="dot-braindump"></span> Brain Dump
-    </button>
-    <button class="tab" onclick="showTab('worry')" id="tab-worry">
-      <span class="dot" id="dot-worry"></span> Worry Parking
-    </button>
-    <button class="tab" onclick="showTab('reframe')" id="tab-reframe">
-      <span class="dot" id="dot-reframe"></span> Reframe
-    </button>
-    <button class="tab" onclick="showTab('gratitude')" id="tab-gratitude">
-      <span class="dot" id="dot-gratitude"></span> Gratitude
-    </button>
-    <button class="tab" onclick="showTab('evening')" id="tab-evening">
-      <span class="dot" id="dot-evening"></span> Evening
-    </button>
-    <button class="tab" onclick="showTab('breathe')" id="tab-breathe">
-      ✦ Breathe
-    </button>
-    <button class="tab" onclick="showTab('wins')" id="tab-wins">
-      🫙 Wins Jar
-    </button>
-    <button class="tab" onclick="showTab('history')" id="tab-history">
-      History
-    </button>
-  </nav>
-
-  <!-- MAIN -->
-  <main class="main">
-
-    <!-- CHECK-IN -->
-    <section class="section active" id="section-checkin">
-      <div class="section-header">
-        <h1 class="section-title"><span id="greet-word">Hello</span>, <button type="button" class="name-btn" data-mj-name title="Change your name"><span id="name-text">friend</span></button>.<button type="button" class="name-edit" data-mj-name title="Change your name" aria-label="Change your name">✎</button></h1>
-        <p class="section-desc">Just a quick check before we begin. No judgement — just honest.</p>
-        <p class="appreciation" id="mj-cheer"></p>
-      </div>
-
-      <div class="insight">
-        <p id="daily-quote">"You don't have to control your thoughts. You just have to stop letting them control you."
-        </p>
-        <div class="insight-author">— Dan Millman</div>
-      </div>
-
-      <div class="card">
-        <div class="card-label"><span class="icon">🌡</span> How are you feeling right now?</div>
-        <div class="mood-grid">
-          <button class="mood-btn" data-mood="heavy" onclick="selectMood(this, 'heavy')">😔 Heavy</button>
-          <button class="mood-btn" data-mood="anxious" onclick="selectMood(this, 'anxious')">😰 Anxious</button>
-          <button class="mood-btn" data-mood="flat" onclick="selectMood(this, 'flat')">😶 Flat</button>
-          <button class="mood-btn" data-mood="restless" onclick="selectMood(this, 'restless')">😤 Restless</button>
-          <button class="mood-btn" data-mood="okay" onclick="selectMood(this, 'okay')">🙂 Okay</button>
-          <button class="mood-btn" data-mood="calm" onclick="selectMood(this, 'calm')">😌 Calm</button>
-          <button class="mood-btn" data-mood="good" onclick="selectMood(this, 'good')">😊 Good</button>
-          <button class="mood-btn" data-mood="light" onclick="selectMood(this, 'light')">✨ Light</button>
+    <!-- ═════════ TODAY ═════════ -->
+    <section class="view" id="view-today" aria-labelledby="hub-title">
+      <div class="day-bar">
+        <div class="date-pill">
+          <button type="button" onclick="changeDay(-1)" aria-label="Previous day">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+          </button>
+          <span id="current-date"></span>
+          <button type="button" id="next-day" onclick="changeDay(1)" aria-label="Next day">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
         </div>
+        <span class="pill" id="streak-badge"></span>
+      </div>
 
-        <div class="energy-row">
-          <div class="energy-label">Energy</div>
-          <input type="range" id="energy-slider" min="1" max="10" value="5" oninput="updateEnergy(this.value)">
-          <div class="energy-val" id="energy-val">5</div>
+      <p class="hello-greet rise" style="--i:0"><span id="greet-word">Hello</span>,</p>
+      <h1 class="t-h1 rise" id="hub-title" style="--i:1"><button type="button" class="name-btn" data-mj-name title="Change your name"><span id="name-text">friend</span></button></h1>
+      <p class="cheer rise" id="mj-cheer" style="--i:2"></p>
+
+      <div class="card mood-card rise" style="--i:3">
+        <div class="mood-head">
+          <span id="hub-orb"></span>
+          <div>
+            <div class="t-h3" id="mood-q">How are you, really?</div>
+            <div class="t-small" id="mood-sub">No judgement. Just notice.</div>
+          </div>
         </div>
+        <div class="mood-strip" id="mood-strip"></div>
+        <div class="checked-in" id="checked-in" hidden></div>
       </div>
 
-      <div class="card">
-        <div class="card-label"><span class="icon">💭</span> One sentence — what's sitting heaviest right now?</div>
-        <input type="text" class="worry-input" id="heaviest-thought" placeholder="Just one thing on top of your mind..."
-          style="width:100%">
-        <div style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">You'll address this in the journal —
-          for now, just name it.</div>
+      <div class="section-row rise" style="--i:4">
+        <h2 class="t-h2">Today's rituals</h2>
+        <span class="t-small" id="ritual-progress"></span>
+      </div>
+      <div class="ritual-list" id="rituals"></div>
+
+      <div class="duo">
+        <a class="card card-lift" href="#breathe" id="hub-breathe">
+          <span id="breathe-mini"></span>
+          <span class="card-title">Breathe</span>
+          <span class="t-small">One slow round of 4-7-8 · 2 min</span>
+        </a>
+        <a class="card card-lift card-soft" href="#wins" id="hub-wins">
+          <span id="wins-mini"></span>
+          <span class="card-title">Wins Jar</span>
+          <span class="t-small" id="wins-mini-count">Your good things, saved</span>
+        </a>
       </div>
 
-      <div class="save-row">
-        <div class="saved-badge" id="save-badge-checkin">✓ Saved</div>
-        <button class="save-btn" onclick="saveSection('checkin')">Save & Continue →</button>
+      <div class="card card-sunny quote-card">
+        <p id="daily-quote"></p>
+        <div class="insight-author"></div>
+      </div>
+
+      <div class="hub-links">
+        <a class="btn btn-quiet btn-sm" href="#history">Your journal history</a>
+        <button type="button" class="btn btn-quiet btn-sm" data-mj-letter>This week's letter</button>
       </div>
     </section>
 
-    <!-- BRAIN DUMP -->
-    <section class="section" id="section-braindump">
-      <div class="section-header">
-        <h1 class="section-title">Brain Dump</h1>
-        <p class="section-desc">Get everything out of your head and onto the page. No grammar. No structure. No
-          judgement. Just write whatever is there — even if it's "I don't know what to write."</p>
+    <!-- ═════════ CHECK-IN ═════════ -->
+    <section class="view ritual" id="view-checkin" data-ritual="checkin">
+      <div class="ritual-top"><a class="btn btn-quiet btn-sm" href="#today">← Today</a><span class="pill pill-soft">2 min</span></div>
+      <div class="ritual-head">
+        <span data-orb="checkin"></span>
+        <div class="steps" data-steps></div>
+        <h1 class="t-h1">Check-in</h1>
+        <p class="t-lead">Just a quick look inwards before the day carries you off. No right answers.</p>
       </div>
+      <div class="ritual-body">
+        <div class="card">
+          <div class="card-label">How are you feeling right now?</div>
+          <div class="mood-grid" id="mood-grid"></div>
+        </div>
+        <div class="card">
+          <label class="card-label" for="energy-slider">Energy</label>
+          <div class="energy">
+            <input type="range" class="range" id="energy-slider" min="1" max="10" value="5" oninput="updateEnergy(this.value)">
+            <div class="energy-val"><span id="energy-val">5</span>/10<small id="energy-word">Steady</small></div>
+          </div>
+        </div>
+        <div class="card">
+          <label class="card-label" for="heaviest-thought">What's sitting heaviest right now?</label>
+          <input type="text" class="input" id="heaviest-thought" placeholder="Just name it — one sentence is enough">
+          <p class="hint" style="margin-top:10px">You don't have to fix it. Naming it is the first step.</p>
+        </div>
+      </div>
+      <div class="ritual-foot">
+        <span class="saved-note" id="save-badge-checkin">Saved</span>
+        <button type="button" class="btn btn-primary btn-lg" onclick="saveSection('checkin')">Save check-in</button>
+      </div>
+      <div class="card card-soft done-panel" id="done-checkin" hidden></div>
+    </section>
 
-      <div class="card">
-        <div class="card-label"><span class="icon">⏱</span> Timed writing — 10 minutes</div>
-        <div class="timer-row">
+    <!-- ═════════ BRAIN DUMP ═════════ -->
+    <section class="view ritual" id="view-braindump" data-ritual="braindump">
+      <div class="ritual-top"><a class="btn btn-quiet btn-sm" href="#today">← Today</a><span class="pill pill-soft">10 min</span></div>
+      <div class="ritual-head">
+        <span data-orb="braindump"></span>
+        <div class="steps" data-steps></div>
+        <h1 class="t-h1">Brain dump</h1>
+        <p class="t-lead">Everything in your head, onto the page. No grammar, no structure, no judgement — even "I don't know what to write" counts.</p>
+      </div>
+      <div class="ritual-body">
+        <div class="card timer-card">
           <div class="timer-display" id="dump-timer">10:00</div>
-          <button class="timer-btn" id="dump-timer-btn" onclick="toggleTimer('dump')">Start</button>
-          <button class="timer-btn" onclick="resetTimer('dump')"
-            style="border-color: var(--border); color: var(--text-soft);">Reset</button>
-          <div class="timer-hint">Write until the timer ends. Don't stop.</div>
+          <button type="button" class="btn btn-soft timer-btn" id="dump-timer-btn" onclick="toggleTimer('dump')">Start timer</button>
+          <button type="button" class="btn btn-quiet" onclick="resetTimer('dump')">Reset</button>
         </div>
+        <div class="prompt-chips" aria-label="Writing prompts">
+          <button type="button" class="chip" onclick="addPrompt('braindump', this.innerText)">Right now I'm thinking about…</button>
+          <button type="button" class="chip" onclick="addPrompt('braindump', this.innerText)">What's bothering me is…</button>
+          <button type="button" class="chip" onclick="addPrompt('braindump', this.innerText)">I keep coming back to…</button>
+          <button type="button" class="chip" onclick="addPrompt('braindump', this.innerText)">My body feels…</button>
+          <button type="button" class="chip" onclick="addPrompt('braindump', this.innerText)">I wish I could stop thinking about…</button>
+        </div>
+        <div>
+          <label for="braindump-text" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Brain dump</label>
+          <textarea class="textarea textarea-page" id="braindump-text" placeholder="Start anywhere. Let it spill…" oninput="countChars('braindump')"></textarea>
+          <div class="char-count" id="braindump-count">0 words</div>
+        </div>
+        <details class="disclose">
+          <summary>Why this works</summary>
+          <p>James Pennebaker's research found that 15 minutes of free emotional writing reduced anxiety, lowered stress hormones and improved working memory. When thoughts stay in your head, they loop. Writing them down tells your brain: "stored — you can let go now."</p>
+        </details>
+      </div>
+      <div class="ritual-foot">
+        <span class="saved-note" id="save-badge-braindump">Saved</span>
+        <button type="button" class="btn btn-primary btn-lg" onclick="saveSection('braindump')">I'm done for now</button>
+      </div>
+      <div class="card card-soft done-panel" id="done-braindump" hidden></div>
+    </section>
 
-        <div class="prompt-chips">
-          <div style="font-size: 12px; color: var(--text-muted); margin-right: 4px; align-self: center;">Stuck? Try:
+    <!-- ═════════ WORRY PARKING ═════════ -->
+    <section class="view ritual" id="view-worry" data-ritual="worry">
+      <div class="ritual-top"><a class="btn btn-quiet btn-sm" href="#today">← Today</a><span class="pill pill-soft">3 min</span></div>
+      <div class="ritual-head">
+        <span data-orb="worry"></span>
+        <div class="steps" data-steps></div>
+        <h1 class="t-h1">Worry parking</h1>
+        <p class="t-lead">Write each worry down, then park it. You're telling your brain: "I see you. I'll deal with you later."</p>
+      </div>
+      <div class="ritual-body">
+        <div class="card">
+          <div class="worry-input-row">
+            <label for="worry-input" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">A worry</label>
+            <input type="text" class="input input-pill" id="worry-input" placeholder="What's worrying you?" onkeydown="if(event.key==='Enter') addWorry()">
+            <button type="button" class="btn btn-primary" onclick="addWorry()">Add</button>
           </div>
-          <span class="prompt-chip" onclick="addPrompt('braindump', this.innerText)">Right now I'm thinking
-            about...</span>
-          <span class="prompt-chip" onclick="addPrompt('braindump', this.innerText)">What's bothering me is...</span>
-          <span class="prompt-chip" onclick="addPrompt('braindump', this.innerText)">I keep coming back to...</span>
-          <span class="prompt-chip" onclick="addPrompt('braindump', this.innerText)">My body feels...</span>
-          <span class="prompt-chip" onclick="addPrompt('braindump', this.innerText)">I wish I could stop thinking
-            about...</span>
+          <ul class="worry-list" id="worry-list"></ul>
+          <div id="worry-empty">Nothing parked yet. Add the first one above.</div>
         </div>
-
-        <textarea class="journal-area" id="braindump-text"
-          placeholder="Start writing. Anything. Everything. Just let it flow..." style="min-height: 280px;"
-          oninput="countChars('braindump')"></textarea>
-        <div class="char-count" id="braindump-count">0 words</div>
-      </div>
-
-      <div class="card" style="background: var(--surface2); border-style: dashed;">
-        <div style="font-size: 13px; color: var(--text-soft); line-height: 1.7;">
-          <strong style="color: var(--text);">Why this works:</strong> Research by James Pennebaker (Harvard, 1997)
-          found that 15 minutes of free emotional writing reduced anxiety, lowered stress hormones, and improved working
-          memory. When thoughts stay in your head, they loop. Writing them down tells your brain: "stored — you can let
-          go now."
+        <div class="card">
+          <label class="card-label" for="worry-time">Your worry window</label>
+          <p class="hint" style="margin-bottom:12px">Pick 15 minutes later today to actually think about these. Until then, when one pops up, say: <em>"You're parked. I'll see you at my worry time."</em></p>
+          <input type="time" class="input" id="worry-time" style="max-width:200px">
         </div>
       </div>
-
-      <div class="save-row">
-        <div class="saved-badge" id="save-badge-braindump">✓ Saved</div>
-        <button class="save-btn" onclick="saveSection('braindump')">Save & Continue →</button>
+      <div class="ritual-foot">
+        <span class="saved-note" id="save-badge-worry">Saved</span>
+        <button type="button" class="btn btn-primary btn-lg" onclick="saveSection('worry')">Park them all</button>
       </div>
+      <div class="card card-soft done-panel" id="done-worry" hidden></div>
     </section>
 
-    <!-- WORRY PARKING -->
-    <section class="section" id="section-worry">
-      <div class="section-header">
-        <h1 class="section-title">Worry Parking Lot</h1>
-        <p class="section-desc">Write every worry down, then "park" it. You're telling your brain: "I see you. I'll deal
-          with you later." This stops the loop.</p>
+    <!-- ═════════ REFRAME ═════════ -->
+    <section class="view ritual" id="view-reframe" data-ritual="reframe">
+      <div class="ritual-top"><a class="btn btn-quiet btn-sm" href="#today">← Today</a><span class="pill pill-soft">5 min</span></div>
+      <div class="ritual-head">
+        <span data-orb="reframe"></span>
+        <div class="steps" data-steps></div>
+        <h1 class="t-h1">Thought reframe</h1>
+        <p class="t-lead">Take one heavy thought for a gentle walk. Not forced positivity — just a truer version.</p>
       </div>
-
-      <div class="card">
-        <div class="card-label"><span class="icon">🅿</span> Add a worry</div>
-        <div class="worry-input-row">
-          <input type="text" class="worry-input" id="worry-input" placeholder="What's worrying you?"
-            onkeydown="if(event.key==='Enter') addWorry()">
-          <button class="add-btn" onclick="addWorry()">Park it</button>
+      <div class="ritual-body">
+        <div class="card step-card">
+          <div class="row"><span class="num" style="background:var(--sky)">1</span><div><label class="card-label" for="reframe-1" style="margin:0">The thought, as it is</label><p class="hint">Write it exactly as it sounds in your head.</p></div></div>
+          <textarea class="textarea" id="reframe-1" placeholder="e.g. I can't do anything right, something is wrong with me…"></textarea>
         </div>
-        <ul class="worry-list" id="worry-list">
-          <!-- worries added here -->
-        </ul>
-        <div id="worry-empty"
-          style="font-size: 14px; color: var(--text-muted); text-align: center; padding: 20px; display: none;">
-          No worries parked yet. Add one above.
+        <div class="card step-card">
+          <div class="row"><span class="num" style="background:var(--lavender)">2</span><div><label class="card-label" for="reframe-2" style="margin:0">Fact or feeling?</label><p class="hint">A fact can be checked. A feeling is real, but not always accurate.</p></div></div>
+          <textarea class="textarea" id="reframe-2" placeholder="e.g. It's a feeling. I've had clear days before — this is a hard stretch, not forever."></textarea>
+        </div>
+        <div class="card step-card">
+          <div class="row"><span class="num" style="background:var(--mint)">3</span><div><label class="card-label" for="reframe-3" style="margin:0">What would you tell a friend?</label><p class="hint">If someone you love had this thought, what would you say?</p></div></div>
+          <textarea class="textarea" id="reframe-3" placeholder="e.g. Feeling stuck doesn't mean you're broken. You need rest, not pressure."></textarea>
+        </div>
+        <div class="card step-card">
+          <div class="row"><span class="num" style="background:var(--yolk)">4</span><div><label class="card-label" for="reframe-4" style="margin:0">A kinder, truer thought</label><p class="hint">Balanced and honest — something you can actually believe.</p></div></div>
+          <textarea class="textarea" id="reframe-4" placeholder="e.g. I'm going through a hard period. It's real, it's temporary, and I'm looking after myself."></textarea>
         </div>
       </div>
-
-      <div class="card">
-        <div class="card-label"><span class="icon">🗓</span> Scheduled worry time</div>
-        <div style="font-size: 13px; color: var(--text-soft); line-height: 1.7; margin-bottom: 12px;">
-          Pick a 15-minute window today to actually think about these worries. Outside of that time, when a worry shows
-          up, say: <em>"I've parked you. I'll think about you at [time]."</em> Then redirect.
-        </div>
-        <input type="time" id="worry-time"
-          style="padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; font-family: Georgia; color: var(--text); background: var(--surface);">
-        <span style="font-size: 13px; color: var(--text-soft); margin-left: 10px;">— my worry window today</span>
+      <div class="ritual-foot">
+        <span class="saved-note" id="save-badge-reframe">Saved</span>
+        <button type="button" class="btn btn-primary btn-lg" onclick="saveSection('reframe')">Save reframe</button>
       </div>
-
-      <div class="save-row">
-        <div class="saved-badge" id="save-badge-worry">✓ Saved</div>
-        <button class="save-btn" onclick="saveSection('worry')">Save & Continue →</button>
-      </div>
+      <div class="card card-soft done-panel" id="done-reframe" hidden></div>
     </section>
 
-    <!-- REFRAME -->
-    <section class="section" id="section-reframe">
-      <div class="section-header">
-        <h1 class="section-title">Thought Reframe</h1>
-        <p class="section-desc">Take one heavy thought and walk it through this process. You're not trying to think
-          positive — you're trying to think accurately.</p>
+    <!-- ═════════ GRATITUDE ═════════ -->
+    <section class="view ritual" id="view-gratitude" data-ritual="gratitude">
+      <div class="ritual-top"><a class="btn btn-quiet btn-sm" href="#today">← Today</a><span class="pill pill-soft">2 min</span></div>
+      <div class="ritual-head">
+        <span data-orb="gratitude"></span>
+        <div class="steps" data-steps></div>
+        <h1 class="t-h1">Gratitude &amp; wins</h1>
+        <p class="t-lead">A worried mind looks for what's wrong. This trains it to notice what's okay — tiny things count most.</p>
       </div>
-
-      <div class="card">
-        <div class="reframe-step">
-          <div class="card-label"><span class="icon">1.</span> The thought as it is</div>
-          <div class="reframe-q">Write it exactly as it appears in your head, unfiltered.</div>
-          <textarea class="journal-area" id="reframe-1"
-            placeholder="e.g. My mind is blank, I can't do anything, something is wrong with me..."
-            style="min-height: 80px;"></textarea>
+      <div class="ritual-body">
+        <div class="card">
+          <div class="card-label">Three good things today</div>
+          <p class="hint" style="margin:-4px 0 14px">A good cup of chai, a message from a friend, waking up.</p>
+          <div class="g-row"><span class="num" style="background:var(--yolk)">1</span><input type="text" class="input" id="gratitude-1" placeholder="Something good, however small" aria-label="Good thing one"></div>
+          <div class="g-row"><span class="num" style="background:var(--yolk)">2</span><input type="text" class="input" id="gratitude-2" placeholder="Another one" aria-label="Good thing two"></div>
+          <div class="g-row"><span class="num" style="background:var(--yolk)">3</span><input type="text" class="input" id="gratitude-3" placeholder="And one more" aria-label="Good thing three"></div>
+        </div>
+        <div class="card">
+          <label class="card-label" for="win-today">One thing you did okay</label>
+          <p class="hint" style="margin:-4px 0 14px">Not a big achievement — just something you showed up for.</p>
+          <input type="text" class="input" id="win-today" placeholder="I showed up for…">
+        </div>
+        <div class="card">
+          <label class="card-label" for="self-kind">One kind thing to say to yourself</label>
+          <p class="hint" style="margin:-4px 0 14px">Talk to yourself like you'd talk to someone you care about.</p>
+          <input type="text" class="input" id="self-kind" placeholder="e.g. I'm trying, and that matters.">
         </div>
       </div>
-
-      <div class="card">
-        <div class="reframe-step">
-          <div class="card-label"><span class="icon">2.</span> Is this fact or feeling?</div>
-          <div class="reframe-q">A fact can be verified. A feeling is real but not always accurate. Which is this?</div>
-          <textarea class="journal-area" id="reframe-2"
-            placeholder="e.g. It's a feeling. I have had moments where I could think clearly. This is a temporary state, not a permanent one."
-            style="min-height: 80px;"></textarea>
-        </div>
+      <div class="ritual-foot">
+        <span class="saved-note" id="save-badge-gratitude">Saved</span>
+        <button type="button" class="btn btn-primary btn-lg" onclick="saveSection('gratitude')">Add to my Wins Jar</button>
       </div>
-
-      <div class="card">
-        <div class="reframe-step">
-          <div class="card-label"><span class="icon">3.</span> What would I tell a friend?</div>
-          <div class="reframe-q">If your best friend had this exact thought, what would you tell them?</div>
-          <textarea class="journal-area" id="reframe-3"
-            placeholder="e.g. I'd tell them that feeling stuck doesn't mean being broken. It means your mind needs rest, not pressure."
-            style="min-height: 80px;"></textarea>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="reframe-step">
-          <div class="card-label"><span class="icon">4.</span> A more accurate thought</div>
-          <div class="reframe-q">Write a version of this thought that is more balanced and truthful (not forced
-            positivity).</div>
-          <textarea class="journal-area" id="reframe-4"
-            placeholder="e.g. I'm going through a hard period mentally. This is real, but it is not permanent and I am taking steps to understand it."
-            style="min-height: 80px;"></textarea>
-        </div>
-      </div>
-
-      <div class="save-row">
-        <div class="saved-badge" id="save-badge-reframe">✓ Saved</div>
-        <button class="save-btn" onclick="saveSection('reframe')">Save & Continue →</button>
-      </div>
+      <div class="card card-soft done-panel" id="done-gratitude" hidden></div>
     </section>
 
-    <!-- GRATITUDE -->
-    <section class="section" id="section-gratitude">
-      <div class="section-header">
-        <h1 class="section-title">Small Wins & Gratitude</h1>
-        <p class="section-desc">Anxiety focuses on what's wrong. This section trains your brain to also see what's okay
-          — even tiny things count.</p>
+    <!-- ═════════ EVENING ═════════ -->
+    <section class="view ritual" id="view-evening" data-ritual="evening">
+      <div class="ritual-top"><a class="btn btn-quiet btn-sm" href="#today">← Today</a><span class="pill pill-soft">5 min</span></div>
+      <div class="ritual-head">
+        <span data-orb="evening"></span>
+        <div class="steps" data-steps></div>
+        <h1 class="t-h1">Evening wind-down</h1>
+        <p class="t-lead">Close the day's open tabs. Let go of what happened, and set one light intention for tomorrow.</p>
       </div>
-
-      <div class="card">
-        <div class="card-label"><span class="icon">🌿</span> 3 things I'm grateful for today</div>
-        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">Can be tiny — a good cup of chai,
-          waking up, a message from a friend.</div>
-        <div class="gratitude-inputs">
-          <div class="g-row">
-            <div class="g-num">1</div>
-            <input type="text" class="g-input" id="gratitude-1" placeholder="Something good, however small...">
-          </div>
-          <div class="g-row">
-            <div class="g-num">2</div>
-            <input type="text" class="g-input" id="gratitude-2" placeholder="Another one...">
-          </div>
-          <div class="g-row">
-            <div class="g-num">3</div>
-            <input type="text" class="g-input" id="gratitude-3" placeholder="And one more...">
-          </div>
+      <div class="ritual-body">
+        <div class="card card-soft" id="evening-done-card" style="display:none;">
+          <div class="card-label" id="evening-done-label">What you got done today</div>
+          <div id="evening-done"></div>
+        </div>
+        <div class="card">
+          <label class="card-label" for="evening-day">How did the day feel?</label>
+          <textarea class="textarea" id="evening-day" placeholder="A few honest sentences. No pressure to make it sound okay if it wasn't."></textarea>
+        </div>
+        <div class="card">
+          <label class="card-label" for="evening-release">What are you letting go of?</label>
+          <textarea class="textarea" id="evening-release" placeholder="e.g. I'm letting go of this morning's worry. It's done now." style="min-height:110px"></textarea>
+        </div>
+        <div class="card">
+          <label class="card-label" for="tomorrow-intention">One gentle intention for tomorrow</label>
+          <input type="text" class="input" id="tomorrow-intention" placeholder="e.g. Be a little kinder to myself.">
         </div>
       </div>
-
-      <div class="card">
-        <div class="card-label"><span class="icon">⭐</span> One thing I did okay today</div>
-        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">Not a big achievement. Just
-          something you showed up for.</div>
-        <input type="text" class="g-input" id="win-today" placeholder="I showed up for..." style="width: 100%;">
+      <div class="ritual-foot">
+        <span class="saved-note" id="save-badge-evening">Saved</span>
+        <button type="button" class="btn btn-primary btn-lg" onclick="saveSection('evening')">Close the day</button>
       </div>
-
-      <div class="card">
-        <div class="card-label"><span class="icon">💌</span> One kind thing to say to yourself today</div>
-        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">Talk to yourself like you'd talk to
-          someone you care about.</div>
-        <input type="text" class="g-input" id="self-kind" placeholder="e.g. I'm trying, and that matters."
-          style="width: 100%;">
-      </div>
-
-      <div class="save-row">
-        <div class="saved-badge" id="save-badge-gratitude">✓ Saved</div>
-        <button class="save-btn" onclick="saveSection('gratitude')">Save & Continue →</button>
-      </div>
+      <div class="card card-soft done-panel" id="done-evening" hidden></div>
     </section>
 
-    <!-- EVENING -->
-    <section class="section" id="section-evening">
-      <div class="section-header">
-        <h1 class="section-title">Evening Wind-down</h1>
-        <p class="section-desc">Close the day. Release what happened. Set a light intention for tomorrow — nothing
-          heavy.</p>
+    <!-- ═════════ BREATHE ═════════ -->
+    <section class="view" id="view-breathe">
+      <div class="ritual-top"><a class="btn btn-quiet btn-sm" href="#today">← Today</a><span class="pill pill-soft">2 min</span></div>
+      <div class="ritual-head">
+        <h1 class="t-h1">Breathe</h1>
+        <p class="t-lead">Four slow rounds of 4-7-8. The long breath out tells your body it's safe to rest.</p>
       </div>
-
-      <div class="card" id="evening-done-card" style="display:none;">
-        <div class="card-label"><span class="icon">✅</span> <span id="evening-done-label">What you got done today</span></div>
-        <div id="evening-done"></div>
-      </div>
-
-      <div class="card">
-        <div class="card-label"><span class="icon">🌙</span> How did the day feel?</div>
-        <textarea class="journal-area" id="evening-day"
-          placeholder="A few honest sentences. What happened? How did you feel through it? No pressure to make it sound okay if it wasn't."
-          style="min-height: 120px;"></textarea>
-      </div>
-
-      <div class="card">
-        <div class="card-label"><span class="icon">📤</span> What am I releasing from today?</div>
-        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Write what you don't want to carry
-          into sleep. Then let it go.</div>
-        <textarea class="journal-area" id="evening-release"
-          placeholder="e.g. I'm releasing the anxiety I felt this morning. I'm releasing the pressure I put on myself. It's done now."
-          style="min-height: 100px;"></textarea>
-      </div>
-
-      <div class="card">
-        <div class="card-label"><span class="icon">☀️</span> One gentle intention for tomorrow</div>
-        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Not a to-do list. Just one thing
-          you'd like to feel or do.</div>
-        <input type="text" class="g-input" id="tomorrow-intention"
-          placeholder="e.g. I want to be a little kinder to myself." style="width: 100%;">
-      </div>
-
-      <div class="save-row">
-        <div class="saved-badge" id="save-badge-evening">✓ Saved</div>
-        <button class="save-btn" onclick="saveSection('evening')">Save ✓</button>
-      </div>
-    </section>
-
-    <!-- BREATHE -->
-    <section class="section" id="section-breathe">
-      <div class="section-header">
-        <h1 class="section-title">Breathe</h1>
-        <p class="section-desc">A 4-7-8 breathing exercise. One round takes under a minute. Activates your body's calm
-          response.</p>
-      </div>
-
-      <div class="card">
-        <div class="breathe-container">
-          <div class="breathe-circle" id="breathe-circle">Breathe</div>
-          <div class="breathe-text" id="breathe-text">Ready when you are</div>
-          <div class="breathe-subtext" id="breathe-subtext">4 counts in · 7 hold · 8 out</div>
-          <button class="breathe-btn" id="breathe-btn" onclick="startBreathe()">Begin</button>
+      <div class="card breathe-stage">
+        <div class="breathe-halo" id="breathe-halo">
+          <div id="breathe-circle"></div>
         </div>
+        <div class="breathe-text" id="breathe-text" aria-live="polite">Ready when you are</div>
+        <div class="breathe-subtext" id="breathe-subtext">4 in · 7 hold · 8 out</div>
+        <button type="button" class="btn btn-primary btn-lg" id="breathe-btn" onclick="startBreathe()">Begin</button>
       </div>
-
-      <div class="card" style="background: var(--surface2); border-style: dashed;">
-        <div style="font-size: 13px; color: var(--text-soft); line-height: 1.7;">
-          <strong style="color: var(--text);">Why 4-7-8:</strong> The extended exhale (8 counts) activates the
-          parasympathetic nervous system — your body's "rest and digest" mode. Even one round shifts your nervous system
-          out of alert mode. Dr. Andrew Weil calls it "a natural tranquillizer."
-        </div>
-      </div>
+      <details class="disclose" style="margin-top:16px">
+        <summary>Why 4-7-8 works</summary>
+        <p>The long exhale switches on your parasympathetic nervous system — the body's "rest and digest" mode. Even one round can shift you out of alert mode.</p>
+      </details>
     </section>
 
-    <!-- WINS JAR -->
-    <section class="section" id="section-wins">
-      <div class="section-header">
-        <h1 class="section-title">Wins Jar</h1>
-        <p class="section-desc">Every small win, kind word and good thing you've written — collected in one place. Open
-          it on the hard days.</p>
+    <!-- ═════════ WINS JAR ═════════ -->
+    <section class="view" id="view-wins">
+      <div class="ritual-head">
+        <h1 class="t-h1">Wins Jar</h1>
+        <p class="t-lead">Every small win, kind word and good thing you've written — kept safe for the hard days.</p>
       </div>
-
-      <div class="card wins-hero">
+      <div class="card card-sunny wins-hero">
+        <div class="wins-cluster" id="wins-cluster"></div>
         <div class="wins-count" id="wins-count"></div>
         <div class="wins-pick" id="wins-pick"></div>
         <div class="wins-pick-date" id="wins-pick-date"></div>
-        <button class="save-btn" id="wins-pick-btn" onclick="pickWin()">Pick one for me 🫙</button>
+        <button type="button" class="btn btn-dark btn-lg" id="wins-pick-btn" onclick="pickWin()">Pick one for me</button>
       </div>
-
-      <div class="card">
-        <div class="card-label"><span class="icon">⭐</span> Things I did okay</div>
+      <div class="card" style="margin-top:16px">
+        <div class="card-label">Things I did okay</div>
         <ul class="wins-list" id="wins-list-win"></ul>
       </div>
-
-      <div class="card">
-        <div class="card-label"><span class="icon">💌</span> Kind things I told myself</div>
+      <div class="card" style="margin-top:12px">
+        <div class="card-label">Kind things I told myself</div>
         <ul class="wins-list" id="wins-list-kind"></ul>
       </div>
-
-      <div class="card">
-        <div class="card-label"><span class="icon">🌿</span> Things I was grateful for</div>
+      <div class="card" style="margin-top:12px">
+        <div class="card-label">Good things I noticed</div>
         <ul class="wins-list" id="wins-list-grat"></ul>
       </div>
     </section>
 
-    <!-- HISTORY -->
-    <section class="section" id="section-history">
-      <div class="section-header">
-        <h1 class="section-title">Your Journal History</h1>
-        <p class="section-desc">Past entries. Tap any to review.</p>
-        <button type="button" class="letter-link" data-mj-letter>💌 Read this week's letter</button>
+    <!-- ═════════ HISTORY ═════════ -->
+    <section class="view" id="view-history">
+      <div class="ritual-top"><a class="btn btn-quiet btn-sm" href="#today">← Today</a><button type="button" class="btn btn-soft btn-sm" data-mj-letter>This week's letter</button></div>
+      <div class="ritual-head">
+        <h1 class="t-h1">Your journal</h1>
+        <p class="t-lead">Past entries, newest first. Tap a day to read it.</p>
       </div>
-      <div id="history-list">
-        <div class="empty">
-          <div class="icon">📖</div>
-          <p>No entries yet.<br>Complete your first journal session to start tracking.</p>
-        </div>
-      </div>
+      <div id="history-list"></div>
     </section>
 
   </main>
 
-  <!-- TOAST -->
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
     // ─── STATE ───────────────────────────────────────────────────────
@@ -1648,9 +1302,24 @@
       { text: "Not everything that is faced can be changed. But nothing can be changed until it is faced.", author: "James Baldwin" },
     ];
 
+    const RITUALS = [
+      { id: 'checkin', title: 'Check-in', mins: 2, color: 'var(--yolk)', face: 'smile', todo: 'Name how you feel' },
+      { id: 'braindump', title: 'Brain dump', mins: 10, color: 'var(--sky)', face: 'o', todo: 'Empty your head onto the page' },
+      { id: 'worry', title: 'Worry parking', mins: 3, color: 'var(--coral)', face: 'worried', todo: 'Park worries for later' },
+      { id: 'reframe', title: 'Thought reframe', mins: 5, color: 'var(--lavender)', face: 'flat', todo: 'Untangle one heavy thought' },
+      { id: 'gratitude', title: 'Gratitude & wins', mins: 2, color: 'var(--brand)', face: 'happy', todo: 'Notice three good things' },
+      { id: 'evening', title: 'Evening wind-down', mins: 5, color: 'var(--mint)', face: 'sleepy', todo: 'Close the day gently' },
+    ];
+    const RITUAL_IDS = RITUALS.map(r => r.id);
+    const VIEWS = ['today', ...RITUAL_IDS, 'breathe', 'wins', 'history'];
+
     let worries = [];
     let timers = {};
-    let breatheInterval = null;
+    let pendingMood = null;
+    let currentView = 'today';
+
+    const CHECK_SVG = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>';
+    const PLAY_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg>';
 
     // ─── DATE ────────────────────────────────────────────────────────
     function formatDate(d) {
@@ -1662,10 +1331,16 @@
       return MJ.localISO(d);
     }
 
-    function updateDateDisplay() {
+    function isToday() {
       const today = new Date(); today.setHours(0, 0, 0, 0);
-      const isToday = currentDate.getTime() === today.getTime();
-      document.getElementById('current-date').textContent = isToday ? 'Today, ' + currentDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'long' }) : formatDate(currentDate);
+      return currentDate.getTime() === today.getTime();
+    }
+
+    function updateDateDisplay() {
+      document.getElementById('current-date').textContent = isToday()
+        ? 'Today, ' + currentDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })
+        : currentDate.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+      document.getElementById('next-day').disabled = isToday();
       loadDayData();
     }
 
@@ -1692,34 +1367,79 @@
       return raw ? JSON.parse(raw) : null;
     }
 
-    // ─── TABS ─────────────────────────────────────────────────────────
+    // ─── VIEWS (hash routing: #today, #checkin, #wins …) ─────────────
     function showTab(name) {
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.getElementById('section-' + name).classList.add('active');
-      document.getElementById('tab-' + name).classList.add('active');
-      if (name === 'wins') renderWins();
+      if (!VIEWS.includes(name)) name = 'today';
+      if (location.hash.slice(1) !== name) { location.hash = name; return; }
+      renderView(name);
     }
+
+    function renderView(name) {
+      if (!VIEWS.includes(name)) name = 'today';
+      const changed = name !== currentView;
+      currentView = name;
+      document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
+      MJ.setActiveNav(name === 'wins' ? 'wins' : 'today');
+      if (name === 'today') renderHub();
+      if (name === 'wins') renderWins();
+      if (name === 'history') updateHistory();
+      if (RITUAL_IDS.includes(name)) {
+        const panel = document.getElementById('done-' + name);
+        if (panel) panel.hidden = true;
+        renderSteps(name);
+      }
+      if (changed) window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.addEventListener('hashchange', () => renderView(location.hash.slice(1)));
 
     // ─── MOOD ─────────────────────────────────────────────────────────
     function selectMood(btn, mood) {
       document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
       btn.classList.add('selected');
-      btn.dataset.mood = mood;
+      const o = btn.querySelector('.orb');
+      if (o) { o.classList.remove('orb-bounce'); void o.offsetWidth; o.classList.add('orb-bounce'); }
+    }
+
+    function energyWord(v) {
+      v = +v;
+      return v <= 3 ? 'Running low' : v <= 6 ? 'Steady' : v <= 8 ? 'Bright' : 'Buzzing';
     }
 
     function updateEnergy(val) {
       document.getElementById('energy-val').textContent = val;
+      document.getElementById('energy-word').textContent = energyWord(val);
+      document.getElementById('energy-slider').style.setProperty('--fill', ((val - 1) / 9 * 100) + '%');
+    }
+
+    function buildMoodPickers() {
+      const keys = Object.keys(MJ.MOODS);
+      document.getElementById('mood-grid').innerHTML = keys.map(k =>
+        `<button type="button" class="mood-btn" data-mood="${k}" onclick="selectMood(this, '${k}')">${MJ.orb({ mood: k, size: 56 })}${MJ.MOODS[k].label}</button>`
+      ).join('');
+      document.getElementById('mood-strip').innerHTML = keys.map(k =>
+        `<button type="button" class="mood-mini" onclick="quickMood('${k}')" aria-label="I feel ${MJ.MOODS[k].label.toLowerCase()}">${MJ.orb({ mood: k, size: 40 })}${MJ.MOODS[k].label}</button>`
+      ).join('');
+    }
+
+    function quickMood(mood) {
+      pendingMood = mood;
+      showTab('checkin');
+      setTimeout(() => {
+        const btn = document.querySelector(`.mood-btn[data-mood="${mood}"]`);
+        if (btn) selectMood(btn, mood);
+      }, 80);
     }
 
     // ─── SAVE SECTIONS ────────────────────────────────────────────────
-    function saveSection(section, navigate = true) {
+    function saveSection(section, explicit = true) {
       let data = {};
       if (section === 'checkin') {
         const moodBtn = document.querySelector('.mood-btn.selected');
+        const mood = moodBtn ? moodBtn.dataset.mood : '';
         data = {
-          mood: moodBtn ? moodBtn.dataset.mood : '',
-          moodLabel: moodBtn ? moodBtn.textContent.trim() : '',
+          mood,
+          moodLabel: mood ? MJ.MOODS[mood].label : '',
           energy: document.getElementById('energy-slider').value,
           heaviest: document.getElementById('heaviest-thought').value,
         };
@@ -1751,74 +1471,77 @@
       }
 
       saveData(section, data);
-      showSavedBadge(section);
-      markDot(section);
-      if (navigate) cheerSave(section);
-      else showToast('Saved ✓');
+      showSavedBadge(section, explicit);
       updateStreak();
-      updateHistory();
-
-      // Navigate to next tab (only when user clicks Save & Continue, not on autosave)
-      if (navigate) {
-        const order = ['checkin', 'braindump', 'worry', 'reframe', 'gratitude', 'evening'];
-        const idx = order.indexOf(section);
-        if (idx !== -1 && idx < order.length - 1) {
-          setTimeout(() => showTab(order[idx + 1]), 400);
-        }
+      if (explicit) {
+        showDonePanel(section);
+        cheerSave(section);
       }
     }
 
-    function showSavedBadge(section) {
+    function showSavedBadge(section, explicit) {
       const badge = document.getElementById('save-badge-' + section);
-      if (badge) {
-        badge.classList.add('show');
-        setTimeout(() => badge.classList.remove('show'), 2000);
-      }
+      if (!badge) return;
+      badge.textContent = explicit ? 'Saved' : 'Saved quietly · ' + new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+      badge.classList.add('show');
     }
 
-    function markDot(section) {
-      const dot = document.getElementById('dot-' + section);
-      const tab = document.getElementById('tab-' + section);
-      if (dot) { dot.style.background = 'var(--accent)'; }
-      if (tab) { tab.classList.add('done'); }
+    function markDot() { /* kept for compatibility — ritual status now lives on the Today screen */ }
+
+    // a calm "well done" — you choose when to move on
+    function showDonePanel(section) {
+      const panel = document.getElementById('done-' + section);
+      if (!panel) return;
+      const idx = RITUAL_IDS.indexOf(section);
+      const nextId = RITUAL_IDS.slice(idx + 1).find(id => loadData(id) === null);
+      const next = RITUALS.find(r => r.id === nextId);
+      const r = RITUALS[idx];
+      panel.innerHTML =
+        MJ.orb({ color: r.color, face: section === 'evening' ? 'sleepy' : 'joy', size: 84, cls: 'orb-bounce' }) +
+        `<h2 class="t-h2">${MJ.esc(withName(SAVE_CHEERS[section]))}</h2>` +
+        `<p class="t-body">${section === 'evening' ? 'Take a slow breath before sleep, or simply rest.' : 'Take a breath. There\'s no rush — the next one will wait for you.'}</p>` +
+        '<div class="row row-wrap">' +
+        (section === 'evening'
+          ? '<a class="btn btn-primary" href="#breathe">Breathe before sleep</a>'
+          : next ? `<a class="btn btn-primary" href="#${next.id}">Next: ${next.title}</a>` : '') +
+        '<a class="btn btn-soft" href="#today">Back to Today</a></div>';
+      panel.hidden = false;
+      setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'center' }), 120);
+    }
+
+    function renderSteps(section) {
+      const view = document.getElementById('view-' + section);
+      const idx = RITUAL_IDS.indexOf(section);
+      view.querySelector('[data-steps]').innerHTML = RITUAL_IDS.map((id, i) =>
+        `<i class="${i === idx ? 'on' : loadData(id) !== null ? 'done' : ''}"></i>`).join('') +
+        `<span class="t-caption" style="margin-left:8px">${idx + 1} of ${RITUAL_IDS.length}</span>`;
     }
 
     // ─── LOAD DAY DATA ────────────────────────────────────────────────
     function loadDayData() {
       // Check-in
       const ci = loadData('checkin');
+      document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
       if (ci) {
+        updateEnergy(ci.energy || 5);
         document.getElementById('energy-slider').value = ci.energy || 5;
-        document.getElementById('energy-val').textContent = ci.energy || 5;
         document.getElementById('heaviest-thought').value = ci.heaviest || '';
-        document.querySelectorAll('.mood-btn').forEach(b => {
-          b.classList.remove('selected');
-          if (b.dataset.mood === ci.mood) b.classList.add('selected');
-        });
-        markDot('checkin');
+        document.querySelectorAll('.mood-btn').forEach(b => { if (b.dataset.mood === ci.mood) b.classList.add('selected'); });
       } else {
         document.getElementById('energy-slider').value = 5;
-        document.getElementById('energy-val').textContent = 5;
+        updateEnergy(5);
         document.getElementById('heaviest-thought').value = '';
-        document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
       }
 
       // Brain dump
       const bd = loadData('braindump');
       document.getElementById('braindump-text').value = bd ? bd.text || '' : '';
       countChars('braindump');
-      if (bd) markDot('braindump');
 
       // Worry
       const wr = loadData('worry');
-      if (wr) {
-        worries = wr.worries || [];
-        document.getElementById('worry-time').value = wr.time || '';
-        markDot('worry');
-      } else {
-        worries = [];
-        document.getElementById('worry-time').value = '';
-      }
+      worries = wr ? (wr.worries || []) : [];
+      document.getElementById('worry-time').value = wr ? (wr.time || '') : '';
       renderWorries();
 
       // Reframe
@@ -1826,7 +1549,6 @@
       ['reframe-1', 'reframe-2', 'reframe-3', 'reframe-4'].forEach((id, i) => {
         document.getElementById(id).value = rf ? (rf['r' + (i + 1)] || '') : '';
       });
-      if (rf) markDot('reframe');
 
       // Gratitude
       const gr = loadData('gratitude');
@@ -1835,21 +1557,91 @@
       document.getElementById('gratitude-3').value = gr ? gr.g3 || '' : '';
       document.getElementById('win-today').value = gr ? gr.win || '' : '';
       document.getElementById('self-kind').value = gr ? gr.kind || '' : '';
-      if (gr) markDot('gratitude');
 
       // Evening
       const ev = loadData('evening');
       document.getElementById('evening-day').value = ev ? ev.day || '' : '';
       document.getElementById('evening-release').value = ev ? ev.release || '' : '';
       document.getElementById('tomorrow-intention').value = ev ? ev.intention || '' : '';
-      if (ev) markDot('evening');
-
       renderEveningDone();
+
+      document.querySelectorAll('.saved-note').forEach(n => n.classList.remove('show'));
 
       // Quote
       const q = quotes[new Date().getDay() % quotes.length];
-      document.getElementById('daily-quote').textContent = '"' + q.text + '"';
+      document.getElementById('daily-quote').textContent = '“' + q.text + '”';
       document.querySelector('.insight-author').textContent = '— ' + q.author;
+
+      renderHub();
+    }
+
+    // ─── TODAY HUB ────────────────────────────────────────────────────
+    function ritualStatus(id) {
+      const d = loadData(id);
+      if (d === null) return null;
+      if (id === 'checkin') return d.mood ? `Felt ${(MJ.MOODS[d.mood] || { label: d.moodLabel }).label.toLowerCase()} · energy ${d.energy}/10` : `Energy ${d.energy}/10`;
+      if (id === 'braindump') {
+        const w = (d.text || '').trim().split(/\s+/).filter(Boolean).length;
+        return w ? `${w} ${w === 1 ? 'word' : 'words'} · lighter already` : 'Done';
+      }
+      if (id === 'worry') {
+        const n = (d.worries || []).length;
+        return n ? `${n} ${n === 1 ? 'worry' : 'worries'} parked` : 'Nothing to park — lovely';
+      }
+      if (id === 'reframe') return 'One thought untangled';
+      if (id === 'gratitude') {
+        const n = [d.g1, d.g2, d.g3, d.win, d.kind].filter(x => x && x.trim()).length;
+        return `${n} good ${n === 1 ? 'thing' : 'things'} saved`;
+      }
+      if (id === 'evening') return 'Day closed gently';
+      return 'Done';
+    }
+
+    function renderHub() {
+      const statuses = RITUALS.map(r => ritualStatus(r.id));
+      const doneCount = statuses.filter(Boolean).length;
+      let nextIdx = statuses.findIndex(s => s === null);
+      // after 7pm, the evening wind-down is the kindest next step
+      if (isToday() && new Date().getHours() >= 19 && statuses[5] === null) nextIdx = 5;
+
+      document.getElementById('ritual-progress').textContent = `${doneCount} of ${RITUALS.length} done`;
+      document.getElementById('rituals').innerHTML = RITUALS.map((r, i) => {
+        const st = statuses[i];
+        const isNext = i === nextIdx;
+        const lead = st ? `<span class="done-mark">${CHECK_SVG}</span>`
+          : isNext ? `<span class="play-mark">${PLAY_SVG}</span>`
+            : MJ.orb({ color: r.color, face: r.face, size: 48 });
+        return `<a class="ritual-card rise ${st ? 'done' : ''} ${isNext ? 'next' : ''}" style="--i:${i + 5}" href="#${r.id}">` +
+          lead +
+          `<span class="grow"><span class="r-title" style="display:block">${r.title}</span>` +
+          `<span class="r-sub" style="display:block">${st ? MJ.esc(st) : isNext ? 'Up next · ' + r.todo.toLowerCase() : r.todo}</span></span>` +
+          (st ? '' : `<span class="pill ${isNext ? '' : 'pill-outline'}">${r.mins} min</span>`) +
+          '</a>';
+      }).join('');
+
+      // mood card
+      const ci = loadData('checkin');
+      const hubOrb = document.getElementById('hub-orb');
+      const box = document.getElementById('checked-in');
+      if (ci && ci.mood && MJ.MOODS[ci.mood]) {
+        hubOrb.innerHTML = MJ.orb({ mood: ci.mood, size: 72, cls: 'orb-float' });
+        document.getElementById('mood-q').textContent = `${isToday() ? 'You\'re feeling' : 'You felt'} ${MJ.MOODS[ci.mood].label.toLowerCase()}`;
+        document.getElementById('mood-sub').textContent = `Energy ${ci.energy}/10 · ${energyWord(ci.energy).toLowerCase()}`;
+        document.getElementById('mood-strip').hidden = true;
+        box.hidden = false;
+        box.innerHTML = `<span>${ci.heaviest ? 'On your mind: <b>' + MJ.esc(ci.heaviest) + '</b>' : 'Thank you for checking in.'}</span><a class="btn btn-quiet btn-sm" href="#checkin">Update</a>`;
+      } else {
+        hubOrb.innerHTML = MJ.orb({ mood: 'okay', size: 72, cls: 'orb-float' });
+        document.getElementById('mood-q').textContent = isToday() ? 'How are you, really?' : 'No check-in this day';
+        document.getElementById('mood-sub').textContent = isToday() ? 'Tap the one that feels closest. No judgement.' : 'That\'s okay. Every day doesn\'t need one.';
+        document.getElementById('mood-strip').hidden = false;
+        box.hidden = true;
+      }
+
+      // wins mini
+      const w = collectWins();
+      const total = w.win.length + w.kind.length + w.grat.length;
+      document.getElementById('wins-mini-count').textContent = total ? `${total} good ${total === 1 ? 'thing' : 'things'} saved` : 'Your good things, saved';
     }
 
     // ─── WORRY ────────────────────────────────────────────────────────
@@ -1860,61 +1652,62 @@
       worries.push({ text, parked: false, id: Date.now() });
       input.value = '';
       renderWorries();
+      saveSection('worry', false);
     }
 
     function renderWorries() {
       const list = document.getElementById('worry-list');
       const empty = document.getElementById('worry-empty');
-      if (worries.length === 0) {
-        list.innerHTML = '';
-        empty.style.display = 'block';
-        return;
-      }
-      empty.style.display = 'none';
+      empty.style.display = worries.length ? 'none' : 'block';
       list.innerHTML = worries.map((w, i) => `
-    <li class="worry-item">
-      <div class="worry-text ${w.parked ? 'parked' : ''}">${escHtml(w.text)}</div>
-      <button class="park-btn ${w.parked ? 'parked' : ''}" onclick="togglePark(${i})">${w.parked ? '✓ Parked' : 'Park it'}</button>
-      <button class="delete-btn" onclick="removeWorry(${i})">×</button>
-    </li>
-  `).join('');
+        <li class="worry-item">
+          <span class="worry-text ${w.parked ? 'parked' : ''}">${escHtml(w.text)}</span>
+          <button type="button" class="park-btn ${w.parked ? 'parked' : ''}" onclick="togglePark(${i})" aria-pressed="${w.parked}">${w.parked ? '✓ Parked' : 'Park it'}</button>
+          <button type="button" class="icon-x" onclick="removeWorry(${i})" aria-label="Remove worry">×</button>
+        </li>`).join('');
     }
 
     function togglePark(i) {
       worries[i].parked = !worries[i].parked;
       renderWorries();
+      if (worries[i].parked) MJ.chime('soft');
+      saveSection('worry', false);
     }
 
     function removeWorry(i) {
       worries.splice(i, 1);
       renderWorries();
+      saveSection('worry', false);
     }
 
     function escHtml(s) {
-      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
     // ─── TIMER ────────────────────────────────────────────────────────
     function toggleTimer(id) {
+      const btn = document.getElementById(id + '-timer-btn');
       if (timers[id] && timers[id].running) {
         clearInterval(timers[id].interval);
         timers[id].running = false;
-        document.getElementById(id + '-timer-btn').textContent = 'Resume';
-        document.getElementById(id + '-timer-btn').classList.remove('running');
+        btn.textContent = 'Resume';
+        btn.classList.remove('running');
       } else {
         if (!timers[id]) timers[id] = { seconds: 10 * 60, running: false };
         timers[id].running = true;
-        document.getElementById(id + '-timer-btn').textContent = 'Pause';
-        document.getElementById(id + '-timer-btn').classList.add('running');
+        btn.textContent = 'Pause';
+        btn.classList.add('running');
+        document.getElementById('braindump-text').focus();
         timers[id].interval = setInterval(() => {
           timers[id].seconds--;
           updateTimerDisplay(id);
           if (timers[id].seconds <= 0) {
             clearInterval(timers[id].interval);
             timers[id].running = false;
-            document.getElementById(id + '-timer-btn').textContent = 'Done!';
-            document.getElementById(id + '-timer-btn').classList.remove('running');
-            showToast('Time\'s up! Great job writing, ' + displayName() + ' ✓', 3000);
+            btn.textContent = 'Done';
+            btn.classList.remove('running');
+            MJ.chime('done');
+            showToast('Time\'s up. Lovely writing, ' + displayName() + '.', 3200);
           }
         }, 1000);
       }
@@ -1926,95 +1719,92 @@
         timers[id] = null;
       }
       document.getElementById(id + '-timer').textContent = '10:00';
-      document.getElementById(id + '-timer-btn').textContent = 'Start';
-      document.getElementById(id + '-timer-btn').classList.remove('running');
+      const btn = document.getElementById(id + '-timer-btn');
+      btn.textContent = 'Start timer';
+      btn.classList.remove('running');
     }
 
     function updateTimerDisplay(id) {
       const s = timers[id].seconds;
-      const m = Math.floor(s / 60);
-      const sec = s % 60;
-      document.getElementById(id + '-timer').textContent = m + ':' + String(sec).padStart(2, '0');
+      document.getElementById(id + '-timer').textContent = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
     }
 
     // ─── PROMPTS ──────────────────────────────────────────────────────
     function addPrompt(section, text) {
       const ta = document.getElementById(section + '-text');
       const val = ta.value;
-      ta.value = val + (val && !val.endsWith('\n') ? '\n\n' : '') + text + ' ';
+      ta.value = val + (val && !val.endsWith('\n') ? '\n\n' : '') + text.replace(/…$/, '...') + ' ';
       ta.focus();
       countChars(section);
     }
 
-    // ─── CHAR COUNT ───────────────────────────────────────────────────
+    // ─── WORD COUNT ───────────────────────────────────────────────────
     function countChars(section) {
       const ta = document.getElementById(section + '-text');
       const words = ta.value.trim().split(/\s+/).filter(w => w).length;
       document.getElementById(section + '-count').textContent = words + (words === 1 ? ' word' : ' words');
     }
 
-    // ─── BREATHE ──────────────────────────────────────────────────────
+    // ─── BREATHE: a sleepy orb that breathes with you ─────────────────
+    let breatheRun = 0;
+    function breatheOrb(face) {
+      document.getElementById('breathe-circle').innerHTML = MJ.orb({ color: 'var(--mint)', face, size: 200 });
+    }
     function startBreathe() {
+      const run = ++breatheRun;
       const circle = document.getElementById('breathe-circle');
+      const halo = document.getElementById('breathe-halo');
       const text = document.getElementById('breathe-text');
       const sub = document.getElementById('breathe-subtext');
       const btn = document.getElementById('breathe-btn');
       btn.style.display = 'none';
-
-      let round = 0;
       const maxRounds = 4;
-
-      function phase(name, duration, label, sublabel, expand) {
-        return new Promise(resolve => {
-          text.textContent = label;
-          sub.textContent = sublabel;
-          if (expand) circle.classList.add('expand');
-          else circle.classList.remove('expand');
-          circle.textContent = name;
-          setTimeout(resolve, duration);
-        });
-      }
+      let round = 0;
+      const wait = ms => new Promise(r => setTimeout(r, ms));
 
       async function doRound() {
+        if (run !== breatheRun) return;
         if (round >= maxRounds) {
-          text.textContent = 'Well done, ' + displayName() + ' 🌿';
-          sub.textContent = 'Take a moment to notice how you feel';
-          circle.textContent = '✓';
-          circle.classList.remove('expand');
-          btn.textContent = 'Again';
-          btn.style.display = 'block';
-          btn.onclick = () => { round = 0; btn.style.display = 'none'; doRound(); };
+          breatheOrb('joy');
+          circle.classList.remove('expand', 'out');
+          halo.classList.remove('expand');
+          text.textContent = 'Well done, ' + displayName();
+          sub.textContent = 'Notice how you feel now. Stay as long as you like.';
+          btn.textContent = 'Another round';
+          btn.style.display = '';
+          MJ.chime('soft');
           return;
         }
         round++;
-        sub.textContent = `Round ${round} of ${maxRounds}`;
-        await phase('Breathe in', 4000, 'Breathe in...', `Round ${round} of ${maxRounds}`, true);
-        await phase('Hold', 7000, 'Hold...', `Round ${round} of ${maxRounds}`, true);
-        await phase('Breathe out', 8000, 'Breathe out...', `Round ${round} of ${maxRounds}`, false);
+        const label = `Round ${round} of ${maxRounds}`;
+        breatheOrb('o'); circle.classList.remove('out'); circle.classList.add('expand'); halo.classList.add('expand');
+        text.textContent = 'Breathe in…'; sub.textContent = label;
+        await wait(4000); if (run !== breatheRun) return;
+        breatheOrb('calm');
+        text.textContent = 'Hold…';
+        await wait(7000); if (run !== breatheRun) return;
+        breatheOrb('sleepy'); circle.classList.add('out'); circle.classList.remove('expand'); halo.classList.remove('expand');
+        text.textContent = 'And slowly out…';
+        await wait(8000);
         doRound();
       }
-
       doRound();
     }
 
     // ─── STREAK ───────────────────────────────────────────────────────
     function updateStreak() {
       let streak = 0;
-      const today = new Date(); today.setHours(0, 0, 0, 0);
-      let d = new Date(today);
+      const d = new Date(); d.setHours(0, 0, 0, 0);
       while (true) {
         const key = getDateKey(d);
-        const hasEntry = ['checkin', 'braindump', 'gratitude', 'evening'].some(s =>
-          localStorage.getItem(`mj_${key}_${s}`) !== null
-        );
+        const hasEntry = ['checkin', 'braindump', 'gratitude', 'evening'].some(s => localStorage.getItem(`mj_${key}_${s}`) !== null);
         if (!hasEntry) break;
         streak++;
         d.setDate(d.getDate() - 1);
       }
       const badge = document.getElementById('streak-badge');
-      if (streak === 0) badge.textContent = '🌱 Start today';
-      else if (streak === 1) badge.textContent = '🌱 Day 1';
-      else badge.textContent = `🔥 ${streak} day streak`;
+      const flame = '<svg width="16" height="16" viewBox="0 0 24 24" style="fill:var(--brand)" aria-hidden="true"><path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-2 1-4 2-5 0 2 1 3 2 3 0-3-1-6 1-9z"/></svg>';
+      badge.innerHTML = streak === 0 ? 'Start today' : `${flame}${streak} ${streak === 1 ? 'day' : 'days'}`;
       currentStreak = streak;
       renderMjCheer();
     }
@@ -2023,171 +1813,109 @@
     function updateHistory() {
       const container = document.getElementById('history-list');
       const entries = [];
-
       for (let i = 0; i < 60; i++) {
         const d = new Date(); d.setHours(0, 0, 0, 0);
         d.setDate(d.getDate() - i);
         const key = getDateKey(d);
-        const sections = ['checkin', 'braindump', 'worry', 'reframe', 'gratitude', 'evening'];
         const data = {};
         let hasAny = false;
-        sections.forEach(s => {
+        RITUAL_IDS.forEach(s => {
           const raw = localStorage.getItem(`mj_${key}_${s}`);
           if (raw) { data[s] = JSON.parse(raw); hasAny = true; }
         });
-        if (hasAny) entries.push({ date: d, dateKey: key, data });
+        if (hasAny) entries.push({ date: d, data });
       }
 
-      if (entries.length === 0) {
-        container.innerHTML = `<div class="empty"><div class="icon">📖</div><p>No entries yet.<br>Your story starts with your first entry, ${escHtml(displayName())} 🌱</p></div>`;
+      if (!entries.length) {
+        container.innerHTML = `<div class="card empty">${MJ.orb({ mood: 'okay', size: 72, cls: 'orb-float' })}<p class="t-h3">Nothing here yet</p><p class="t-small" style="margin-top:6px">Your story starts with your first entry, ${escHtml(displayName())}.</p></div>`;
         return;
       }
 
+      const block = (label, inner) => `<div class="hist-section"><div class="hist-section-label">${label}</div>${inner}</div>`;
+      const para = (label, text) => text && text.trim() ? `<div class="hist-small-label">${label}</div><div class="hist-section-content">${escHtml(text.trim())}</div>` : '';
+
       container.innerHTML = entries.map((e, idx) => {
-        const ci = e.data.checkin || {};
-        const bd = e.data.braindump || {};
-        const wr = e.data.worry || {};
-        const rf = e.data.reframe || {};
-        const gr = e.data.gratitude || {};
-        const ev = e.data.evening || {};
+        const ci = e.data.checkin || {}, bd = e.data.braindump || {}, wr = e.data.worry || {};
+        const rf = e.data.reframe || {}, gr = e.data.gratitude || {}, ev = e.data.evening || {};
+        const moodKey = ci.mood && MJ.MOODS[ci.mood] ? ci.mood : null;
+        const parts = [];
+        if (ci.moodLabel || ci.heaviest) parts.push(block('Check-in', `<div class="hist-section-content">${moodKey ? MJ.MOODS[moodKey].label : escHtml(ci.moodLabel || '')}${ci.energy ? ' · energy ' + ci.energy + '/10' : ''}</div>${para('On my mind', ci.heaviest)}`));
+        if (bd.text && bd.text.trim()) parts.push(block('Brain dump', `<div class="hist-section-content">${escHtml(bd.text.trim())}</div>`));
+        if (wr.worries && wr.worries.length) parts.push(block('Worry parking', wr.worries.map(w => `<div class="hist-section-content hist-worry-item ${w.parked ? 'parked' : ''}">${w.parked ? '✓ ' : '• '}${escHtml(w.text)}</div>`).join('')));
+        const rfHTML = para('The thought', rf.r1) + para('Fact or feeling?', rf.r2) + para('What I\'d tell a friend', rf.r3) + para('A truer thought', rf.r4);
+        if (rfHTML) parts.push(block('Reframe', rfHTML));
+        const grItems = [gr.g1, gr.g2, gr.g3].filter(x => x && x.trim()).map(x => `<div class="hist-section-content">• ${escHtml(x)}</div>`).join('');
+        const grHTML = grItems + para('A win', gr.win) + para('Kind words', gr.kind);
+        if (grHTML) parts.push(block('Gratitude & wins', grHTML));
+        const evHTML = para('How the day felt', ev.day) + para('Letting go of', ev.release) + para('Intention for tomorrow', ev.intention);
+        if (evHTML) parts.push(block('Evening', evHTML));
 
-        const sections = [];
-
-        // Check-in
-        if (ci.moodLabel || ci.heaviest) {
-          let html = '';
-          if (ci.moodLabel) html += `<div class="hist-mood-badge">${ci.moodLabel}</div>`;
-          if (ci.energy) html += `<div class="history-energy" style="margin-top:4px">Energy: ${ci.energy}/10</div>`;
-          if (ci.heaviest) html += `<div class="hist-section-content" style="margin-top:8px">${escHtml(ci.heaviest)}</div>`;
-          sections.push({ label: 'Check-in', html });
-        }
-
-        // Brain dump
-        if (bd.text && bd.text.trim()) {
-          sections.push({ label: 'Brain Dump', html: `<div class="hist-section-content">${escHtml(bd.text.trim())}</div>` });
-        }
-
-        // Worry
-        if (wr.worries && wr.worries.length) {
-          const items = wr.worries.map(w =>
-            `<div class="hist-worry-item ${w.parked ? 'parked' : ''}">${escHtml(w.text)}</div>`
-          ).join('');
-          sections.push({ label: 'Worry Parking', html: items });
-        }
-
-        // Reframe
-        const rfParts = [
-          rf.r1 && `<div style="margin-bottom:10px"><div class="hist-section-label" style="font-size:10px;color:var(--text-muted);margin-bottom:4px">The thought</div><div class="hist-section-content">${escHtml(rf.r1)}</div></div>`,
-          rf.r2 && `<div style="margin-bottom:10px"><div class="hist-section-label" style="font-size:10px;color:var(--text-muted);margin-bottom:4px">Fact or feeling?</div><div class="hist-section-content">${escHtml(rf.r2)}</div></div>`,
-          rf.r3 && `<div style="margin-bottom:10px"><div class="hist-section-label" style="font-size:10px;color:var(--text-muted);margin-bottom:4px">What I'd tell a friend</div><div class="hist-section-content">${escHtml(rf.r3)}</div></div>`,
-          rf.r4 && `<div><div class="hist-section-label" style="font-size:10px;color:var(--text-muted);margin-bottom:4px">More accurate thought</div><div class="hist-section-content">${escHtml(rf.r4)}</div></div>`,
-        ].filter(Boolean);
-        if (rfParts.length) sections.push({ label: 'Reframe', html: rfParts.join('') });
-
-        // Gratitude
-        const grParts = [
-          gr.g1 && `<div class="hist-gratitude-item"><span class="hist-g-num">1.</span>${escHtml(gr.g1)}</div>`,
-          gr.g2 && `<div class="hist-gratitude-item"><span class="hist-g-num">2.</span>${escHtml(gr.g2)}</div>`,
-          gr.g3 && `<div class="hist-gratitude-item"><span class="hist-g-num">3.</span>${escHtml(gr.g3)}</div>`,
-          gr.win && `<div style="margin-top:10px"><div class="hist-section-label" style="font-size:10px;color:var(--text-muted);margin-bottom:4px">Win</div><div class="hist-section-content">${escHtml(gr.win)}</div></div>`,
-          gr.kind && `<div style="margin-top:10px"><div class="hist-section-label" style="font-size:10px;color:var(--text-muted);margin-bottom:4px">Kind thing to self</div><div class="hist-section-content">${escHtml(gr.kind)}</div></div>`,
-        ].filter(Boolean);
-        if (grParts.length) sections.push({ label: 'Gratitude & Wins', html: grParts.join('') });
-
-        // Evening
-        const evParts = [
-          ev.day && `<div style="margin-bottom:10px"><div class="hist-section-label" style="font-size:10px;color:var(--text-muted);margin-bottom:4px">How the day felt</div><div class="hist-section-content">${escHtml(ev.day)}</div></div>`,
-          ev.release && `<div style="margin-bottom:10px"><div class="hist-section-label" style="font-size:10px;color:var(--text-muted);margin-bottom:4px">Released</div><div class="hist-section-content">${escHtml(ev.release)}</div></div>`,
-          ev.intention && `<div><div class="hist-section-label" style="font-size:10px;color:var(--text-muted);margin-bottom:4px">Intention for tomorrow</div><div class="hist-section-content">${escHtml(ev.intention)}</div></div>`,
-        ].filter(Boolean);
-        if (evParts.length) sections.push({ label: 'Evening Wind-down', html: evParts.join('') });
-
-        const bodyHtml = sections.map(s => `
-      <div class="hist-section">
-        <div class="hist-section-label">${s.label}</div>
-        ${s.html}
-      </div>
-    `).join('');
-
-        return `
-      <div class="history-entry" id="hist-${idx}">
-        <div class="history-header" onclick="toggleHistory(${idx})">
-          <div class="history-header-left">
-            <div class="history-date">${formatDate(e.date)}</div>
-            <div class="history-mood">${ci.moodLabel || '—'} ${ci.energy ? `<span class="history-energy">· Energy ${ci.energy}/10</span>` : ''}</div>
-          </div>
-          <div class="history-chevron">▾</div>
-        </div>
-        <div class="history-body">
-          <div class="history-body-inner">${bodyHtml}</div>
-        </div>
-      </div>
-    `;
+        return `<div class="history-entry" id="hist-${idx}">
+          <button type="button" class="history-header" onclick="toggleHistory(${idx})" aria-expanded="false">
+            ${moodKey ? MJ.orb({ mood: moodKey, size: 40 }) : MJ.orb({ color: 'var(--line-2)', face: 'calm', size: 40 })}
+            <span><span class="history-date" style="display:block">${formatDate(e.date)}</span>
+            <span class="history-mood">${moodKey ? MJ.MOODS[moodKey].label : 'No check-in'}${ci.energy ? ' · energy ' + ci.energy + '/10' : ''}</span></span>
+            <span class="history-chevron" aria-hidden="true"></span>
+          </button>
+          <div class="history-body">${parts.join('')}</div>
+        </div>`;
       }).join('');
     }
 
     function toggleHistory(idx) {
       const entry = document.getElementById('hist-' + idx);
-      const body = entry.querySelector('.history-body');
-      const isOpen = entry.classList.contains('open');
-      entry.classList.toggle('open', !isOpen);
-      body.style.display = isOpen ? 'none' : 'grid';
+      const open = entry.classList.toggle('open');
+      entry.querySelector('.history-header').setAttribute('aria-expanded', String(open));
     }
 
     // ─── TOAST ────────────────────────────────────────────────────────
-    function showToast(msg, ms) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      clearTimeout(showToast._t);
-      showToast._t = setTimeout(() => t.classList.remove('show'), ms || 2000);
-    }
+    function showToast(msg, ms) { MJ.toast(msg, ms); }
 
-    // ─── AUTOSAVE ────────────────────────────────────────────────────
+    // ─── AUTOSAVE (quiet — never interrupts) ──────────────────────────
     let autosaveTimeout = {};
     function setupAutosave() {
       const autoSaveSections = {
-        'braindump': ['braindump-text'],
-        'evening': ['evening-day', 'evening-release', 'tomorrow-intention'],
-        'reframe': ['reframe-1', 'reframe-2', 'reframe-3', 'reframe-4'],
+        checkin: ['heaviest-thought'],
+        braindump: ['braindump-text'],
+        worry: ['worry-time'],
+        reframe: ['reframe-1', 'reframe-2', 'reframe-3', 'reframe-4'],
+        gratitude: ['gratitude-1', 'gratitude-2', 'gratitude-3', 'win-today', 'self-kind'],
+        evening: ['evening-day', 'evening-release', 'tomorrow-intention'],
       };
       for (const [section, ids] of Object.entries(autoSaveSections)) {
         ids.forEach(id => {
           const el = document.getElementById(id);
-          if (el) {
-            el.addEventListener('input', () => {
-              clearTimeout(autosaveTimeout[section]);
-              autosaveTimeout[section] = setTimeout(() => saveSection(section, false), 1500);
-            });
-          }
+          if (!el) return;
+          el.addEventListener('input', () => {
+            clearTimeout(autosaveTimeout[section]);
+            autosaveTimeout[section] = setTimeout(() => saveSection(section, false), 1500);
+          });
         });
       }
     }
 
     // ─── YOUR NAME + APPRECIATION ────────────────────────────────────
-    // Name, settings, backup and celebrations live in common.js (shared with the Planner).
     let currentStreak = 0;
     function displayName() { return MJ.displayName(); }
     function withName(str) { return MJ.withName(str); }
 
     const GENTLE_NOTES = [
-      'Thank you for making a little time for yourself today, {name}.',
-      'However today feels, you\'re allowed to feel it, {name}. You\'re doing better than you think.',
-      'Pausing like this is a quiet act of strength, {name}.',
-      'You don\'t have to have it all figured out. Being here is enough, {name}.',
-      'Be gentle with yourself today, {name} — you\'re carrying more than anyone sees.',
-      'You matter, {name}. So does how you feel.',
-      'Every time you come back here, you\'re choosing yourself. That\'s worth something, {name}.',
+      'Thank you for making a little time for yourself today.',
+      'However today feels, you\'re allowed to feel it. You\'re doing better than you think.',
+      'Pausing like this is a quiet act of strength.',
+      'You don\'t have to have it all figured out. Being here is enough.',
+      'Be gentle with yourself today — you\'re carrying more than anyone sees.',
+      'You matter. So does how you feel.',
+      'Every time you come back here, you\'re choosing yourself.',
     ];
     const SAVE_CHEERS = {
-      checkin: 'Thank you for checking in, {name} 🌿',
-      braindump: 'Out of your head and onto the page — well done, {name}.',
-      worry: 'Worries parked. You don\'t have to carry them right now, {name}.',
-      reframe: 'Questioning a hard thought takes courage. Nicely done, {name}.',
-      gratitude: 'Look at all the good you noticed today, {name} 🌿',
-      evening: 'You made it through today, {name}. Rest well 🌙',
+      checkin: 'Thank you for checking in, {name}.',
+      braindump: 'Out of your head and onto the page. Well done, {name}.',
+      worry: 'Worries parked. You don\'t have to carry them right now.',
+      reframe: 'Questioning a hard thought takes courage. Nicely done.',
+      gratitude: 'Look at all the good you noticed, {name}.',
+      evening: 'You made it through today, {name}. Rest well.',
     };
-    const ALL_SECTIONS = ['checkin', 'braindump', 'worry', 'reframe', 'gratitude', 'evening'];
 
     function renderGreeting() {
       document.getElementById('greet-word').textContent = MJ.greetingWord();
@@ -2199,18 +1927,19 @@
       const d = new Date();
       const dayOfYear = Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000);
       let msg;
-      if (currentStreak >= 2) msg = `You've shown up for yourself ${currentStreak} days in a row, {name}. That's something to be proud of 🌿`;
-      else if (currentStreak === 1) msg = 'You\'ve already shown up for yourself today, {name}. Thank you for that.';
+      if (currentStreak >= 2) msg = `You've shown up for yourself ${currentStreak} days in a row. That's something to be proud of.`;
+      else if (currentStreak === 1) msg = 'You\'ve already shown up for yourself today. Thank you for that.';
       else msg = GENTLE_NOTES[dayOfYear % GENTLE_NOTES.length];
       document.getElementById('mj-cheer').textContent = withName(msg);
     }
 
     function cheerSave(section) {
-      const allDone = ALL_SECTIONS.every(s => loadData(s) !== null);
+      const allDone = RITUAL_IDS.every(s => loadData(s) !== null);
       if (section === 'evening' && allDone) {
-        showToast(withName('You showed up for every part of today, {name}. That\'s real self-care 💚'), 3500);
+        showToast(withName('Every part of today, done. That\'s real self-care, {name}.'), 3600);
+        MJ.chime('celebrate');
       } else {
-        showToast(withName(SAVE_CHEERS[section] || 'Saved ✓'), 3000);
+        MJ.chime('done');
       }
       MJ.checkMilestones();
     }
@@ -2220,18 +1949,17 @@
       const card = document.getElementById('evening-done-card');
       if (!MJ.plannerData()) { card.style.display = 'none'; return; }
       const iso = getDateKey(currentDate);
-      const isToday = iso === MJ.localISO();
       const items = MJ.plannerDoneOn(iso);
       card.style.display = '';
-      document.getElementById('evening-done-label').textContent = isToday ? 'What you got done today' : 'What you got done that day';
+      document.getElementById('evening-done-label').textContent = isToday() ? 'What you got done today' : 'What you got done that day';
       const box = document.getElementById('evening-done');
       if (!items.length) {
-        box.innerHTML = `<p class="done-note">${isToday ? 'Nothing ticked off in the planner yet today' : 'Nothing ticked off in the planner that day'} — and that's okay. Resting counts too.</p>`;
+        box.innerHTML = `<p class="done-note">Nothing ticked off in the planner ${isToday() ? 'yet today' : 'that day'} — and that's okay. Resting counts too.</p>`;
         return;
       }
       box.innerHTML = '<ul class="done-list">' + items.map(t =>
-        `<li>${escHtml(t.text)}${t.section ? `<span class="sec">· ${escHtml(t.section)}</span>` : ''}</li>`).join('') + '</ul>' +
-        `<p class="done-note">${items.length === 1 ? 'That one thing' : 'All ' + items.length + ' of these'} happened because of you, ${escHtml(displayName())}. Whatever else the day held, you did this.</p>`;
+        `<li><span>${escHtml(t.text)}${t.section ? ` <span class="sec">· ${escHtml(t.section)}</span>` : ''}</span></li>`).join('') + '</ul>' +
+        `<p class="done-note">${items.length === 1 ? 'That' : 'All ' + items.length + ' of these'} happened because of you, ${escHtml(displayName())}.</p>`;
     }
 
     // ─── WINS JAR ────────────────────────────────────────────────────
@@ -2249,19 +1977,21 @@
       return out;
     }
     function winsListHTML(items, all) {
-      const shown = all ? items : items.slice(0, WINS_SHOWN);
-      return shown.map(w => `<li><span>${escHtml(w.text)}</span><span class="when">${MJ.prettyDate(w.iso)}</span></li>`).join('');
+      return (all ? items : items.slice(0, WINS_SHOWN)).map(w => `<li><span>${escHtml(w.text)}</span><span class="when">${MJ.prettyDate(w.iso)}</span></li>`).join('');
     }
     function renderWins() {
       winsCache = collectWins();
       const total = winsCache.win.length + winsCache.kind.length + winsCache.grat.length;
+      document.getElementById('wins-cluster').innerHTML =
+        MJ.orb({ mood: 'light', size: 64, cls: 'orb-float' }) + MJ.orb({ mood: 'good', size: 100, cls: 'orb-float' }) + MJ.orb({ mood: 'calm', size: 64, cls: 'orb-float' });
       document.getElementById('wins-count').innerHTML = total
         ? `You've collected <b>${total}</b> good ${total === 1 ? 'thing' : 'things'} so far, ${escHtml(displayName())}. Each one was real.`
-        : `Your jar is empty for now, ${escHtml(displayName())}. Fill in <a href="#" onclick="showTab('gratitude');return false;">Gratitude</a> and every win lands here.`;
+        : `Your jar is waiting, ${escHtml(displayName())}. Fill in <a href="#gratitude">Gratitude &amp; wins</a> and every good thing lands here.`;
       document.getElementById('wins-pick-btn').style.display = total ? '' : 'none';
-      [['win', 'Small wins you write in Gratitude will show up here.'],
-       ['kind', 'Kind words to yourself will show up here.'],
-       ['grat', 'The good things you notice will show up here.']].forEach(([k, empty]) => {
+      document.getElementById('wins-pick').textContent = '';
+      document.getElementById('wins-pick-date').textContent = '';
+      document.getElementById('wins-pick-btn').textContent = 'Pick one for me';
+      [['win', 'Your small wins will gather here.'], ['kind', 'Kind words to yourself will gather here.'], ['grat', 'The good things you notice will gather here.']].forEach(([k, empty]) => {
         const ul = document.getElementById('wins-list-' + k);
         const items = winsCache[k];
         ul.innerHTML = items.length ? winsListHTML(items, false) : `<li class="wins-empty">${empty}</li>`;
@@ -2269,8 +1999,9 @@
         if (old && old.classList.contains('wins-more')) old.remove();
         if (items.length > WINS_SHOWN) {
           const more = document.createElement('button');
-          more.className = 'wins-more';
-          more.textContent = `Show all ${items.length} →`;
+          more.type = 'button';
+          more.className = 'btn btn-quiet btn-sm wins-more';
+          more.textContent = `Show all ${items.length}`;
           more.onclick = () => { ul.innerHTML = winsListHTML(items, true); more.remove(); };
           ul.after(more);
         }
@@ -2281,26 +2012,33 @@
       const pool = winsCache.win.concat(winsCache.kind, winsCache.grat);
       if (!pool.length) return;
       const w = pool[Math.floor(Math.random() * pool.length)];
-      document.getElementById('wins-pick').textContent = '“' + w.text + '”';
+      const pick = document.getElementById('wins-pick');
+      pick.classList.remove('fade-in'); void pick.offsetWidth; pick.classList.add('fade-in');
+      pick.textContent = '“' + w.text + '”';
       document.getElementById('wins-pick-date').textContent = '— you, on ' + MJ.prettyDate(w.iso, { weekday: 'long', day: 'numeric', month: 'long' });
-      document.getElementById('wins-pick-btn').textContent = 'Another one 🫙';
+      document.getElementById('wins-pick-btn').textContent = 'Another one';
+      const mid = document.querySelector('#wins-cluster .orb:nth-child(2)');
+      if (mid) { mid.classList.remove('orb-bounce'); void mid.offsetWidth; mid.classList.add('orb-bounce'); }
+      MJ.chime('soft');
     }
 
-    MJ.onNameChange(() => { renderGreeting(); renderMjCheer(); updateHistory(); renderEveningDone(); if (document.getElementById('section-wins').classList.contains('active')) renderWins(); });
-    // keep "Good morning / afternoon / evening" in step with the clock
+    MJ.onNameChange(() => { renderGreeting(); renderMjCheer(); renderEveningDone(); if (currentView === 'wins') renderWins(); if (currentView === 'history') updateHistory(); });
     setInterval(renderGreeting, 60000);
 
     // ─── INIT ─────────────────────────────────────────────────────────
+    buildMoodPickers();
+    document.querySelectorAll('[data-orb]').forEach(el => {
+      const r = RITUALS.find(x => x.id === el.dataset.orb);
+      el.innerHTML = MJ.orb({ color: r.color, face: r.face, size: 64, cls: 'orb-float' });
+    });
+    document.getElementById('breathe-mini').innerHTML = MJ.orb({ color: 'var(--mint)', face: 'sleepy', size: 48, cls: 'orb-breathe' });
+    document.getElementById('wins-mini').innerHTML = MJ.orb({ mood: 'good', size: 48, cls: 'orb-breathe' });
+    breatheOrb('calm');
     renderGreeting();
     updateDateDisplay();
     updateStreak();
-    updateHistory();
     setupAutosave();
-    // deep links like journal.html#evening (used by the Planner)
-    (function () {
-      const h = location.hash.slice(1);
-      if (h && document.getElementById('section-' + h) && document.getElementById('tab-' + h)) showTab(h);
-    })();
+    renderView(location.hash.slice(1) || 'today');
   </script>
 </body>
 

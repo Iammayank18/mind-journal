@@ -1,13 +1,14 @@
 /* Offline support. Pages: network first (so updates show up), cache as fallback.
    Everything else: cache first, refreshed in the background.
    Bump VERSION when you change the list of files below. */
-const VERSION = "mj-v1";
+const VERSION = "mj-v3";
 const ASSETS = [
   "./",
   "./index.html",
   "./planner.html",
   "./journal.html",
   "./common.js",
+  "./theme.css",
   "./manifest.webmanifest",
   "./icons/icon.svg",
   "./icons/icon-192.png",

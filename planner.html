@@ -10,16 +10,13 @@
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="theme.css">
-  <script vite-ignore src="common.js"></script>
+  <link rel="preload" href="fonts/figtree-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="theme.css?v=5">
+  <script vite-ignore src="common.js?v=5"></script>
   <style>
     .planner-main {
       padding-top: 12px;
       padding-bottom: 120px;
-      max-width: 860px;
     }
 
     .planner-top {
@@ -60,9 +57,8 @@
     .planner-tabs {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       gap: 12px;
-      margin: 22px 0 22px;
+      margin: 20px 0 22px;
     }
 
     .view {
@@ -79,7 +75,7 @@
       to { opacity: 1; transform: none; }
     }
 
-    .view > * + * {
+    .stack-16 > * + * {
       margin-top: 16px;
     }
 
@@ -90,12 +86,12 @@
       line-height: 1.6;
     }
 
-    #progressWrap {
-      display: none !important;
+    .page-intro > * + * {
+      margin-top: 12px;
     }
 
     .appreciation {
-      margin: 0;
+      margin: 0 0 16px;
       font-size: 17px;
       line-height: 1.6;
       color: var(--ink-2);
@@ -106,10 +102,10 @@
     }
 
     .appreciation.celebrate {
-      background: var(--brand);
-      color: var(--on-brand);
+      background: var(--brand-soft);
+      color: var(--ink);
       font-weight: 700;
-      padding: 18px 22px;
+      padding: 16px 20px;
       border-radius: var(--r-lg);
       animation: celebrateIn var(--t-slow) var(--ease-bounce);
     }
@@ -119,16 +115,13 @@
       to { transform: none; opacity: 1; }
     }
 
-    .page-intro > * + * {
-      margin-top: 12px;
-    }
-
+    /* mood link to the journal */
     .mood-strip {
       display: flex;
       align-items: center;
       gap: 14px;
-      padding: 14px 18px 14px 14px;
-      border-radius: var(--r-lg);
+      padding: 16px 18px 16px 16px;
+      border-radius: var(--r-xl);
       background: var(--brand-tint);
       color: var(--ink-2);
       font-size: 15px;
@@ -141,17 +134,17 @@
       background: var(--brand-soft);
     }
 
-    .mood-strip b {
+    .mood-strip b,
+    .mood-strip .go {
       color: var(--ink);
     }
 
     .mood-strip .go {
-      white-space: nowrap;
+      display: block;
+      margin-top: 4px;
       font-weight: 700;
-      color: var(--ink);
     }
 
-    /* cards */
     .card-label {
       display: flex;
       align-items: center;
@@ -161,10 +154,6 @@
       letter-spacing: -0.02em;
       color: var(--ink);
       margin-bottom: 6px;
-    }
-
-    .card-label .icon {
-      display: none;
     }
 
     .card > .hint {
@@ -184,135 +173,231 @@
       background: var(--brand-soft);
     }
 
-    /* timeline */
-    .glance-summary {
+    /* ── quick add: one line, natural language ── */
+    .quick-add {
+      padding: 10px 10px 12px;
+      border-radius: var(--r-xl);
+    }
+
+    .qa-row {
       display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .qa-row input {
+      flex: 1;
+      min-width: 0;
+      min-height: 52px;
+      padding: 0 16px;
+      border: none;
+      border-radius: var(--r-lg);
+      background: var(--card-2);
+      font-size: 17px;
+      font-weight: 600;
+      outline: none;
+      box-shadow: inset 0 0 0 1.5px var(--line);
+      transition: box-shadow var(--t-fast);
+    }
+
+    .qa-row input::placeholder {
+      color: var(--ink-3);
+      font-weight: 500;
+    }
+
+    .qa-row input:focus {
+      box-shadow: inset 0 0 0 2px var(--brand), 0 0 0 4px rgba(255, 166, 43, .18);
+    }
+
+    .qa-row .btn {
+      min-height: 52px;
+      border-radius: var(--r-lg);
+    }
+
+    .qa-meta {
+      display: flex;
+      align-items: center;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 14px;
+      margin-top: 10px;
+      padding: 0 4px;
     }
 
-    .glance-summary span {
-      background: var(--brand-tint);
+    .qa-sec {
+      position: relative;
+    }
+
+    .qa-sec select {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 34px;
+      padding: 0 30px 0 14px;
+      border: none;
       border-radius: var(--pill);
+      background: var(--brand-tint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236F6A64' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .qa-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 30px;
+      padding: 0 12px;
+      border-radius: var(--pill);
+      background: var(--mint);
+      color: #1F1D1B;
+      font-size: 13px;
+      font-weight: 700;
+      animation: viewIn var(--t-med) var(--ease);
+    }
+
+    .qa-tip {
+      font-size: 13px;
+      color: var(--ink-3);
+    }
+
+    /* ── the day ── */
+    .day-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 26px 2px 12px;
+    }
+
+    .seg-sm button {
+      min-height: 34px;
       padding: 6px 14px;
       font-size: 14px;
-      color: var(--ink-2);
     }
 
-    .glance-summary b {
-      color: var(--ink);
+    .t-group + .t-group {
+      margin-top: 20px;
     }
 
-    .glance-list,
-    .tomorrow-list {
+    .t-group-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 6px 8px;
+      min-height: 30px;
+    }
+
+    .t-group-head h3 {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+
+    .t-group-head .count {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink-3);
+    }
+
+    .t-group-head .btn {
+      margin-left: auto;
+    }
+
+    .t-list {
       list-style: none;
       margin: 0;
       padding: 0;
+      background: var(--card);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-1);
+      overflow: hidden;
     }
 
-    .glance-list li {
+    .t-row {
       display: flex;
-      flex-wrap: wrap;
       align-items: center;
-      gap: 8px 10px;
-      padding: 12px 12px 12px 14px;
-      border-radius: var(--r-lg);
-      background: var(--card-2);
-      font-size: 15px;
+      gap: 12px;
+      padding: 10px 12px 10px 16px;
+      min-height: 64px;
       transition: background var(--t-med) var(--ease);
     }
 
-    .glance-list li + li {
-      margin-top: 8px;
+    .t-row + .t-row {
+      border-top: 1px solid var(--line);
     }
 
-    .glance-list li.current {
-      background: var(--dark);
-      color: var(--on-dark);
-      padding: 18px 16px;
-      box-shadow: var(--shadow-2);
+    .t-row.fresh {
+      animation: rowIn var(--t-slow) var(--ease);
     }
 
-    .glance-list li.current .glance-time,
-    .glance-list li.current .glance-text {
-      color: var(--on-dark);
+    @keyframes rowIn {
+      from { background: var(--brand-tint); }
+      to { background: transparent; }
     }
 
-    .glance-list li.current .check {
-      border-color: var(--on-dark);
+    .t-row.now {
+      background: var(--brand-tint);
+      box-shadow: inset 4px 0 0 var(--brand);
     }
 
-    .glance-list li.current .glance-text {
-      font-size: 17px;
-      font-weight: 700;
-    }
-
-    .glance-time {
-      color: var(--ink-2);
-      font-size: 13px;
-      font-weight: 600;
-      font-variant-numeric: tabular-nums;
-      white-space: nowrap;
-      min-width: 92px;
-    }
-
-    .glance-time.overdue {
-      color: var(--warn);
-    }
-
-    .glance-text {
-      flex: 1 1 160px;
+    .t-main {
+      -webkit-appearance: none;
+      appearance: none;
+      flex: 1;
       min-width: 0;
-      font-weight: 600;
+      border: none;
+      background: none;
+      padding: 6px 4px;
+      text-align: left;
       color: var(--ink);
+      cursor: pointer;
+      border-radius: var(--r-sm);
     }
 
-    .glance-empty {
-      background: none !important;
-      color: var(--ink-2);
-      font-size: 15px;
-      justify-content: center;
-      padding: 16px !important;
-    }
-
-    .anytime-divider {
-      background: none !important;
-      padding: 14px 4px 2px !important;
-      font-size: 12px;
+    .t-title {
+      display: block;
+      font-size: 16px;
       font-weight: 700;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--ink-3);
-      border: none !important;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
     }
 
-    .glance-badge,
-    .since-badge,
-    .status-pill,
-    .conflict-flag,
-    .due-flag {
+    .t-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px 10px;
+      margin-top: 2px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink-2);
+    }
+
+    .t-meta .warn {
+      color: var(--warn);
+      font-weight: 700;
+    }
+
+    .t-row.done .t-title {
+      color: var(--ink-3);
+      text-decoration: line-through;
+      text-decoration-thickness: 2px;
+    }
+
+    .t-row.done .t-meta {
+      color: var(--ink-3);
+    }
+
+    .status-pill {
       display: inline-flex;
       align-items: center;
       padding: 4px 10px;
       border-radius: var(--pill);
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
       white-space: nowrap;
-      background: var(--card);
-      color: var(--ink-2);
-    }
-
-    .glance-badge.freq {
-      background: transparent;
-      box-shadow: inset 0 0 0 1.5px var(--line-2);
-    }
-
-    .since-badge,
-    .due-flag,
-    .conflict-flag {
-      background: var(--warn-soft);
-      color: var(--warn);
     }
 
     .status-now {
@@ -325,66 +410,19 @@
       color: #1F1D1B;
     }
 
-    .status-past {
-      background: var(--warn-soft);
-      color: var(--warn);
-    }
-
-    .tip {
-      position: relative;
-      cursor: help;
-    }
-
-    .tip .tip-box {
-      position: absolute;
-      bottom: calc(100% + 10px);
-      right: -6px;
-      z-index: 60;
-      width: max-content;
-      max-width: 280px;
-      padding: 12px 14px;
-      border-radius: var(--r-md);
-      background: var(--dark);
-      color: var(--on-dark);
-      font-size: 13px;
-      font-weight: 500;
-      line-height: 1.55;
-      white-space: normal;
-      text-transform: none;
-      letter-spacing: normal;
-      box-shadow: var(--shadow-3);
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(4px);
-      transition: opacity var(--t-fast), transform var(--t-fast);
-    }
-
-    .tip:hover .tip-box,
-    .tip:focus-within .tip-box {
-      opacity: 1;
-      transform: none;
-    }
-
-    .tip .tip-box b {
-      color: var(--brand);
-    }
-
     .push-btn {
       -webkit-appearance: none;
       appearance: none;
       border: none;
-      min-height: 34px;
+      min-height: 36px;
       padding: 6px 12px;
       border-radius: var(--pill);
-      background: var(--brand-tint);
-      color: var(--ink);
+      background: var(--warn-soft);
+      color: var(--warn);
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
-    }
-
-    .push-btn:hover {
-      background: var(--brand-soft);
+      white-space: nowrap;
     }
 
     .start-btn {
@@ -395,7 +433,8 @@
       flex-shrink: 0;
       border-radius: 50%;
       border: none;
-      background: var(--brand-tint);
+      background: var(--card-2);
+      box-shadow: inset 0 0 0 1.5px var(--line-2);
       color: var(--ink);
       cursor: pointer;
       display: inline-grid;
@@ -404,13 +443,14 @@
     }
 
     .start-btn:hover {
-      background: var(--brand);
-      transform: scale(1.06);
+      background: var(--brand-soft);
+      box-shadow: none;
     }
 
     .start-btn.running {
       background: var(--brand);
       color: var(--on-brand);
+      box-shadow: none;
     }
 
     .start-btn.blocked {
@@ -418,65 +458,64 @@
       cursor: not-allowed;
     }
 
-    li.current .start-btn {
+    .t-row.now .start-btn {
       background: var(--brand);
-      color: var(--on-brand);
+      box-shadow: none;
     }
 
-    .timeline-actions {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 12px;
-      margin-top: 14px;
-      flex-wrap: wrap;
-    }
-
-    .timeline-actions .note {
-      margin-right: auto;
-      font-size: 13px;
+    .t-empty-row {
+      padding: 18px 20px;
       color: var(--ink-3);
+      font-size: 15px;
     }
 
-    .delete-btn {
-      -webkit-appearance: none;
-      appearance: none;
-      border: none;
-      background: transparent;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      color: var(--ink-3);
-      font-size: 20px;
-      line-height: 1;
+    details.t-done > summary {
+      list-style: none;
       cursor: pointer;
-      flex-shrink: 0;
-      transition: background var(--t-fast), color var(--t-fast);
     }
 
-    .delete-btn:hover {
-      background: var(--danger-soft);
-      color: var(--danger);
+    details.t-done > summary::-webkit-details-marker {
+      display: none;
     }
 
-    /* sections + tasks */
-    #sectionsContainer > .card + .card {
-      margin-top: 16px;
+    details.t-done > summary .chev {
+      transition: transform var(--t-med) var(--ease);
+      color: var(--ink-3);
     }
 
-    #sectionsContainer {
-      margin-top: 16px;
+    details.t-done[open] > summary .chev {
+      transform: rotate(90deg);
     }
 
-    .section-head {
+    /* empty day */
+    .day-empty {
+      text-align: center;
+      padding: 36px 24px 30px;
+    }
+
+    .day-empty .orb {
+      margin: 0 auto 12px;
+    }
+
+    .day-empty .t-body {
+      max-width: 380px;
+      margin: 6px auto 0;
+    }
+
+    .idea-chips {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    /* lists (sections) */
+    .sec-head {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    .section-head .icon {
-      display: none;
+      gap: 10px;
+      margin: 0 2px 8px;
     }
 
     .section-name {
@@ -484,161 +523,49 @@
       min-width: 0;
       border: none;
       background: transparent;
-      font-size: 22px;
+      font-size: 19px;
       font-weight: 800;
       letter-spacing: -0.02em;
       color: var(--ink);
-      padding: 4px 6px;
+      padding: 4px 8px;
       border-radius: var(--r-sm);
       outline: none;
     }
 
     .section-name:hover,
     .section-name:focus {
-      background: var(--brand-tint);
-    }
-
-    #sectionsContainer table,
-    #sectionsContainer tbody {
-      display: block;
-      width: 100%;
-    }
-
-    .task-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 6px 8px;
-      padding: 10px 8px 10px 12px;
-      border-radius: var(--r-lg);
-      background: var(--card-2);
-      transition: background var(--t-med), opacity var(--t-med);
-    }
-
-    .task-row + .task-row {
-      margin-top: 8px;
-    }
-
-    .task-row td {
-      display: block;
-      padding: 0;
-    }
-
-    .task-check {
-      order: 1;
-    }
-
-    .task-text {
-      order: 2;
-      flex: 1 1 180px;
-      min-width: 0;
-    }
-
-    .task-row td:nth-child(7) {
-      order: 8;
-    }
-
-    .task-row td:nth-child(8) {
-      order: 9;
-    }
-
-    .freq-badge { order: 3; }
-    .task-time { order: 4; }
-    .task-dur { order: 5; }
-    .task-end { order: 6; }
-
-    .task-text input {
-      width: 100%;
-      border: none;
-      background: transparent;
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--ink);
-      padding: 6px 4px;
-      border-radius: var(--r-sm);
-      outline: none;
-    }
-
-    .task-text input:focus {
       background: var(--card);
+      box-shadow: inset 0 0 0 1.5px var(--line-2);
     }
 
-    .task-row.done {
-      opacity: .6;
-    }
-
-    .task-row.done .task-text input {
-      text-decoration: line-through;
-      text-decoration-thickness: 2px;
-      color: var(--ink-2);
-    }
-
-    .freq-badge select,
-    .task-dur select,
-    .task-time input,
-    .add-task-row select,
-    .add-task-row input[type="time"] {
+    .icon-btn {
       -webkit-appearance: none;
       appearance: none;
-      height: 36px;
       border: none;
-      border-radius: var(--pill);
-      background: var(--card);
-      color: var(--ink);
-      font-size: 13px;
-      font-weight: 600;
-      padding: 0 12px;
+      background: transparent;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      color: var(--ink-3);
       cursor: pointer;
-      box-shadow: inset 0 0 0 1.5px var(--line);
-      outline: none;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      transition: background var(--t-fast), color var(--t-fast);
     }
 
-    .freq-badge select:focus,
-    .task-dur select:focus,
-    .task-time input:focus {
-      box-shadow: inset 0 0 0 2px var(--brand);
+    .icon-btn:hover {
+      background: var(--danger-soft);
+      color: var(--danger);
     }
 
-    .task-time input {
-      width: 112px;
-    }
-
-    .task-end {
-      font-size: 13px;
-      color: var(--ink-3);
-      font-variant-numeric: tabular-nums;
-      white-space: nowrap;
-    }
-
-    .add-task-row {
+    .add-list {
       display: flex;
-      flex-wrap: wrap;
-      align-items: flex-end;
-      gap: 10px;
-      margin-top: 14px;
-      padding-top: 14px;
-      border-top: 1px dashed var(--line-2);
+      gap: 8px;
+      margin-top: 20px;
     }
 
-    .add-task-row .field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .add-task-row .grow {
-      flex: 1 1 200px;
-    }
-
-    .col-label {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--ink-3);
-      padding-left: 4px;
-    }
-
-    .add-task-row input[type="text"],
-    .add-section-row input,
+    .add-list input,
     .tomorrow-add-row input,
     .rep-form input,
     .rep-form textarea {
@@ -654,8 +581,7 @@
       transition: border-color var(--t-fast), box-shadow var(--t-fast);
     }
 
-    .add-task-row input[type="text"]:focus,
-    .add-section-row input:focus,
+    .add-list input:focus,
     .tomorrow-add-row input:focus,
     .rep-form input:focus,
     .rep-form textarea:focus {
@@ -663,75 +589,142 @@
       box-shadow: 0 0 0 4px rgba(255, 166, 43, .2);
     }
 
-    .add-task-row select,
-    .add-task-row input[type="time"] {
-      height: 46px;
-      padding: 0 16px;
-    }
-
-    .add-task-row .btn {
-      min-height: 46px;
-    }
-
-    .empty-hint {
-      color: var(--ink-3);
-      font-size: 15px;
-      padding: 4px 4px 0;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 32px 20px;
-      border-radius: var(--r-xl);
-      background: var(--brand-tint);
-      color: var(--ink-2);
-      line-height: 1.7;
-    }
-
-    .empty-state .orb {
-      margin: 0 auto 12px;
-    }
-
-    .add-section-row,
-    .tomorrow-add-row {
-      display: flex;
-      gap: 10px;
-    }
-
-    .tomorrow-add-row {
-      margin-top: 12px;
+    /* tomorrow */
+    .tomorrow-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
     }
 
     .tomorrow-list li {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 10px 8px 10px 16px;
-      border-radius: var(--r-lg);
+      gap: 8px;
+      padding: 8px 4px 8px 14px;
+      border-radius: var(--r-md);
       background: var(--card-2);
       font-size: 15px;
     }
 
     .tomorrow-list li + li {
-      margin-top: 8px;
+      margin-top: 6px;
     }
 
     .tomorrow-list li span {
       flex: 1;
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
 
-    /* analytics */
+    .tomorrow-add-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .tomorrow-add-row .btn {
+      min-height: 46px;
+    }
+
+    /* edit sheet */
+    .et-field + .et-field {
+      margin-top: 16px;
+    }
+
+    .et-field > label,
+    .et-field > .et-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 8px;
+    }
+
+    .et-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .et-chips .chip {
+      min-height: 38px;
+      box-shadow: inset 0 0 0 1.5px var(--line-2);
+    }
+
+    .et-two {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 16px 12px;
+      margin-top: 16px;
+    }
+
+    .et-two .et-field + .et-field {
+      margin-top: 0;
+    }
+
+    .et-two + .et-field {
+      margin-top: 16px;
+    }
+
+    .et-foot {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .et-foot .btn-del {
+      color: var(--danger);
+      margin-right: auto;
+    }
+
+    .et-note {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: var(--r-md);
+      background: var(--warn-soft);
+      color: var(--warn);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* ── insights ── */
+    .ins-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 16px;
+    }
+
+    @media (min-width: 900px) {
+      .ins-grid.two {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        align-items: start;
+      }
+    }
+
     .stat-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
       margin-top: 8px;
+    }
+
+    @media (min-width: 700px) {
+      .stat-grid.four {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    .stat-grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .stat-box {
       background: var(--brand-tint);
       border-radius: var(--r-lg);
-      padding: 18px;
+      padding: 16px;
     }
 
     .stat-value {
@@ -745,6 +738,7 @@
       margin-top: 4px;
       font-size: 13px;
       color: var(--ink-2);
+      line-height: 1.35;
     }
 
     .heatmap-wrap {
@@ -787,29 +781,47 @@
       display: inline-block;
     }
 
-    .analytics-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
+    .bar-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 6px 12px;
+      padding: 10px 0;
+      border-top: 1px solid var(--line);
+      font-size: 15px;
     }
 
-    .analytics-table th,
-    .analytics-table td {
-      text-align: left;
-      padding: 10px 8px;
-      border-bottom: 1px solid var(--line);
+    .bar-row:first-child {
+      border-top: none;
     }
 
-    .analytics-table th {
-      font-size: 12px;
+    .bar-row .name {
       font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      color: var(--ink-3);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    #sectionStatsWrap {
-      overflow-x: auto;
+    .bar-row .nums {
+      font-size: 13px;
+      color: var(--ink-2);
+      white-space: nowrap;
+    }
+
+    .bar-row .bar,
+    .mood-row .bar {
+      grid-column: 1 / -1;
+      height: 10px;
+      border-radius: var(--pill);
+      background: var(--line);
+      overflow: hidden;
+    }
+
+    .bar-row .bar span,
+    .mood-row .bar span {
+      display: block;
+      height: 100%;
+      border-radius: var(--pill);
+      background: var(--brand);
     }
 
     .empty-analytics {
@@ -826,7 +838,7 @@
 
     .mood-row {
       display: grid;
-      grid-template-columns: 110px 1fr 96px;
+      grid-template-columns: 100px 1fr 90px;
       gap: 12px;
       align-items: center;
       padding: 7px 0;
@@ -835,17 +847,7 @@
     }
 
     .mood-row .bar {
-      height: 12px;
-      border-radius: var(--pill);
-      background: var(--line);
-      overflow: hidden;
-    }
-
-    .mood-row .bar span {
-      display: block;
-      height: 100%;
-      border-radius: var(--pill);
-      background: var(--brand);
+      grid-column: auto;
     }
 
     .mood-row .num {
@@ -863,6 +865,44 @@
 
     .mood-insight b {
       color: var(--ink);
+    }
+
+    .ins-empty {
+      text-align: center;
+      padding: 40px 24px;
+    }
+
+    .ins-empty .orb {
+      margin: 0 auto 14px;
+    }
+
+    .ins-empty .t-body {
+      max-width: 420px;
+      margin: 8px auto 0;
+    }
+
+    .ins-preview {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      max-width: 460px;
+      margin: 22px auto 0;
+      text-align: left;
+    }
+
+    .ins-preview div {
+      padding: 14px;
+      border-radius: var(--r-lg);
+      background: var(--brand-tint);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .ins-preview span {
+      display: block;
+      font-size: 22px;
+      margin-bottom: 4px;
     }
 
     /* reps */
@@ -1015,7 +1055,56 @@
       white-space: nowrap;
     }
 
-    /* floating focus timer */
+    .glance-summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .glance-summary span {
+      background: var(--brand-tint);
+      border-radius: var(--pill);
+      padding: 6px 14px;
+      font-size: 14px;
+      color: var(--ink-2);
+    }
+
+    .glance-summary b {
+      color: var(--ink);
+    }
+
+    .glance-badge {
+      display: inline-flex;
+      padding: 4px 10px;
+      border-radius: var(--pill);
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--brand-tint);
+      white-space: nowrap;
+    }
+
+    .delete-btn {
+      -webkit-appearance: none;
+      appearance: none;
+      border: none;
+      background: transparent;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      color: var(--ink-3);
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .delete-btn:hover {
+      background: var(--danger-soft);
+      color: var(--danger);
+    }
+
+    /* floating focus timer — fully hidden (and not focusable) when no timer runs */
     .timer-bar {
       position: fixed;
       left: 50%;
@@ -1023,19 +1112,22 @@
       z-index: 130;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       max-width: calc(100vw - 24px);
-      padding: 8px 10px 8px 12px;
+      padding: 8px 8px 8px 12px;
       border-radius: var(--pill);
       background: var(--dark);
       color: var(--on-dark);
       box-shadow: var(--shadow-3);
-      transform: translate(-50%, 160%);
-      transition: transform var(--t-slow) var(--ease);
+      transform: translate(-50%, calc(100% + 40px));
+      visibility: hidden;
+      transition: transform var(--t-slow) var(--ease), visibility 0s linear var(--t-slow);
     }
 
     .timer-bar.show {
       transform: translate(-50%, 0);
+      visibility: visible;
+      transition: transform var(--t-slow) var(--ease), visibility 0s;
     }
 
     .timer-progress {
@@ -1056,7 +1148,7 @@
     }
 
     .timer-task {
-      max-width: 200px;
+      max-width: 220px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -1069,7 +1161,7 @@
       font-size: 22px;
       font-weight: 800;
       font-variant-numeric: tabular-nums;
-      min-width: 70px;
+      min-width: 66px;
       text-align: center;
     }
 
@@ -1093,6 +1185,7 @@
       font-size: 14px;
       font-weight: 700;
       cursor: pointer;
+      white-space: nowrap;
     }
 
     .timer-bar .timer-btn.primary {
@@ -1111,51 +1204,93 @@
       border-radius: 50%;
       font-size: 20px;
       cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    body.timer-on .toast {
+      bottom: 96px;
     }
 
     @media (max-width: 860px) {
       .timer-bar {
-        bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+        bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+      }
+
+      body.timer-on .toast {
+        bottom: calc(148px + env(safe-area-inset-bottom, 0px));
       }
     }
 
     @media (max-width: 600px) {
       .planner-tabs .segmented button {
-        padding: 8px 12px;
+        padding: 8px 14px;
         font-size: 14px;
       }
 
-      .task-text {
-        flex-basis: calc(100% - 140px);
+      .timer-task,
+      #timerOrb {
+        display: none;
       }
 
-      .freq-badge {
-        margin-left: 38px;
+      .timer-bar {
+        gap: 6px;
+        padding-left: 14px;
       }
 
-      .add-section-row,
-      .tomorrow-add-row {
+      .timer-bar .timer-btn {
+        padding: 0 12px;
+      }
+
+      .planner-top .ring {
+        width: 60px;
+        height: 60px;
+      }
+
+      .qa-row .btn {
+        padding: 0 18px;
+      }
+
+      .t-row {
+        padding-left: 12px;
+        gap: 10px;
+      }
+
+      .tomorrow-add-row,
+      .add-list {
         flex-direction: column;
       }
 
       .mood-row {
-        grid-template-columns: 90px 1fr 80px;
+        grid-template-columns: 80px 1fr 76px;
       }
 
-      .timer-task {
-        display: none;
+      .et-two {
+        grid-template-columns: minmax(0, 1fr);
       }
+    }
 
-      .timeline-actions .note {
+    @media (max-width: 999px) {
+      .print-link {
         display: none;
       }
     }
 
     @media print {
-      .card {
+      .card,
+      .t-list {
         box-shadow: none;
         border: 1px solid #ddd;
         page-break-inside: avoid;
+      }
+
+      .app-side,
+      .quick-add,
+      .day-head .segmented {
+        display: none !important;
+      }
+
+      .app-grid {
+        display: block;
       }
     }
   </style>
@@ -1164,13 +1299,13 @@
 
 <body data-mj-page="planner">
 
-  <main class="wrap planner-main" id="main">
+  <main class="app-wrap planner-main" id="main">
     <div class="planner-top">
       <div>
         <p class="eyebrow" id="todayLabel"></p>
         <h1 class="t-h1"><span id="greetWord">Hello</span>, <button type="button" class="name-btn" data-mj-name title="Change your name"><span id="nameText">friend</span></button></h1>
       </div>
-      <div class="ring" role="img" id="progressRing" aria-label="Tasks done today">
+      <div class="ring" role="img" id="progressRing" aria-label="Tasks done today" hidden>
         <svg viewBox="0 0 72 72" aria-hidden="true">
           <circle class="ring-track" cx="36" cy="36" r="30" fill="none" stroke-width="8"></circle>
           <circle class="ring-fill" id="ringFill" cx="36" cy="36" r="30" fill="none" stroke-width="8" stroke-linecap="round" stroke-dasharray="0 189"></circle>
@@ -1180,151 +1315,164 @@
     </div>
 
     <nav class="planner-tabs no-print" aria-label="Planner views">
-      <div class="segmented">
-        <button type="button" class="tab active" id="tabPlannerBtn">Day</button>
-        <button type="button" class="tab" id="tabRepsBtn">Reps</button>
-        <button type="button" class="tab" id="tabAnalyticsBtn">Insights</button>
+      <div class="segmented" role="group">
+        <button type="button" class="tab active" id="tabPlannerBtn" aria-pressed="true">Today</button>
+        <button type="button" class="tab" id="tabAnalyticsBtn" aria-pressed="false">Insights</button>
+        <button type="button" class="tab" id="tabRepsBtn" aria-pressed="false" hidden>Reps</button>
       </div>
-      <button type="button" class="btn btn-quiet btn-sm tab-action" id="printBtn">Print</button>
     </nav>
 
     <div id="plannerView" class="view active">
-      <div class="page-intro">
-        <div class="progress-wrap" id="progressWrap" style="display:none;">
-          <div class="progress-bar">
-            <div class="progress-fill" id="progressFill"></div>
+      <div class="app-grid">
+        <div class="plan-main">
+          <p class="appreciation" id="plannerCheer"></p>
+
+          <form class="card quick-add no-print" id="quickAdd" autocomplete="off">
+            <div class="qa-row">
+              <label class="sr-only" for="qaText">Add a task</label>
+              <input type="text" id="qaText" maxlength="160" enterkeyhint="done" placeholder="Add a task…">
+              <button type="submit" class="btn btn-primary">Add</button>
+            </div>
+            <div class="qa-meta">
+              <span class="qa-sec"><label class="sr-only" for="qaSection">List</label><select id="qaSection"></select></span>
+              <span id="qaChips" class="row row-wrap" style="--gap:6px" aria-live="polite"></span>
+            </div>
+          </form>
+
+          <div class="day-head">
+            <div class="segmented seg-sm no-print" role="group" aria-label="Group tasks">
+              <button type="button" id="modeTime" aria-pressed="true">By time</button>
+              <button type="button" id="modeList" aria-pressed="false">By list</button>
+            </div>
+            <span class="t-small" id="daySummary"></span>
           </div>
-          <span class="progress-label" id="progressLabel"></span>
+          <div id="dayList"></div>
         </div>
-        <p class="appreciation" id="plannerCheer"></p>
-        <a class="mood-strip no-print" id="moodStrip" href="journal.html"></a>
-      </div>
 
-      <div class="card">
-        <div class="card-label">Your day</div>
-        <p class="hint">What's still open, in order. <b>Now</b> is highlighted. If something runs late, tap "→ now" to move it — or gently re-plan the rest of the day.</p>
-        <div class="glance-summary" id="glanceSummary" style="display:none;"></div>
-        <ul class="glance-list" id="glanceList"></ul>
-        <div class="timeline-actions no-print" id="timelineActions" style="display:none;">
-          <span class="note">Keeps durations, lines things up calmly from now.</span>
-          <button type="button" class="btn btn-secondary btn-sm" id="replanBtn">Re-plan from now</button>
-        </div>
-      </div>
-
-      <div id="sectionsContainer"></div>
-
-      <div class="card">
-        <div class="card-label">Add a section</div><p class="hint">Work, study, gym, home — anything that helps you group your day.</p>
-        <div class="add-section-row">
-          <input type="text" id="newSectionInput" placeholder="Section name">
-          <button class="btn btn-primary" id="addSectionBtn">Add section</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-label">For tomorrow</div>
-        <p class="hint">A little scratch list, so tonight's thoughts have somewhere to rest.</p>
-        <ul class="tomorrow-list" id="tomorrowList"></ul>
-        <div class="tomorrow-add-row">
-          <input type="text" id="tomorrowInput" placeholder="Something for tomorrow">
-          <button class="btn btn-secondary" id="addTomorrowBtn">Add</button>
-        </div>
+        <aside class="app-side no-print" aria-label="Your day at a glance">
+          <a class="mood-strip" id="moodStrip" href="journal.html"></a>
+          <div class="card side-card">
+            <div class="side-title">For tomorrow</div>
+            <p class="hint" style="margin-bottom:12px">Tonight's thoughts need somewhere to rest.</p>
+            <ul class="tomorrow-list" id="tomorrowList"></ul>
+            <div class="tomorrow-add-row">
+              <label class="sr-only" for="tomorrowInput">Something for tomorrow</label>
+              <input type="text" id="tomorrowInput" placeholder="Something for tomorrow">
+              <button type="button" class="btn btn-secondary" id="addTomorrowBtn">Add</button>
+            </div>
+          </div>
+          <div class="side-links">
+            <button type="button" class="link-quiet" data-mj-letter>This week's letter</button>
+            <button type="button" class="link-quiet print-link" id="printBtn">Print today</button>
+            <button type="button" class="link-quiet" data-mj-support>Find support</button>
+          </div>
+        </aside>
       </div>
     </div>
 
-    <div id="repsView" class="view">
+    <div id="repsView" class="view stack-16" style="max-width:820px">
       <div class="page-intro">
-        <h1 class="t-h1 page-title">Interview reps</h1>
+        <h2 class="t-h1 page-title">Interview reps</h2>
         <p class="page-desc">Tiny spaced-repetition drills between tasks. Cards you fumble come back sooner; cards you
           know drift out for weeks. Add your own as you study.</p>
       </div>
 
       <div class="card">
-        <div class="card-label">Review</div>
+        <h3 class="card-label">Review</h3>
         <div class="glance-summary" id="repsSummary"></div>
         <div id="repArea"></div>
       </div>
 
       <div class="card">
-        <div class="card-label">Add your own card</div>
+        <h3 class="card-label">Add your own card</h3>
         <p class="hint">Anything you just learned or got wrong in a mock — write it as a question and it enters the
           rotation.</p>
         <div class="rep-form">
+          <label class="sr-only" for="repTopic">Topic</label>
           <input type="text" id="repTopic" placeholder="Topic — e.g. React, DSA, System Design...">
+          <label class="sr-only" for="repQ">Question</label>
           <textarea id="repQ" placeholder="Question — e.g. When does useEffect cleanup run?"></textarea>
+          <label class="sr-only" for="repA">Answer</label>
           <textarea id="repA" placeholder="Answer, in your own words..."></textarea>
           <button class="btn btn-primary" id="repAddBtn">Add card</button>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-label">All cards</div>
+        <h3 class="card-label">All cards</h3>
         <div id="repListWrap"></div>
       </div>
     </div>
 
-    <div id="analyticsView" class="view">
+    <div id="analyticsView" class="view stack-16">
       <div class="page-intro">
-        <h1 class="t-h1 page-title">Your patterns</h1>
+        <h2 class="t-h1 page-title">Your patterns</h2>
         <p class="page-desc">A quiet look at what's actually been happening — no pressure, just the record.</p>
         <p class="appreciation" id="analyticsCheer"></p>
       </div>
 
-      <div class="card">
-        <div class="card-label">Overview</div>
-        <div class="stat-grid" id="statGrid"></div>
-      </div>
+      <div id="insEmpty"></div>
 
-      <div class="card">
-        <div class="card-label">Activity</div>
-        <p class="hint">Each square is a day. The warmer it glows, the more you finished.</p>
-        <div class="heatmap-wrap">
-          <div class="heatmap-grid" id="heatmapGrid"></div>
+      <div id="insBody" class="stack-16">
+        <div class="card">
+          <h3 class="card-label">Overview</h3>
+          <div class="stat-grid four" id="statGrid"></div>
         </div>
-        <div class="heatmap-legend">
-          <span>Less</span>
-          <span class="heatmap-cell level-0"></span>
-          <span class="heatmap-cell level-1"></span>
-          <span class="heatmap-cell level-2"></span>
-          <span class="heatmap-cell level-3"></span>
-          <span class="heatmap-cell level-4"></span>
-          <span>More</span>
+
+        <div class="card">
+          <h3 class="card-label">Activity</h3>
+          <p class="hint">Each square is a day. The warmer it glows, the more you finished.</p>
+          <div class="heatmap-wrap">
+            <div class="heatmap-grid" id="heatmapGrid"></div>
+          </div>
+          <div class="heatmap-legend" aria-hidden="true">
+            <span>Less</span>
+            <span class="heatmap-cell level-0"></span>
+            <span class="heatmap-cell level-1"></span>
+            <span class="heatmap-cell level-2"></span>
+            <span class="heatmap-cell level-3"></span>
+            <span class="heatmap-cell level-4"></span>
+            <span>More</span>
+          </div>
         </div>
-      </div>
 
-      <div class="card">
-        <div class="card-label">By section</div>
-        <div id="sectionStatsWrap"></div>
-      </div>
+        <div class="ins-grid two">
+          <div class="card">
+            <h3 class="card-label">By list</h3>
+            <p class="hint">Tasks finished in the last 7 days.</p>
+            <div id="sectionStatsWrap"></div>
+          </div>
+          <div class="card">
+            <h3 class="card-label">By rhythm</h3>
+            <p class="hint">Where your repeating tasks stand right now.</p>
+            <div class="stat-grid three" id="freqStatGrid"></div>
+          </div>
+        </div>
 
-      <div class="card">
-        <div class="card-label">By rhythm</div>
-        <div class="stat-grid" id="freqStatGrid"></div>
-      </div>
+        <div class="card">
+          <h3 class="card-label">Mood &amp; energy</h3>
+          <p class="hint">How your journal check-ins line up with what you got done — so you can plan with your energy, not
+            against it.</p>
+          <div id="moodStatsWrap"></div>
+        </div>
 
-      <div class="card">
-        <div class="card-label">Mood &amp; Energy</div>
-        <p class="hint">How your journal check-ins line up with what you got done — so you can plan with your energy, not
-          against it.</p>
-        <div id="moodStatsWrap"></div>
-      </div>
-
-      <div class="card">
-        <div class="card-label">This week's letter</div>
-        <p class="hint">A short note about your week — what you did, how you felt, and what you were proud of.</p>
-        <button type="button" class="btn btn-secondary" data-mj-letter>Read your letter</button>
+        <div class="card card-soft">
+          <h3 class="card-label">This week's letter</h3>
+          <p class="hint">A short note about your week — what you did, how you felt, and what you were proud of.</p>
+          <button type="button" class="btn btn-primary" data-mj-letter>Read your letter</button>
+        </div>
       </div>
     </div>
 
   </main>
 
-  <div class="timer-bar no-print" id="timerBar">
+  <div class="timer-bar no-print" id="timerBar" role="region" aria-label="Focus timer">
     <div class="timer-progress"><span id="timerProgress"></span></div>
     <span id="timerOrb"></span>
     <span class="timer-task" id="timerTask"></span>
-    <span class="timer-count" id="timerCount"></span>
+    <span class="timer-count" id="timerCount" role="timer"></span>
     <button type="button" class="timer-btn" id="timerPauseBtn">Pause</button>
-    <button type="button" class="timer-btn" id="timerPlusBtn">+5m</button>
+    <button type="button" class="timer-btn" id="timerPlusBtn" aria-label="Add 5 minutes">+5m</button>
     <button type="button" class="timer-btn primary" id="timerDoneBtn">Done</button>
     <button type="button" class="timer-close" id="timerStopBtn" title="Stop timer" aria-label="Stop timer">×</button>
   </div>
@@ -1335,8 +1483,6 @@
     (function () {
       var STORAGE_KEY = "plannerData_v2"; // same key as before, so existing data is kept
       var DATA_VERSION = 3;
-      var sectionsContainer = document.getElementById("sectionsContainer");
-      var tomorrowList = document.getElementById("tomorrowList");
       var todayLabel = document.getElementById("todayLabel");
       var toast = document.getElementById("toast");
 
@@ -1469,13 +1615,17 @@
       }
 
       function load() {
-        var raw = localStorage.getItem(STORAGE_KEY);
+        var raw = null;
+        try { raw = localStorage.getItem(STORAGE_KEY); } catch (e) { }
         if (!raw) return defaultData();
         try {
           var parsed = JSON.parse(raw);
-          if (!parsed.sections) return defaultData();
-          return migrate(parsed);
-        } catch (e) { return defaultData(); }
+          if (parsed && parsed.sections) return migrate(parsed);
+        } catch (e) { }
+        // Unreadable data is never silently overwritten: keep a copy aside first.
+        try { localStorage.setItem(STORAGE_KEY + "_unreadable_" + Date.now(), raw); } catch (e) { }
+        setTimeout(function () { MJ.toast("Some planner data couldn't be read. A copy was kept aside — your backup file can restore it.", 6000); }, 800);
+        return defaultData();
       }
 
       // ---- completion history log (powers heatmap + analytics) ----
@@ -1497,13 +1647,28 @@
         toast.textContent = msg;
         toast.classList.add("show");
         clearTimeout(showToast._t);
-        showToast._t = setTimeout(function () { toast.classList.remove("show"); }, ms || 1500);
+        showToast._t = setTimeout(function () { toast.classList.remove("show"); }, ms || 2200);
       }
 
+      var saveFailedShown = false;
       function save() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        showToast("Saved ✓");
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+          lastWritten = localStorage.getItem(STORAGE_KEY);
+        } catch (e) {
+          if (!saveFailedShown) { saveFailedShown = true; showToast("Couldn't save — this browser's storage is full or blocked (private mode?).", 6000); }
+        }
       }
+      var lastWritten = null;
+      // another tab changed the planner: pick it up instead of overwriting it later
+      window.addEventListener("storage", function (e) {
+        if (e.key !== STORAGE_KEY || !e.newValue || e.newValue === lastWritten) return;
+        data = load();
+        reps = data.reps;
+        var a = document.activeElement;
+        if (a && a.closest && a.closest(".mj-dialog")) return;
+        render(); renderTimerBar(); updateRepsBadge();
+      });
 
       function isTaskChecked(task) {
         if (task.freq === "daily") return task.lastDoneDate === todayISO();
@@ -1609,15 +1774,11 @@
 
       function renderProgress() {
         renderCheer();
-        var wrap = document.getElementById("progressWrap");
         var total = data.tasks.length;
-        if (!total) { wrap.style.display = "none"; setRing(0, 0); return; }
-        var done = data.tasks.filter(isTaskChecked).length;
-        var pct = Math.round(done / total * 100);
-        wrap.style.display = "flex";
-        document.getElementById("progressFill").style.width = pct + "%";
-        document.getElementById("progressLabel").textContent = done + " / " + total + " done · " + pct + "%" + (pct === 100 ? " 🎉" : "");
-        setRing(done, total);
+        var ring = document.getElementById("progressRing");
+        ring.hidden = !total;
+        if (!total) return;
+        setRing(data.tasks.filter(isTaskChecked).length, total);
       }
 
       // start-button state: running (this task), blocked (another timer active), or normal
@@ -1653,147 +1814,452 @@
         return formatTimeLabel(task.startTime) + (end ? "–" + formatTimeLabel(end) : "");
       }
 
-      // ---- timeline (glance) ----
-      function renderGlance() {
-        var glanceList = document.getElementById("glanceList");
-        var summary = document.getElementById("glanceSummary");
-        var actions = document.getElementById("timelineActions");
-        var now = nowMin();
+      // ================= THE DAY: one list, one row style =================
+      var SECTION_ORBS = [["var(--sky)", "smile"], ["var(--mint)", "calm"], ["var(--coral)", "happy"], ["var(--lavender)", "smile"], ["var(--yolk)", "joy"], ["var(--rose)", "calm"]];
+      var mode = (MJ.prefs().plannerMode === "list") ? "list" : "time";
+      var freshId = null;
+      var CHEV = '<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+      var PLAY = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg>';
+      var TRASH = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>';
 
-        var timed = [], anytime = [], doneToday = 0;
+      function sectionOf(task) {
+        return data.sections.find(function (s) { return s.id === task.sectionId; }) || null;
+      }
+
+      // Pending tasks with their status (now / next / late) and conflicts.
+      function dayModel() {
+        var now = nowMin();
+        var timed = [], anytime = [], done = [];
         data.tasks.forEach(function (task) {
-          var section = data.sections.find(function (s) { return s.id === task.sectionId; });
-          var entry = { task: task, sectionName: section ? section.name : "" };
-          if (isTaskChecked(task)) { doneToday++; return; }
+          var s = sectionOf(task);
+          var entry = { task: task, sectionName: s ? s.name : "" };
+          if (isTaskChecked(task)) { done.push(entry); return; }
           if (task.startTime) timed.push(entry); else anytime.push(entry);
         });
-        timed.sort(function (a, b) {
-          return a.task.startTime < b.task.startTime ? -1 : a.task.startTime > b.task.startTime ? 1 : 0;
-        });
-
+        timed.sort(function (a, b) { return a.task.startTime < b.task.startTime ? -1 : a.task.startTime > b.task.startTime ? 1 : 0; });
         var conflicted = findConflicts(timed);
-
-        // statuses
         var nextAssigned = false;
         timed.forEach(function (p) {
-          var s = hmToMin(p.task.startTime);
-          var e = s + (p.task.durationMin || 30);
-          if (s <= now && now < e) { p.status = "now"; }
-          else if (e <= now) { p.status = "past"; }
+          var st = hmToMin(p.task.startTime);
+          var en = st + (p.task.durationMin || 30);
+          if (st <= now && now < en) p.status = "now";
+          else if (en <= now) p.status = "past";
           else if (!nextAssigned) { p.status = "next"; nextAssigned = true; }
+          p.conflicts = conflicted[p.task.id] || null;
         });
+        return { timed: timed, anytime: anytime, done: done };
+      }
 
-        // summary
-        var pendingCount = timed.length + anytime.length;
-        var plannedAhead = 0;
-        timed.forEach(function (p) {
-          if (p.status === "past") return;
-          plannedAhead += p.task.durationMin || 0;
-        });
-        var slipped = timed.filter(function (p) { return p.status === "past"; }).length;
-        if (pendingCount || doneToday) {
-          summary.style.display = "flex";
-          var bits = [];
-          bits.push("<span><b>" + pendingCount + "</b> pending</span>");
-          bits.push("<span><b>" + doneToday + "</b> done</span>");
-          if (plannedAhead) bits.push("<span><b>" + fmtDur(plannedAhead) + "</b> scheduled ahead</span>");
-          if (slipped) bits.push("<span><b>" + slipped + "</b> running late</span>");
-          summary.innerHTML = bits.join("");
-        } else {
-          summary.style.display = "none";
+      function metaParts(p, showSection) {
+        var t = p.task, parts = [];
+        var checked = isTaskChecked(t);
+        if (t.startTime) parts.push(escapeAttr(timeRangeLabel(t)));
+        else if (t.durationMin) parts.push(fmtDur(t.durationMin));
+        if (showSection && p.sectionName) parts.push(escapeAttr(p.sectionName));
+        if (t.freq === "daily") parts.push("Every day");
+        if (t.freq === "weekly") parts.push("Every week");
+        if (!checked) {
+          if (p.status === "past") {
+            var late = nowMin() - hmToMin(t.startTime);
+            parts.push('<span class="warn">' + (late > 0 ? fmtDur(late) + " late" : "starting now") + '</span>');
+          }
+          if (carriedOver(t)) parts.push('<span class="warn">waiting since ' + fmtShortDate(t.addedOn) + '</span>');
+          var mi = missedInfo(t);
+          if (mi) parts.push('<span class="warn">' + mi.label + '</span>');
+          if (p.conflicts) parts.push('<span class="warn">overlaps ' + escapeAttr(p.conflicts[0].text || "another task") + (p.conflicts.length > 1 ? " +" + (p.conflicts.length - 1) : "") + '</span>');
         }
+        return parts.map(function (x) { return "<span>" + x + "</span>"; }).join("");
+      }
 
-        actions.style.display = timed.length > 1 ? "flex" : "none";
+      function rowHTML(p, showSection) {
+        var t = p.task;
+        var checked = isTaskChecked(t);
+        var name = escapeAttr(t.text || "(untitled task)");
+        var cls = "t-row" + (checked ? " done" : "") + (p.status === "now" && !checked ? " now" : "") + (t.id === freshId ? " fresh" : "");
+        var pill = "";
+        if (!checked && p.status === "now") pill = '<span class="status-pill status-now">Now</span>';
+        else if (!checked && p.status === "next") pill = '<span class="status-pill status-next">Up next</span>';
+        return '<li class="' + cls + '" data-id="' + t.id + '">' +
+          '<input type="checkbox" class="check" data-done aria-label="Done: ' + name + '"' + (checked ? " checked" : "") + '>' +
+          '<button type="button" class="t-main" data-edit aria-label="Edit ' + name + '"><span class="t-title">' + name + '</span>' +
+          '<span class="t-meta">' + metaParts(p, showSection) + '</span></button>' +
+          pill +
+          (!checked && p.status === "past" ? '<button type="button" class="push-btn no-print" data-push aria-label="Move ' + name + ' to now">→ now</button>' : '') +
+          (!checked ? '<button type="button" class="start-btn no-print' + startBtnState(t.id) + '" data-start aria-label="Start focus timer for ' + name + '">' + PLAY + '</button>' : '') +
+          '</li>';
+      }
 
-        if (!pendingCount) {
-          glanceList.innerHTML = '<li class="glance-empty">Nothing pending — you\'re clear for now.</li>';
+      function groupHTML(title, entries, opts) {
+        opts = opts || {};
+        var head = '<div class="t-group-head"><h3>' + title + '</h3>' + (opts.count != null ? '<span class="count">' + opts.count + '</span>' : '') + (opts.action || '') + '</div>';
+        var body = entries.length
+          ? '<ul class="t-list">' + entries.map(function (p) { return rowHTML(p, opts.showSection); }).join("") + '</ul>'
+          : '<div class="t-list"><div class="t-empty-row">' + (opts.empty || "Nothing here.") + '</div></div>';
+        return '<section class="t-group">' + head + body + '</section>';
+      }
+
+      var IDEAS = ["Drink water every day", "Walk 20m", "Deep work 9am 90m", "Call mom", "Plan tomorrow 9pm 10m"];
+
+      function renderDay() {
+        var box = document.getElementById("dayList");
+        var m = dayModel();
+        var pendingN = m.timed.length + m.anytime.length;
+        var summary = document.getElementById("daySummary");
+        summary.textContent = data.tasks.length ? (pendingN + " to go · " + m.done.length + " done") : "";
+        document.getElementById("modeTime").setAttribute("aria-pressed", String(mode === "time"));
+        document.getElementById("modeList").setAttribute("aria-pressed", String(mode === "list"));
+
+        if (!data.tasks.length && mode === "time") {
+          box.innerHTML = '<div class="card day-empty">' + MJ.orb({ mood: "calm", size: 80, cls: "orb-float" }) +
+            '<h3 class="t-h2">A fresh, unhurried day</h3>' +
+            '<p class="t-body">Add a few things above — just type naturally, like <b>“gym 7am 30m daily”</b>. Or start with one of these:</p>' +
+            '<div class="idea-chips">' + IDEAS.map(function (i) { return '<button type="button" class="chip" data-idea="' + escapeAttr(i) + '">+ ' + escapeAttr(i) + '</button>'; }).join("") + '</div></div>';
           return;
         }
 
-        function itemHTML(p, showTime) {
-          var t = p.task;
-          var end = endTimeOf(t);
-          var timeHTML = "";
-          if (showTime) {
-            if (p.status === "past") {
-              var lateMin = nowMin() - hmToMin(t.startTime);
-              var lateLabel = lateMin > 0 ? fmtDur(lateMin) + " late" : "just now";
-              timeHTML = '<span class="glance-time overdue tip">due ' + escapeAttr(formatTimeLabel(t.startTime)) +
-                '<span class="tip-box">Planned for <b>' + escapeAttr(timeRangeLabel(t)) + '</b> — running <b>' +
-                escapeAttr(lateLabel) + '</b>.<br>Check it off, hit “→ now”, or re-plan the day.</span></span>';
-            } else {
-              timeHTML = '<span class="glance-time">' + escapeAttr(timeRangeLabel(t)) + '</span>';
-            }
+        var html = "";
+        if (mode === "time") {
+          var anyLate = m.timed.some(function (p) { return p.status === "past"; });
+          if (m.timed.length) {
+            html += groupHTML("Scheduled", m.timed, {
+              showSection: true,
+              action: anyLate && m.timed.length > 1 ? '<button type="button" class="btn btn-quiet btn-sm no-print" data-replan>Re-plan from now</button>' : ''
+            });
           }
-          var pill = "";
-          if (p.status === "now") pill = '<span class="status-pill status-now">Now</span>';
-          else if (p.status === "next") pill = '<span class="status-pill status-next">Up next</span>';
-          else if (p.status === "past") pill = '<span class="status-pill status-past">Running late</span>';
-          return '<li data-glance-id="' + t.id + '"' + (p.status === "now" ? ' class="current"' : '') + '>' +
-            '<input type="checkbox" class="check" data-glance-done aria-label="Mark done">' +
-            timeHTML +
-            '<span class="glance-text">' + escapeAttr(t.text || "(untitled task)") +
-            (t.durationMin && !end ? ' <span style="color:var(--text-muted);font-size:12px;">(' + fmtDur(t.durationMin) + ')</span>' : '') +
-            '</span>' +
-            (carriedOver(t) ? (function () {
-              var days = Math.round((new Date(todayISO() + "T00:00:00") - new Date(t.addedOn + "T00:00:00")) / 86400000);
-              return '<span class="since-badge tip" tabindex="0">waiting since ' + fmtShortDate(t.addedOn) +
-                '<span class="tip-box">Added on <b>' + fmtShortDate(t.addedOn) + '</b> — pending for <b>' + days + ' day' + (days > 1 ? 's' : '') + '</b>.<br>Do it when you can — or let it go. Both are okay.</span></span>';
-            })() : '') +
-            (function () {
-              var mi = missedInfo(t);
-              return mi ? '<span class="since-badge tip">' + mi.label + '<span class="tip-box">' + mi.tip + '<br>Today\'s instance is still open — do it now to restart the chain.</span></span>' : '';
-            })() +
-            (p.sectionName ? '<span class="glance-badge">' + escapeAttr(p.sectionName) + '</span>' : '') +
-            (t.freq !== "onetime" ? '<span class="glance-badge freq">' + freqLabelShort(t.freq) + '</span>' : '') +
-            (conflicted[t.id] ? (function () {
-              var others = conflicted[t.id].map(function (o) {
-                return '• ' + escapeAttr(o.text || "(untitled)") + ' <b>(' + escapeAttr(timeRangeLabel(o)) + ')</b>';
-              }).join('<br>');
-              return '<span class="conflict-flag tip">⚠ overlaps' +
-                '<span class="tip-box">Clashes with:<br>' + others + '<br>Move one of them to clear this.</span></span>';
-            })() : '') +
-            pill +
-            (p.status === "past" ? '<button type="button" class="push-btn no-print" data-push title="Move start time to now">→ now</button>' : '') +
-            '<button type="button" class="start-btn no-print' + startBtnState(t.id) + '" data-start title="Start focus timer" aria-label="Start focus timer"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg></button>' +
-            '</li>';
+          if (m.anytime.length || !m.timed.length) {
+            html += groupHTML(m.timed.length ? "Anytime" : "To do", m.anytime, { showSection: true, empty: "All clear — nothing waiting. 🌿" });
+          }
+        } else {
+          data.sections.forEach(function (s, i) {
+            var ents = m.timed.concat(m.anytime).filter(function (p) { return p.task.sectionId === s.id; })
+              .concat(m.done.filter(function (p) { return p.task.sectionId === s.id; }));
+            html += '<section class="t-group" data-section-id="' + s.id + '"><div class="sec-head">' +
+              MJ.orb({ color: SECTION_ORBS[i % SECTION_ORBS.length][0], face: SECTION_ORBS[i % SECTION_ORBS.length][1], size: 34 }) +
+              '<label class="sr-only" for="sec-' + s.id + '">List name</label>' +
+              '<input type="text" class="section-name" id="sec-' + s.id + '" value="' + escapeAttr(s.name) + '" data-section-name>' +
+              '<button type="button" class="icon-btn no-print" data-del-section aria-label="Delete list ' + escapeAttr(s.name) + '">' + TRASH + '</button></div>' +
+              (ents.length ? '<ul class="t-list">' + ents.map(function (p) { return rowHTML(p, false); }).join("") + '</ul>'
+                : '<div class="t-list"><div class="t-empty-row">Nothing here yet — pick “' + escapeAttr(s.name) + '” above when you add a task.</div></div>') +
+              '</section>';
+          });
+          var orphans = m.timed.concat(m.anytime, m.done).filter(function (p) { return !sectionOf(p.task); });
+          if (orphans.length) html += groupHTML("No list", orphans, {});
+          html += '<div class="add-list no-print"><label class="sr-only" for="newSectionInput">New list name</label>' +
+            '<input type="text" id="newSectionInput" placeholder="New list — work, study, home…">' +
+            '<button type="button" class="btn btn-secondary" data-add-section>Add list</button></div>';
         }
 
-        var html = timed.map(function (p) { return itemHTML(p, true); }).join("");
-        if (anytime.length) {
-          html += '<li class="anytime-divider" style="border-bottom:1px solid var(--border);">Anytime — no fixed slot</li>';
-          html += anytime.map(function (p) { return itemHTML(p, false); }).join("");
+        if (mode === "time" && m.done.length) {
+          html += '<details class="t-group t-done"' + (pendingN === 0 ? " open" : "") + '><summary class="t-group-head">' + CHEV +
+            '<h3>Done today</h3><span class="count">' + m.done.length + '</span></summary>' +
+            '<ul class="t-list">' + m.done.map(function (p) { return rowHTML(p, true); }).join("") + '</ul></details>';
         }
-        glanceList.innerHTML = html;
+        box.innerHTML = html;
+        freshId = null;
       }
 
-      document.getElementById("glanceList").addEventListener("change", function (e) {
-        if (!e.target.matches("[data-glance-done]")) return;
-        var li = e.target.closest("li");
-        var task = data.tasks.find(function (t) { return t.id === li.dataset.glanceId; });
+      function renderSectionSelect() {
+        var sel = document.getElementById("qaSection");
+        var last = MJ.prefs().lastSection;
+        if (!data.sections.some(function (s) { return s.id === last; })) last = data.sections[0] ? data.sections[0].id : "";
+        sel.innerHTML = data.sections.map(function (s) {
+          return '<option value="' + s.id + '"' + (s.id === last ? " selected" : "") + '>' + escapeAttr(s.name || "Untitled") + '</option>';
+        }).join("") + '<option value="">No list</option>';
+      }
+
+      // ---- natural-language quick add: "gym 7am 30m daily #health" ----
+      function parseQuick(str) {
+        var s = " " + str + " ", out = { time: "", dur: null, freq: "onetime", sectionId: null };
+        var m;
+        m = s.match(/\s#([\w&-]+)/);
+        if (m) {
+          var q = m[1].toLowerCase();
+          var sec = data.sections.find(function (x) { return x.name.toLowerCase().replace(/\s+/g, "").indexOf(q) === 0; });
+          if (sec) { out.sectionId = sec.id; s = s.replace(m[0], " "); }
+        }
+        m = s.match(/\s(every\s*day|daily|everyday)(?=\s)/i);
+        if (m) { out.freq = "daily"; s = s.replace(m[0], " "); }
+        else {
+          m = s.match(/\s(every\s*week|weekly)(?=\s)/i);
+          if (m) { out.freq = "weekly"; s = s.replace(m[0], " "); }
+        }
+        m = s.match(/\s(?:at\s+)?(\d{1,2})(?::(\d{2}))?\s?(am|pm)(?=\s)/i);
+        if (m && +m[1] >= 1 && +m[1] <= 12 && (!m[2] || +m[2] < 60)) {
+          var h = +m[1] % 12 + (m[3].toLowerCase() === "pm" ? 12 : 0);
+          out.time = minToHM(h * 60 + (m[2] ? +m[2] : 0));
+          s = s.replace(m[0], " ");
+        } else {
+          m = s.match(/\s(?:at\s+)?([01]?\d|2[0-3]):([0-5]\d)(?=\s)/);
+          if (m) { out.time = minToHM(+m[1] * 60 + +m[2]); s = s.replace(m[0], " "); }
+        }
+        m = s.match(/\s(?:for\s+)?(\d+(?:\.\d+)?)\s?(h|hr|hrs|hour|hours)(?:\s?(\d+)\s?(m|min|mins|minutes))?(?=\s)/i);
+        if (m) { out.dur = Math.round(parseFloat(m[1]) * 60 + (m[3] ? +m[3] : 0)); s = s.replace(m[0], " "); }
+        else {
+          m = s.match(/\s(?:for\s+)?(\d+)\s?(m|min|mins|minutes)(?=\s)/i);
+          if (m) { out.dur = +m[1]; s = s.replace(m[0], " "); }
+        }
+        out.text = s.replace(/\s+/g, " ").trim();
+        if (out.dur !== null && (out.dur <= 0 || out.dur > 720)) out.dur = null;
+        return out;
+      }
+
+      function renderQuickChips() {
+        var v = document.getElementById("qaText").value;
+        var box = document.getElementById("qaChips");
+        if (!v.trim()) {
+          box.innerHTML = '<span class="qa-tip">Tip: add a time <b>9am</b>, a length <b>30m</b>, or <b>daily</b></span>';
+          return;
+        }
+        var q = parseQuick(v), chips = [];
+        if (q.time) chips.push("⏰ " + formatTimeLabel(q.time));
+        if (q.dur) chips.push("⏳ " + fmtDur(q.dur));
+        if (q.freq !== "onetime") chips.push("↻ " + (q.freq === "daily" ? "Every day" : "Every week"));
+        if (q.sectionId) { var s = data.sections.find(function (x) { return x.id === q.sectionId; }); chips.push("# " + escapeAttr(s.name)); }
+        box.innerHTML = chips.map(function (c) { return '<span class="qa-chip">' + c + '</span>'; }).join("");
+      }
+
+      function addFromQuick(raw) {
+        var q = parseQuick(raw);
+        if (!q.text) return false;
+        var sel = document.getElementById("qaSection");
+        var sectionId = q.sectionId || sel.value || "";
+        var task = {
+          id: uid(), sectionId: sectionId, text: q.text, freq: q.freq,
+          startTime: q.time, durationMin: q.dur, addedOn: todayISO(),
+          oneTimeDone: false, lastDoneDate: null, lastDoneWeek: null
+        };
+        data.tasks.push(task);
+        freshId = task.id;
+        if (sel.value) MJ.setPref("lastSection", sel.value);
+        save(); render();
+        var sec = sectionOf(task);
+        MJ.toast("Added" + (q.time ? " for " + formatTimeLabel(q.time) : "") + (sec ? " · " + sec.name : ""), 1800);
+        MJ.afterSave();
+        return true;
+      }
+
+      document.getElementById("quickAdd").addEventListener("submit", function (e) {
+        e.preventDefault();
+        var input = document.getElementById("qaText");
+        if (!addFromQuick(input.value)) { input.focus(); return; }
+        input.value = "";
+        renderQuickChips();
+        input.focus();
+      });
+      document.getElementById("qaText").addEventListener("input", renderQuickChips);
+      document.getElementById("qaSection").addEventListener("change", function () { MJ.setPref("lastSection", this.value); });
+
+      function setMode(m) {
+        mode = m;
+        MJ.setPref("plannerMode", m);
+        renderDay();
+      }
+      document.getElementById("modeTime").addEventListener("click", function () { setMode("time"); });
+      document.getElementById("modeList").addEventListener("click", function () { setMode("list"); });
+
+      var dayList = document.getElementById("dayList");
+      function taskFromEvent(e) {
+        var li = e.target.closest("[data-id]");
+        return li ? data.tasks.find(function (t) { return t.id === li.dataset.id; }) : null;
+      }
+
+      dayList.addEventListener("change", function (e) {
+        if (!e.target.matches("[data-done]")) return;
+        var task = taskFromEvent(e);
         if (!task) return;
         toggleTask(task, e.target.checked);
         logToggle(task, e.target.checked);
-        save(); render();
-        if (e.target.checked) cheerDone();
+        if (e.target.checked && data.timer && data.timer.taskId === task.id) data.timer = null;
+        save();
+        var checked = e.target.checked;
+        // let the tick land before the row moves
+        setTimeout(function () { render(); renderTimerBar(); }, checked ? 380 : 0);
+        if (checked) cheerDone();
       });
 
-      document.getElementById("glanceList").addEventListener("click", function (e) {
-        var li = e.target.closest("li");
-        if (!li) return;
-        var task = data.tasks.find(function (t) { return t.id === li.dataset.glanceId; });
+      dayList.addEventListener("click", function (e) {
+        var idea = e.target.closest("[data-idea]");
+        if (idea) { addFromQuick(idea.getAttribute("data-idea")); return; }
+        if (e.target.closest("[data-replan]")) { replan(); return; }
+        if (e.target.closest("[data-add-section]")) { addSection(); return; }
+        var del = e.target.closest("[data-del-section]");
+        if (del) {
+          var sid = del.closest("[data-section-id]").dataset.sectionId;
+          var n = data.tasks.filter(function (t) { return t.sectionId === sid; }).length;
+          if (confirm(n ? "Delete this list and its " + n + (n === 1 ? " task" : " tasks") + "?" : "Delete this list?")) {
+            data.sections = data.sections.filter(function (s) { return s.id !== sid; });
+            data.tasks = data.tasks.filter(function (t) { return t.sectionId !== sid; });
+            save(); render(); renderTimerBar();
+          }
+          return;
+        }
+        var task = taskFromEvent(e);
         if (!task) return;
         if (e.target.closest("[data-push]")) {
           task.startTime = minToHM(ceil5(nowMin()));
           save(); render();
-          showToast("Moved to now ✓");
+          MJ.toast("Moved to now ✓", 1600);
           return;
         }
-        if (e.target.closest("[data-start]")) {
-          startTimer(task.id);
+        if (e.target.closest("[data-start]")) { startTimer(task.id); return; }
+        if (e.target.closest("[data-edit]")) { openEdit(task); return; }
+      });
+
+      dayList.addEventListener("input", function (e) {
+        if (!e.target.matches("[data-section-name]")) return;
+        var sid = e.target.closest("[data-section-id]").dataset.sectionId;
+        var s = data.sections.find(function (x) { return x.id === sid; });
+        if (s) { s.name = e.target.value; save(); renderSectionSelect(); }
+      });
+      dayList.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && e.target.id === "newSectionInput") addSection();
+      });
+
+      function addSection() {
+        var input = document.getElementById("newSectionInput");
+        var name = input.value.trim();
+        if (!name) { input.focus(); return; }
+        data.sections.push({ id: uid(), name: name });
+        save(); render();
+        MJ.toast("List added — pick it when you add a task", 2200);
+        var again = document.getElementById("newSectionInput");
+        if (again) again.focus();
+      }
+
+      // ---- edit sheet: everything about one task, in one calm place ----
+      var QUICK_DURS = [15, 30, 45, 60, 90, 120];
+      function openEdit(task) {
+        var durs = QUICK_DURS.slice();
+        if (task.durationMin && durs.indexOf(task.durationMin) === -1) { durs.push(task.durationMin); durs.sort(function (a, b) { return a - b; }); }
+        var late = !isTaskChecked(task) && task.startTime && (hmToMin(task.startTime) + (task.durationMin || 30)) <= nowMin();
+        var mi = missedInfo(task);
+        MJ.openModal(
+          '<div class="mj-sheet-head"><h2>Edit task</h2><button type="button" class="btn btn-icon btn-quiet" data-mj-close aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>' +
+          '<div class="et-field"><label for="etText">Task</label><input class="input" id="etText" maxlength="160" value="' + escapeAttr(task.text) + '"></div>' +
+          '<div class="et-two">' +
+          '<div class="et-field"><label for="etSection">List</label><select class="select" id="etSection">' +
+          data.sections.map(function (s) { return '<option value="' + s.id + '"' + (s.id === task.sectionId ? " selected" : "") + '>' + escapeAttr(s.name || "Untitled") + '</option>'; }).join("") +
+          '<option value=""' + (!sectionOf(task) ? " selected" : "") + '>No list</option></select></div>' +
+          '<div class="et-field"><label for="etTime">Start time <span style="text-transform:none;letter-spacing:0;font-weight:600">(optional)</span></label><input class="input" type="time" id="etTime" value="' + escapeAttr(task.startTime || "") + '"></div>' +
+          '</div>' +
+          '<div class="et-field"><span class="et-label" id="etFreqL">Repeat</span><div class="segmented" role="group" aria-labelledby="etFreqL" id="etFreq">' +
+          [["onetime", "Once"], ["daily", "Every day"], ["weekly", "Every week"]].map(function (f) {
+            return '<button type="button" data-freq="' + f[0] + '" aria-pressed="' + (task.freq === f[0]) + '">' + f[1] + '</button>';
+          }).join("") + '</div></div>' +
+          '<div class="et-field"><span class="et-label" id="etDurL">How long</span><div class="et-chips" role="group" aria-labelledby="etDurL" id="etDur">' +
+          '<button type="button" class="chip" data-dur="" aria-pressed="' + (!task.durationMin) + '">No length</button>' +
+          durs.map(function (d) { return '<button type="button" class="chip" data-dur="' + d + '" aria-pressed="' + (task.durationMin === d) + '">' + fmtDur(d) + '</button>'; }).join("") +
+          '</div></div>' +
+          (late ? '<div class="et-note">This was planned for ' + escapeAttr(timeRangeLabel(task)) + '. <button type="button" class="link-quiet" id="etNow" style="color:inherit">Move it to now</button></div>' : '') +
+          (mi ? '<div class="et-note">' + mi.tip + '</div>' : '') +
+          '<div class="et-foot"><button type="button" class="btn btn-quiet btn-del" id="etDel">Delete</button>' +
+          (!isTaskChecked(task) ? '<button type="button" class="btn btn-soft" id="etStart">Start timer</button>' : '') +
+          '<button type="button" class="btn btn-primary" id="etSave">Save</button></div>',
+          { sheet: true, label: "Edit task" }
+        );
+        var draft = { freq: task.freq, dur: task.durationMin || null };
+        document.querySelectorAll("#etFreq [data-freq]").forEach(function (b) {
+          b.onclick = function () {
+            draft.freq = b.getAttribute("data-freq");
+            document.querySelectorAll("#etFreq [data-freq]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+          };
+        });
+        document.querySelectorAll("#etDur [data-dur]").forEach(function (b) {
+          b.onclick = function () {
+            draft.dur = b.getAttribute("data-dur") ? +b.getAttribute("data-dur") : null;
+            document.querySelectorAll("#etDur [data-dur]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+          };
+        });
+        function commit() {
+          var text = document.getElementById("etText").value.trim();
+          if (!text) { document.getElementById("etText").focus(); return false; }
+          if (draft.freq !== task.freq) {
+            // switching rhythm keeps today's tick
+            var wasDone = isTaskChecked(task);
+            task.freq = draft.freq;
+            toggleTask(task, wasDone);
+          }
+          task.text = text;
+          task.sectionId = document.getElementById("etSection").value;
+          task.startTime = document.getElementById("etTime").value || "";
+          task.durationMin = draft.dur;
+          save(); render(); renderTimerBar();
+          return true;
+        }
+        document.getElementById("etSave").onclick = function () { if (commit()) MJ.closeModal(); };
+        document.getElementById("etText").addEventListener("keydown", function (e) { if (e.key === "Enter" && commit()) MJ.closeModal(); });
+        var startB = document.getElementById("etStart");
+        if (startB) startB.onclick = function () { if (commit()) { MJ.closeModal(); startTimer(task.id); } };
+        var nowB = document.getElementById("etNow");
+        if (nowB) nowB.onclick = function () { document.getElementById("etTime").value = minToHM(ceil5(nowMin())); nowB.parentNode.textContent = "Start moved to now — tap Save."; };
+        document.getElementById("etDel").onclick = function () {
+          var idx = data.tasks.indexOf(task);
+          data.tasks = data.tasks.filter(function (t) { return t !== task; });
+          if (data.timer && data.timer.taskId === task.id) data.timer = null;
+          save(); render(); renderTimerBar();
+          MJ.closeModal();
+          undoToast("Task deleted", function () { data.tasks.splice(Math.max(0, idx), 0, task); save(); render(); });
+        };
+      }
+
+      // a toast with an Undo button (deleting should never be scary)
+      function undoToast(msg, undo) {
+        var t = document.getElementById("toast");
+        t.innerHTML = MJ.esc(msg) + ' <button type="button" class="link-quiet" style="color:var(--brand);margin-left:8px;pointer-events:auto">Undo</button>';
+        t.style.pointerEvents = "auto";
+        t.classList.add("show");
+        t.querySelector("button").onclick = function () { undo(); t.classList.remove("show"); t.style.pointerEvents = ""; };
+        clearTimeout(undoToast._t);
+        undoToast._t = setTimeout(function () { t.classList.remove("show"); t.style.pointerEvents = ""; }, 5000);
+      }
+
+      // ---- main render ----
+      function render() {
+        renderHeader();
+        renderProgress();
+        renderSectionSelect();
+        renderDay();
+        renderTomorrow();
+      }
+
+      // ---- tomorrow list ----
+      var tomorrowList = document.getElementById("tomorrowList");
+      function renderTomorrow() {
+        tomorrowList.innerHTML = data.tomorrow.length ? data.tomorrow.map(function (item) {
+          return '<li data-item-id="' + item.id + '"><span>' + escapeAttr(item.text) + '</span>' +
+            '<button type="button" class="icon-btn" data-to-today title="Add to today" aria-label="Move to today: ' + escapeAttr(item.text) + '"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>' +
+            '<button type="button" class="icon-btn" data-del-tomorrow aria-label="Remove ' + escapeAttr(item.text) + '">' + TRASH + '</button></li>';
+        }).join("") : '';
+      }
+      function addTomorrow() {
+        var input = document.getElementById("tomorrowInput");
+        var text = input.value.trim();
+        if (!text) { input.focus(); return; }
+        data.tomorrow.push({ id: uid(), text: text });
+        input.value = "";
+        save(); renderTomorrow();
+      }
+      document.getElementById("addTomorrowBtn").addEventListener("click", addTomorrow);
+      document.getElementById("tomorrowInput").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") addTomorrow();
+      });
+      tomorrowList.addEventListener("click", function (e) {
+        var li = e.target.closest("li");
+        if (!li) return;
+        var item = data.tomorrow.find(function (i) { return i.id === li.dataset.itemId; });
+        if (!item) return;
+        if (e.target.closest("[data-to-today]")) {
+          data.tomorrow = data.tomorrow.filter(function (i) { return i !== item; });
+          addFromQuick(item.text);
           return;
+        }
+        if (e.target.closest("[data-del-tomorrow]")) {
+          data.tomorrow = data.tomorrow.filter(function (i) { return i !== item; });
+          save(); renderTomorrow();
         }
       });
+
+      document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
 
       // ================= TIMER =================
       var timerBar = document.getElementById("timerBar");
@@ -1849,7 +2315,7 @@
         data.timer = { taskId: taskId, totalMin: mins, endAt: Date.now() + mins * 60000, paused: false, remainingMs: null };
         timerBeeped = false;
         save(); render(); renderTimerBar();
-        showToast("Timer started — " + fmtDur(mins) + " ⏱");
+        showToast("Focus timer · " + fmtDur(mins) + " — one thing at a time");
       }
 
       function stopTimer(silent) {
@@ -1864,10 +2330,12 @@
         if (!data.timer || !task) {
           if (data.timer && !task) { data.timer = null; save(); }
           timerBar.classList.remove("show", "up", "paused");
+          document.body.classList.remove("timer-on");
           document.title = baseTitle;
           return;
         }
         timerBar.classList.add("show");
+        document.body.classList.add("timer-on");
         timerBar.classList.toggle("paused", !!data.timer.paused);
         timerTaskEl.textContent = task.text || "(untitled task)";
         timerPauseBtn.textContent = data.timer.paused ? "Resume" : "Pause";
@@ -1888,7 +2356,7 @@
           document.title = "⏰ Time's up — " + baseTitle;
           if (!timerBeeped) {
             timerBeeped = true; beep();
-            var due = dueRepCards().length;
+            var due = MJ.showReps() ? dueRepCards().length : 0;
             showToast("⏰ Time's up — " + (task.text || "task") + (due ? " · " + due + " rep" + (due > 1 ? "s" : "") + " due in the Reps tab" : ""));
           }
         } else {
@@ -1939,10 +2407,10 @@
       setInterval(tickTimer, 1000);
 
       // ---- re-plan from now: reflow pending timed tasks back-to-back ----
-      document.getElementById("replanBtn").addEventListener("click", function () {
+      function replan() {
         var pendingTimed = data.tasks.filter(function (t) { return t.startTime && !isTaskChecked(t); });
         if (pendingTimed.length < 2) return;
-        if (!confirm("Re-plan " + pendingTimed.length + " pending timed tasks back-to-back starting now? Durations are kept (30m assumed where unset).")) return;
+        var before = pendingTimed.map(function (t) { return [t, t.startTime]; });
         pendingTimed.sort(function (a, b) { return a.startTime < b.startTime ? -1 : a.startTime > b.startTime ? 1 : 0; });
         var cursor = ceil5(nowMin());
         pendingTimed.forEach(function (t) {
@@ -1950,263 +2418,8 @@
           cursor += t.durationMin || 30;
         });
         save(); render();
-        showToast("Day re-planned ✓");
-      });
-
-      // ---- main render ----
-      function render() {
-        renderHeader();
-        renderProgress();
-        renderGlance();
-
-        sectionsContainer.innerHTML = "";
-
-        if (!data.sections.length) {
-          var empty = document.createElement("div");
-          empty.className = "empty-state";
-          empty.innerHTML = MJ.orb({ mood: "okay", size: 72, cls: "orb-float" }) + '<b style="color:var(--ink)">A fresh, blank day.</b><br>Add your first section below — work, study, gym, anything — then a few gentle tasks.';
-          sectionsContainer.appendChild(empty);
-        }
-
-        var SECTION_ORBS = [["var(--sky)", "smile"], ["var(--mint)", "calm"], ["var(--coral)", "happy"], ["var(--lavender)", "smile"], ["var(--yolk)", "joy"], ["var(--rose)", "calm"]];
-        data.sections.forEach(function (section, sIdx) {
-          var card = document.createElement("div");
-          card.className = "card";
-          card.dataset.sectionId = section.id;
-
-          var head = document.createElement("div");
-          head.className = "section-head";
-          head.innerHTML =
-            MJ.orb({ color: SECTION_ORBS[sIdx % SECTION_ORBS.length][0], face: SECTION_ORBS[sIdx % SECTION_ORBS.length][1], size: 40 }) +
-            '<input type="text" class="section-name" value="' + escapeAttr(section.name) + '" data-section-name>' +
-            '<button type="button" class="delete-btn no-print" data-del-section title="Delete section" aria-label="Delete section">×</button>';
-          card.appendChild(head);
-
-          var tasks = data.tasks.filter(function (t) { return t.sectionId === section.id; });
-          if (tasks.length) {
-            var table = document.createElement("table");
-            var tbody = document.createElement("tbody");
-            tasks.forEach(function (task) {
-              var checked = isTaskChecked(task);
-              var end = endTimeOf(task);
-              var slotPassed = !checked && task.startTime &&
-                (hmToMin(task.startTime) + (task.durationMin || 0)) < nowMin();
-              var endCell;
-              if (slotPassed) {
-                var lateM = nowMin() - hmToMin(task.startTime);
-                endCell = '<span class="due-flag tip">due ' + formatTimeLabel(task.startTime) +
-                  '<span class="tip-box">Planned for <b>' + escapeAttr(timeRangeLabel(task)) + '</b> — running <b>' +
-                  escapeAttr(lateM > 0 ? fmtDur(lateM) + " late" : "just now") + '</b>.</span></span>';
-              } else if (!checked && carriedOver(task)) {
-                var daysP = Math.round((new Date(todayISO() + "T00:00:00") - new Date(task.addedOn + "T00:00:00")) / 86400000);
-                endCell = '<span class="due-flag tip" tabindex="0">waiting since ' + fmtShortDate(task.addedOn) +
-                  '<span class="tip-box">Added on <b>' + fmtShortDate(task.addedOn) + '</b> — pending for <b>' +
-                  daysP + ' day' + (daysP > 1 ? 's' : '') + '</b>.</span></span>';
-              } else {
-                var mi = !checked ? missedInfo(task) : null;
-                if (mi) {
-                  endCell = '<span class="due-flag tip">' + mi.label +
-                    '<span class="tip-box">' + mi.tip + '</span></span>' +
-                    (end ? ' <span style="color:var(--text-muted);">→ ' + formatTimeLabel(end) + '</span>' : '');
-                } else {
-                  endCell = end ? '→ ' + formatTimeLabel(end) : '';
-                }
-              }
-              var tr = document.createElement("tr");
-              tr.className = "task-row" + (checked ? " done" : "");
-              tr.dataset.taskId = task.id;
-              tr.innerHTML =
-                '<td class="task-check"><input type="checkbox" class="check" data-task-done aria-label="Mark done" ' + (checked ? "checked" : "") + '></td>' +
-                '<td class="task-text"><input type="text" value="' + escapeAttr(task.text) + '" data-task-text placeholder="Task..."></td>' +
-                '<td class="freq-badge"><select data-task-freq>' +
-                '<option value="daily"' + (task.freq === "daily" ? " selected" : "") + '>Daily</option>' +
-                '<option value="weekly"' + (task.freq === "weekly" ? " selected" : "") + '>Weekly</option>' +
-                '<option value="onetime"' + (task.freq === "onetime" ? " selected" : "") + '>Once</option>' +
-                '</select></td>' +
-                '<td class="task-time"><input type="time" value="' + escapeAttr(task.startTime || "") + '" data-task-time></td>' +
-                '<td class="task-dur">' + durSelectHTML('data-task-dur title="Duration"', task.durationMin || null) + '</td>' +
-                '<td class="task-end">' + endCell + '</td>' +
-                '<td>' + (!checked ? '<button type="button" class="start-btn no-print' + startBtnState(task.id) + '" data-start-task title="Start focus timer" aria-label="Start focus timer"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg></button>' : '') + '</td>' +
-                '<td><button type="button" class="delete-btn no-print" data-del-task title="Delete" aria-label="Delete task">×</button></td>';
-              tbody.appendChild(tr);
-            });
-            table.appendChild(tbody);
-            card.appendChild(table);
-          } else {
-            var hint = document.createElement("div");
-            hint.className = "empty-hint";
-            hint.textContent = "No tasks yet — add one below.";
-            card.appendChild(hint);
-          }
-
-          var addRow = document.createElement("div");
-          addRow.className = "add-task-row no-print";
-          addRow.innerHTML =
-            '<div class="field grow"><span class="col-label">Task</span><input type="text" data-new-text placeholder="Add a task..."></div>' +
-            '<div class="field w-freq"><span class="col-label">Frequency</span>' +
-            '<select data-new-freq><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="onetime" selected>Once</option></select></div>' +
-            '<div class="field w-time"><span class="col-label">Start (optional)</span><input type="time" data-new-time></div>' +
-            '<div class="field w-dur"><span class="col-label">Duration</span>' + durSelectHTML('data-new-dur', null) + '</div>' +
-            '<button type="button" class="btn btn-primary" data-add-task>Add</button>';
-          card.appendChild(addRow);
-
-          sectionsContainer.appendChild(card);
-        });
-
-        tomorrowList.innerHTML = "";
-        data.tomorrow.forEach(function (item) {
-          var li = document.createElement("li");
-          li.dataset.itemId = item.id;
-          li.innerHTML = '<span>' + escapeAttr(item.text) + '</span><button type="button" class="delete-btn no-print" data-del-tomorrow title="Remove" aria-label="Remove">×</button>';
-          tomorrowList.appendChild(li);
-        });
+        undoToast("Lined up calmly from now", function () { before.forEach(function (p) { p[0].startTime = p[1]; }); save(); render(); });
       }
-
-      // ---- events: sections container (delegated) ----
-      sectionsContainer.addEventListener("click", function (e) {
-        var sectionCard = e.target.closest(".card");
-        if (!sectionCard) return;
-        var sectionId = sectionCard.dataset.sectionId;
-
-        if (e.target.closest("[data-del-section]")) {
-          if (confirm("Delete this section and all its tasks?")) {
-            data.sections = data.sections.filter(function (s) { return s.id !== sectionId; });
-            data.tasks = data.tasks.filter(function (t) { return t.sectionId !== sectionId; });
-            save(); render();
-          }
-          return;
-        }
-
-        if (e.target.closest("[data-del-task]")) {
-          var tr = e.target.closest(".task-row");
-          var taskId = tr.dataset.taskId;
-          data.tasks = data.tasks.filter(function (t) { return t.id !== taskId; });
-          save(); render(); renderTimerBar();
-          return;
-        }
-
-        if (e.target.closest("[data-start-task]")) {
-          var trS = e.target.closest(".task-row");
-          startTimer(trS.dataset.taskId);
-          return;
-        }
-
-        if (e.target.closest("[data-add-task]")) {
-          var textEl = sectionCard.querySelector("[data-new-text]");
-          var freqEl = sectionCard.querySelector("[data-new-freq]");
-          var timeEl = sectionCard.querySelector("[data-new-time]");
-          var durEl = sectionCard.querySelector("[data-new-dur]");
-          var text = textEl.value.trim();
-          if (!text) { textEl.focus(); return; }
-          data.tasks.push({
-            id: uid(),
-            sectionId: sectionId,
-            text: text,
-            freq: freqEl.value,
-            startTime: timeEl.value || "",
-            durationMin: durEl.value ? +durEl.value : null,
-            addedOn: todayISO(),
-            oneTimeDone: false,
-            lastDoneDate: null,
-            lastDoneWeek: null
-          });
-          save(); render();
-          return;
-        }
-      });
-
-      sectionsContainer.addEventListener("keydown", function (e) {
-        if (e.key === "Enter" && e.target.matches("[data-new-text]")) {
-          var sectionCard = e.target.closest(".card");
-          sectionCard.querySelector("[data-add-task]").click();
-        }
-      });
-
-      sectionsContainer.addEventListener("change", function (e) {
-        var tr = e.target.closest(".task-row");
-        if (!tr) return;
-        var taskId = tr.dataset.taskId;
-        var task = data.tasks.find(function (t) { return t.id === taskId; });
-        if (!task) return;
-
-        if (e.target.matches("[data-task-done]")) {
-          toggleTask(task, e.target.checked);
-          logToggle(task, e.target.checked);
-          save(); render();
-          if (e.target.checked) cheerDone();
-          return;
-        }
-        if (e.target.matches("[data-task-freq]")) {
-          task.freq = e.target.value;
-          save(); render();
-          return;
-        }
-        if (e.target.matches("[data-task-time]")) {
-          task.startTime = e.target.value;
-          save(); render();
-          return;
-        }
-        if (e.target.matches("[data-task-dur]")) {
-          task.durationMin = e.target.value ? +e.target.value : null;
-          save(); render();
-          return;
-        }
-      });
-
-      sectionsContainer.addEventListener("input", function (e) {
-        var tr = e.target.closest(".task-row");
-        if (tr) {
-          var taskId = tr.dataset.taskId;
-          var task = data.tasks.find(function (t) { return t.id === taskId; });
-          if (!task) return;
-          if (e.target.matches("[data-task-text]")) { task.text = e.target.value; save(); return; }
-          return;
-        }
-        if (e.target.matches("[data-section-name]")) {
-          var sectionCard = e.target.closest(".card");
-          var sectionId = sectionCard.dataset.sectionId;
-          var section = data.sections.find(function (s) { return s.id === sectionId; });
-          if (section) { section.name = e.target.value; save(); }
-        }
-      });
-
-      // ---- add section ----
-      function addSection() {
-        var input = document.getElementById("newSectionInput");
-        var name = input.value.trim();
-        if (!name) { input.focus(); return; }
-        data.sections.push({ id: uid(), name: name });
-        input.value = "";
-        save(); render();
-      }
-      document.getElementById("addSectionBtn").addEventListener("click", addSection);
-      document.getElementById("newSectionInput").addEventListener("keydown", function (e) {
-        if (e.key === "Enter") addSection();
-      });
-
-      // ---- tomorrow list ----
-      function addTomorrow() {
-        var input = document.getElementById("tomorrowInput");
-        var text = input.value.trim();
-        if (!text) { input.focus(); return; }
-        data.tomorrow.push({ id: uid(), text: text });
-        input.value = "";
-        save(); render();
-      }
-      document.getElementById("addTomorrowBtn").addEventListener("click", addTomorrow);
-      document.getElementById("tomorrowInput").addEventListener("keydown", function (e) {
-        if (e.key === "Enter") addTomorrow();
-      });
-      tomorrowList.addEventListener("click", function (e) {
-        if (e.target.closest("[data-del-tomorrow]")) {
-          var li = e.target.closest("li");
-          var itemId = li.dataset.itemId;
-          data.tomorrow = data.tomorrow.filter(function (i) { return i.id !== itemId; });
-          save(); render();
-        }
-      });
-
-      document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
 
       // ================= REPS: spaced-repetition flashcards =================
       var BANK = [
@@ -2291,6 +2504,7 @@
 
       function updateRepsBadge() {
         var n = dueRepCards().length;
+        document.getElementById("tabRepsBtn").setAttribute("aria-label", "Reps" + (n ? ", " + n + " due" : ""));
         document.getElementById("tabRepsBtn").innerHTML = "Reps" + (n ? ' <span class="tab-count">' + n + '</span>' : "");
       }
 
@@ -2420,6 +2634,7 @@
           Object.keys(views).forEach(function (k) {
             views[k].view.classList.toggle("active", k === key);
             views[k].tab.classList.toggle("active", k === key);
+            views[k].tab.setAttribute("aria-pressed", String(k === key));
           });
           if (views[key].onShow) views[key].onShow();
         });
@@ -2458,91 +2673,98 @@
 
       function renderAnalytics() {
         var today = todayISO();
-
         var todayCount = countForDay(today);
         var weekCount = 0;
         for (var i = 0; i < 7; i++) weekCount += countForDay(addDays(today, -i));
         var totalCount = 0;
         Object.keys(data.log).forEach(function (d) { totalCount += data.log[d].length; });
+        var activeDays = Object.keys(data.log).filter(function (d) { return data.log[d].length > 0; }).length;
         var streaks = computeStreaks();
         renderAnalyticsCheer(totalCount, streaks);
 
-        var statGrid = document.getElementById("statGrid");
+        // Not enough story yet: a friendly preview instead of a wall of zeros.
+        var empty = document.getElementById("insEmpty");
+        var body = document.getElementById("insBody");
+        if (activeDays < 2) {
+          body.hidden = true;
+          empty.innerHTML = '<div class="card ins-empty">' + MJ.orb({ mood: "calm", size: 84, cls: "orb-float" }) +
+            '<h3 class="t-h2">Your patterns are on their way</h3>' +
+            '<p class="t-body">' + (activeDays === 1
+              ? "Day one is in. Tick a few things off tomorrow too, and this page starts telling your story."
+              : "Tick off a task or two on a couple of days — this page fills in by itself.") + '</p>' +
+            '<div class="ins-preview" aria-hidden="true"><div><span>🔥</span>Your streaks</div><div><span>🗓</span>Your busiest days</div><div><span>🌤</span>Mood vs. progress</div></div>' +
+            '<button type="button" class="btn btn-primary" style="margin-top:24px" onclick="document.getElementById(\'tabPlannerBtn\').click()">Back to today</button></div>';
+          return;
+        }
+        empty.innerHTML = "";
+        body.hidden = false;
+
         var stats = [
-          [todayCount, "Done today"],
-          [weekCount, "Last 7 days"],
-          [streaks.current, "Current streak (days)"],
-          [streaks.longest, "Longest streak (days)"],
-          [totalCount, "Total completions"]
+          [todayCount, "done today"],
+          [weekCount, "in the last 7 days"],
+          [streaks.current, streaks.current === 1 ? "day streak" : "day streak"],
+          [streaks.longest, "best streak"]
         ];
-        statGrid.innerHTML = stats.map(function (s) {
+        document.getElementById("statGrid").innerHTML = stats.map(function (s) {
           return '<div class="stat-box"><div class="stat-value">' + s[0] + '</div><div class="stat-label">' + s[1] + '</div></div>';
         }).join("");
 
         var todayD = new Date(today + "T00:00:00");
         var todayDow = (todayD.getDay() + 6) % 7;
         var currentMonday = addDays(today, -todayDow);
-        var startMonday = addDays(currentMonday, -7 * 11);
+        var weeks = innerWidth >= 1000 ? 26 : innerWidth >= 600 ? 20 : 15;
+        var startMonday = addDays(currentMonday, -7 * (weeks - 1));
         var counts = Object.keys(data.log).map(function (d) { return data.log[d].length; });
         var maxCount = counts.length ? Math.max.apply(null, counts) : 0;
-
         function levelFor(count) {
           if (count <= 0) return 0;
-          if (maxCount <= 1) return count > 0 ? 4 : 0;
+          if (maxCount <= 1) return 4;
           var ratio = count / maxCount;
           if (ratio > 0.75) return 4;
           if (ratio > 0.5) return 3;
           if (ratio > 0.25) return 2;
           return 1;
         }
-
-        var heatmapGrid = document.getElementById("heatmapGrid");
         var cells = [];
-        for (var w = 0; w < 12; w++) {
+        for (var w = 0; w < weeks; w++) {
           for (var d = 0; d < 7; d++) {
             var dateStr = addDays(startMonday, w * 7 + d);
-            if (dateStr > today) {
-              cells.push('<div class="heatmap-cell future"></div>');
-            } else {
+            if (dateStr > today) cells.push('<div class="heatmap-cell future"></div>');
+            else {
               var c = countForDay(dateStr);
-              cells.push('<div class="heatmap-cell level-' + levelFor(c) + '" title="' + dateStr + ': ' + c + ' completed"></div>');
+              cells.push('<div class="heatmap-cell level-' + levelFor(c) + '" title="' + fmtShortDate(dateStr) + ': ' + c + ' done"></div>');
             }
           }
         }
-        heatmapGrid.innerHTML = cells.join("");
+        var hm = document.getElementById("heatmapGrid");
+        hm.innerHTML = cells.join("");
+        hm.setAttribute("role", "img");
+        hm.setAttribute("aria-label", activeDays + " active days in the last " + weeks + " weeks");
 
-        var sectionStatsWrap = document.getElementById("sectionStatsWrap");
-        if (!data.sections.length) {
-          sectionStatsWrap.innerHTML = '<div class="empty-analytics">No sections yet.</div>';
-        } else {
-          var rows = data.sections.map(function (section) {
-            var allTime = 0, todayN = 0, weekN = 0;
-            Object.keys(data.log).forEach(function (d) {
-              data.log[d].forEach(function (entry) {
-                if (entry.sectionId !== section.id) return;
-                allTime++;
-                if (d === today) todayN++;
-                if (d >= addDays(today, -6) && d <= today) weekN++;
-              });
+        var weekStart = addDays(today, -6);
+        var secRows = data.sections.map(function (section) {
+          var weekN = 0, allTime = 0;
+          Object.keys(data.log).forEach(function (d) {
+            data.log[d].forEach(function (entry) {
+              if (entry.sectionId !== section.id) return;
+              allTime++;
+              if (d >= weekStart && d <= today) weekN++;
             });
-            var taskCount = data.tasks.filter(function (t) { return t.sectionId === section.id; }).length;
-            return '<tr><td>' + escapeAttr(section.name) + '</td><td>' + taskCount + '</td><td>' + todayN + '</td><td>' + weekN + '</td><td>' + allTime + '</td></tr>';
-          }).join("");
-          sectionStatsWrap.innerHTML =
-            '<table class="analytics-table"><thead><tr><th>Section</th><th>Tasks</th><th>Today</th><th>7 days</th><th>All-time</th></tr></thead>' +
-            '<tbody>' + rows + '</tbody></table>';
-        }
+          });
+          return { name: section.name || "Untitled", weekN: weekN, allTime: allTime };
+        });
+        var maxWeek = Math.max.apply(null, secRows.map(function (r) { return r.weekN; }).concat([1]));
+        document.getElementById("sectionStatsWrap").innerHTML = secRows.length ? secRows.map(function (r) {
+          return '<div class="bar-row"><span class="name">' + escapeAttr(r.name) + '</span><span class="nums"><b>' + r.weekN + '</b> this week · ' + r.allTime + ' all-time</span>' +
+            '<div class="bar"><span style="width:' + (r.weekN ? Math.max(4, Math.round(r.weekN / maxWeek * 100)) : 0) + '%"></span></div></div>';
+        }).join("") : '<div class="empty-analytics">No lists yet.</div>';
 
-        var freqStatGrid = document.getElementById("freqStatGrid");
-        var freqs = ["daily", "weekly", "onetime"];
-        var freqLabels = { daily: "Daily tasks", weekly: "Weekly tasks", onetime: "One-time tasks" };
-        var freqHtml = freqs.map(function (f) {
-          var tasksOfFreq = data.tasks.filter(function (t) { return t.freq === f; });
-          var doneCount = tasksOfFreq.filter(function (t) { return isTaskChecked(t); }).length;
-          var suffix = f === "onetime" ? " done" : (f === "daily" ? " done today" : " done this week");
-          return '<div class="stat-box"><div class="stat-value">' + doneCount + ' / ' + tasksOfFreq.length + '</div><div class="stat-label">' + freqLabels[f] + suffix + '</div></div>';
+        var freqs = [["daily", "every-day tasks done today"], ["weekly", "weekly tasks done this week"], ["onetime", "one-off tasks done"]];
+        document.getElementById("freqStatGrid").innerHTML = freqs.map(function (f) {
+          var list = data.tasks.filter(function (t) { return t.freq === f[0]; });
+          var done = list.filter(isTaskChecked).length;
+          return '<div class="stat-box"><div class="stat-value">' + done + '<span style="font-size:18px;color:var(--ink-3)">/' + list.length + '</span></div><div class="stat-label">' + f[1] + '</div></div>';
         }).join("");
-        freqStatGrid.innerHTML = freqHtml;
         renderMoodInsights();
       }
 
@@ -2624,7 +2846,7 @@
         var orbHTML = icon === "🌙" ? MJ.orb({ color: "var(--mint)", face: "sleepy", size: 44 })
           : (ci && ci.mood && MJ.MOODS[ci.mood]) ? MJ.orb({ mood: ci.mood, size: 44 })
             : MJ.orb({ mood: "okay", face: "o", size: 44 });
-        strip.innerHTML = orbHTML + "<span class=\"grow\">" + text + "</span><span class=\"go\">" + go + "</span>";
+        strip.innerHTML = orbHTML + "<span class=\"grow\">" + text + "<span class=\"go\">" + go + "</span></span>";
       }
 
       function cheerDone() {
@@ -2634,6 +2856,7 @@
         if (total && done === total) showToast(withName("All done for today, {name}. Take a bow."), 3400);
         else showToast(withName(CHEERS[Math.floor(Math.random() * CHEERS.length)]), 2400);
         MJ.checkMilestones();
+        MJ.afterSave();
       }
 
       function renderAnalyticsCheer(total, streaks) {
@@ -2703,8 +2926,8 @@
 
       // Interview Reps can be hidden from Settings (handy for friends who aren't job-hunting).
       function applyRepsPref() {
-        var show = MJ.prefs().showReps !== false;
-        views.reps.tab.style.display = show ? "" : "none";
+        var show = MJ.showReps();
+        views.reps.tab.hidden = !show;
         if (!show && views.reps.view.classList.contains("active")) views.planner.tab.click();
       }
       MJ.onPrefsChange(applyRepsPref);
@@ -2715,13 +2938,14 @@
 
       document.getElementById("timerOrb").innerHTML = MJ.orb({ mood: "calm", size: 34, cls: "orb-breathe" });
       render();
+      renderQuickChips();
       renderTimerBar(); // resume a running timer after reload
       updateRepsBadge();
 
       // keep the timeline's sense of "now" fresh
       setInterval(function () {
         renderHeader();
-        renderGlance();
+        if (!document.querySelector(".mj-overlay.show") && !(document.activeElement && document.activeElement.closest && document.activeElement.closest("#dayList"))) renderDay();
       }, 60000);
     })();
   </script>

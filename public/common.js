@@ -26,6 +26,8 @@
     lastBackup: "mindjournal_lastBackup",
     dateFix: "mindjournal_dateKeysV2",
     sound: "mindjournal_sound",
+    persistAsked: "mindjournal_persistAsked",
+    iosHintSeen: "mindjournal_iosHintSeen",
     planner: "plannerData_v2"
   };
   var JOURNAL_KEY_RE = /^mj_(\d{4}-\d{2}-\d{2})_([a-z]+)$/;
@@ -112,6 +114,14 @@
 
   // ---------- prefs ----------
   function prefs() { return lsJSON(KEYS.prefs, {}); }
+  // Interview Reps is opt-in. Existing users who already practised keep it on.
+  function showReps() {
+    var p = prefs();
+    if (p.showReps === true || p.showReps === false) return p.showReps;
+    var d = lsJSON(KEYS.planner, null);
+    var r = d && d.reps;
+    return !!(r && ((r.cards && r.cards.length) || (r.states && Object.keys(r.states).length)));
+  }
   function setPref(k, v) { var p = prefs(); p[k] = v; lsSet(KEYS.prefs, JSON.stringify(p)); emit("prefs"); }
 
   // ---------- name ----------
@@ -290,7 +300,7 @@
   function openNameDialog(first) {
     openModal(
       orb({ mood: first ? "good" : "okay", size: 96, cls: "orb-float" }) +
-      '<h2>' + (first ? "Hi there. What should I call you?" : "What should I call you?") + '</h2>' +
+      '<h2>' + (first ? "Lovely start. What should I call you?" : "What should I call you?") + '</h2>' +
       '<p>' + (first
         ? "This little space is yours. Your name makes it feel that way — it stays on this device, never sent anywhere."
         : "Change it any time. The Planner and the Journal both use it.") + '</p>' +
@@ -491,6 +501,74 @@
     refreshNudge();
     toast("Backup saved — keep it somewhere safe", 3000);
   }
+  // A readable copy of everything — your journal is yours, in a format any app can open.
+  function exportMarkdown() {
+    var out = ["# Mind Journal — " + displayName(), "", "_Exported " + new Date().toLocaleString() + "_", ""];
+    var dates = journalDates().slice().reverse();
+    function para(label, txt) { if (txt && String(txt).trim()) out.push("**" + label + ":** " + String(txt).trim()); }
+    dates.forEach(function (iso) {
+      var d = journalDay(iso);
+      out.push("## " + prettyDate(iso, { weekday: "long", day: "numeric", month: "long", year: "numeric" }), "");
+      if (d.checkin) { var m = MOODS[d.checkin.mood]; para("Mood", (m ? m.label : (d.checkin.moodLabel || "")) + (d.checkin.energy ? " · energy " + d.checkin.energy + "/10" : "")); para("On my mind", d.checkin.heaviest); }
+      if (d.braindump && d.braindump.text && d.braindump.text.trim()) out.push("", "### Brain dump", "", d.braindump.text.trim());
+      if (d.worry && d.worry.worries && d.worry.worries.length) { out.push("", "### Worries parked", ""); d.worry.worries.forEach(function (w) { out.push("- " + (w.parked ? "[parked] " : "") + w.text); }); }
+      if (d.reframe) { out.push("", "### Reframe", ""); para("The thought", d.reframe.r1); para("Fact or feeling", d.reframe.r2); para("What I'd tell a friend", d.reframe.r3); para("A truer thought", d.reframe.r4); }
+      if (d.gratitude) { out.push("", "### Gratitude & wins", ""); [d.gratitude.g1, d.gratitude.g2, d.gratitude.g3].forEach(function (g) { if (g && g.trim()) out.push("- " + g.trim()); }); para("A win", d.gratitude.win); para("Kind words", d.gratitude.kind); }
+      if (d.evening) { out.push("", "### Evening", ""); para("How the day felt", d.evening.day); para("Letting go of", d.evening.release); para("Intention for tomorrow", d.evening.intention); }
+      var done = plannerDoneOn(iso);
+      if (done.length) { out.push("", "### Done in the planner", ""); done.forEach(function (t) { out.push("- " + t.text + (t.section ? " (" + t.section + ")" : "")); }); }
+      out.push("");
+    });
+    if (!dates.length) out.push("Nothing written yet.");
+    var blob = new Blob([out.join("\n")], { type: "text/markdown" });
+    var a = el("a", { href: URL.createObjectURL(blob), download: "mind-journal-" + localISO() + ".md" });
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+    toast("Your journal, as a text file");
+  }
+
+  // Ask the browser not to clear our storage (Safari can wipe sites unused for 7 days).
+  function requestPersist() {
+    try {
+      if (navigator.storage && navigator.storage.persist && !lsGet(KEYS.persistAsked)) {
+        lsSet(KEYS.persistAsked, "1");
+        navigator.storage.persisted().then(function (p) { if (!p) navigator.storage.persist(); }).catch(function () { });
+      }
+    } catch (e) { }
+  }
+
+  // Called after anything is saved on purpose: the first time, we ask for a name
+  // (the user has now seen what the app is for) and protect their storage.
+  function afterSave() {
+    requestPersist();
+    if (!getName() && !lsGet(KEYS.nameAsked)) setTimeout(function () { openNameDialog(true); }, 1400);
+  }
+
+  function isIOS() { return /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1); }
+  // iPhone Safari may clear data of websites not opened for a week; installed apps are safe.
+  function shouldShowIOSHint() {
+    return isIOS() && !isStandalone() && hasAnyData() && !lsGet(KEYS.iosHintSeen) && /^https?:/.test(location.protocol);
+  }
+  function dismissIOSHint() { lsSet(KEYS.iosHintSeen, "1"); }
+
+  var SUPPORT_HTML =
+    '<div class="mj-support">' +
+    '<p><b>If things feel like too much, you don\'t have to carry it alone.</b> Talking to someone can help — a friend, a doctor, or a helpline.</p>' +
+    '<ul>' +
+    '<li><b>India:</b> Tele-MANAS — call <a href="tel:14416">14416</a> or <a href="tel:18008914416">1-800-891-4416</a> (free, 24×7, many languages)</li>' +
+    '<li><b>Anywhere:</b> <a href="https://findahelpline.com" target="_blank" rel="noopener">findahelpline.com</a> lists free, confidential helplines in your country</li>' +
+    '<li>If you\'re in danger right now, call your local emergency number.</li>' +
+    '</ul>' +
+    '<p class="hint">Mind Journal is a self-care tool, not a substitute for professional care.</p>' +
+    '</div>';
+  function openSupport() {
+    openModal(
+      '<div class="mj-sheet-head"><h2>Find support</h2><button type="button" class="btn btn-icon btn-quiet" data-mj-close aria-label="Close">' + ICON.close + '</button></div>' +
+      SUPPORT_HTML,
+      { sheet: true, label: "Find support" }
+    );
+  }
+
   function importBackup(file) {
     var reader = new FileReader();
     reader.onload = function () {
@@ -527,7 +605,7 @@
     var g = document.getElementById("mj-you");
     if (!g) return;
     var d = backupAgeDays();
-    g.classList.toggle("nudge", hasAnyData() && (d === null || d >= 14));
+    g.classList.toggle("nudge", hasAnyData() && (d === null || d >= 7));
   }
 
   // ---------- share + install ----------
@@ -592,6 +670,7 @@
       '<div class="mj-set"><h3>Backup</h3><div class="row row-wrap">' +
       '<button type="button" class="btn btn-primary btn-sm" id="mj-export">Download backup</button>' +
       '<button type="button" class="btn btn-soft btn-sm" id="mj-import-btn">Restore from file</button>' +
+      '<button type="button" class="btn btn-quiet btn-sm" id="mj-export-md">Download as text</button>' +
       '<input type="file" id="mj-import" accept="application/json,.json" hidden></div>' +
       '<p class="hint">Your data lives only in this browser. ' + esc(backupStatus()) +
       ' A backup also moves everything to a new phone or laptop.</p></div>' +
@@ -602,8 +681,9 @@
       '<p class="hint">Friends get their own private space — nobody can see anyone else\'s entries. ' + esc(installHelp()) + '</p></div>' +
 
       '<div class="mj-set"><h3>A little extra</h3>' +
-      '<button type="button" class="btn btn-soft btn-sm" id="mj-letter-btn">Read this week\'s letter</button>' +
-      (isPlanner ? '<label class="mj-switch" style="margin-top:12px">Show the Interview Reps tab<input type="checkbox" id="mj-reps"' + (p.showReps === false ? "" : " checked") + '></label>' : "") +
+      '<div class="row row-wrap"><button type="button" class="btn btn-soft btn-sm" id="mj-letter-btn">Read this week\'s letter</button>' +
+      '<button type="button" class="btn btn-quiet btn-sm" id="mj-support-btn">Find support</button></div>' +
+      (isPlanner ? '<label class="mj-switch" style="margin-top:12px"><span>Interview Reps<span class="hint" style="display:block;margin:0;font-weight:500">Flashcards for job-interview prep, in the Planner</span></span><input type="checkbox" id="mj-reps"' + (showReps() ? " checked" : "") + '></label>' : "") +
       '</div>',
       { sheet: true, label: "Settings" }
     );
@@ -647,6 +727,8 @@
       };
     });
     document.getElementById("mj-export").onclick = function () { exportBackup(); openSettings(); };
+    document.getElementById("mj-export-md").onclick = exportMarkdown;
+    document.getElementById("mj-support-btn").onclick = openSupport;
     var fileIn = document.getElementById("mj-import");
     document.getElementById("mj-import-btn").onclick = function () { fileIn.click(); };
     fileIn.onchange = function () { if (fileIn.files[0]) importBackup(fileIn.files[0]); };
@@ -853,7 +935,7 @@
 
     var tabs = el("nav", { "class": "mj-tabbar", "aria-label": "Main" },
       NAV.map(function (n) {
-        return '<a href="' + n.href + '" data-nav="' + n.id + '">' + n.icon + '<span class="tab-label">' + n.label.replace(" Jar", "") + '</span></a>';
+        return '<a href="' + n.href + '" data-nav="' + n.id + '">' + n.icon + '<span class="tab-label">' + n.label + '</span></a>';
       }).join("") +
       '<button type="button" data-mj-settings>' + ICON.you + '<span class="tab-label">You</span></button>');
     document.body.appendChild(tabs);
@@ -895,6 +977,7 @@
       if (e.target.closest("[data-mj-settings]")) openSettings();
       else if (e.target.closest("[data-mj-name]")) openNameDialog(false);
       else if (e.target.closest("[data-mj-letter]")) openLetter();
+      else if (e.target.closest("[data-mj-support]")) { e.preventDefault(); openSupport(); }
     });
 
     if (window.matchMedia) {
@@ -904,13 +987,32 @@
 
     // offline support (skipped on the Vite dev server so it never caches dev files)
     if ("serviceWorker" in navigator && /^https?:/.test(location.protocol) && location.port !== "5173") {
-      navigator.serviceWorker.register("sw.js").catch(function () { });
+      navigator.serviceWorker.register("sw.js").then(function (reg) {
+        // An installed app (especially on iPhone) is resumed, not reloaded — so check
+        // for a new version whenever it comes back to the screen.
+        document.addEventListener("visibilitychange", function () {
+          if (document.visibilityState === "visible") reg.update().catch(function () { });
+        });
+      }).catch(function () { });
+      // A new version took over: reload once so the page and shared code match —
+      // but never while someone is typing.
+      var hadController = !!navigator.serviceWorker.controller, reloaded = false;
+      navigator.serviceWorker.addEventListener("controllerchange", function () {
+        if (!hadController || reloaded) { hadController = true; return; }
+        var reload = function () {
+          var a = document.activeElement;
+          if (a && (a.tagName === "TEXTAREA" || a.tagName === "INPUT") && a.value) { setTimeout(reload, 4000); return; }
+          if (document.querySelector(".mj-overlay.show")) { setTimeout(reload, 4000); return; }
+          reloaded = true;
+          location.reload();
+        };
+        reload();
+      });
     }
 
     if (!document.body.hasAttribute("data-mj-page")) return;
     // first visit: say hello; otherwise maybe a milestone / Sunday letter
-    if (!getName() && !lsGet(KEYS.nameAsked)) setTimeout(function () { openNameDialog(true); }, 600);
-    else if (!checkMilestones()) maybeAutoLetter();
+    if (!checkMilestones()) maybeAutoLetter();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();
@@ -931,6 +1033,11 @@
     journalDay: journalDay, journalDates: journalDates, journalStreak: journalStreak,
     plannerData: plannerData, plannerDoneOn: plannerDoneOn, plannerTotals: plannerTotals,
     weekStats: weekStats, esc: esc,
+    openModal: function (h, o) { openModal(h, o); }, closeModal: function () { closeModal(); },
+    afterSave: afterSave, openSupport: openSupport, supportHTML: SUPPORT_HTML,
+    showReps: showReps, exportMarkdown: exportMarkdown,
+    shouldShowIOSHint: shouldShowIOSHint, dismissIOSHint: dismissIOSHint,
+    hasAnyData: hasAnyData, ls: { get: lsGet, set: lsSet, json: lsJSON },
     getTheme: getTheme, setTheme: setTheme,
     installHelp: installHelp,
     install: function () {

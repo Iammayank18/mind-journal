@@ -9,6 +9,8 @@ index.html          home page
 journal.html        check-in, brain dump, worry parking, reframe, gratitude,
                     evening wind-down, breathing, Wins Jar, history
 planner.html        sections & tasks, live timeline, focus timer, interview reps, analytics
+public/fonts/       Figtree, self-hosted (no Google Fonts request, works offline)
+public/og.png       1200×630 link-preview image
 public/theme.css    the "Sunny" design system: colours, type (Figtree), buttons, cards,
                     mood orbs, motion, app shell, light + dark
 public/common.js    shared: app shell + tab bar, mood-orb characters, calm sounds & chimes,
@@ -32,10 +34,14 @@ Use `yarn preview` to test offline/install.
 
 ## Privacy
 
-Everything is stored in the browser's `localStorage`. Nothing is sent to a server.
+Everything is stored in the browser's `localStorage`. Nothing is sent to a server — fonts are self-hosted,
+so not even Google sees a request. After the first save the app asks the browser to keep its storage
+(`navigator.storage.persist()`), and iPhone users get a one-time hint to add it to the Home Screen
+(Safari can clear websites that aren't opened for 7 days).
 Each person who opens the site gets their own private space, so it's safe to share the link with friends.
 
-Because data lives in one browser, use **⚙ Settings → Download backup** now and then.
+Because data lives in one browser, use **⚙ Settings → Download backup** now and then (the avatar shows a
+small dot after 7 days without one). **Download as text** gives a readable Markdown copy of the journal.
 The same file restores everything on another phone or laptop.
 
 ## Deploy to Vercel
@@ -49,8 +55,8 @@ vercel --prod
 
 Or push to GitHub and import the repo at vercel.com/new.
 
-After the first deploy, change `og:image` in `index.html` to the full URL
-(e.g. `https://your-app.vercel.app/icons/icon-512.png`) so link previews show the icon.
+Link previews: `og:image` is made absolute at build time. On Vercel this happens automatically
+(`VERCEL_PROJECT_PRODUCTION_URL`); elsewhere set `SITE_URL=https://your-domain` before `yarn build`.
 
 ## Moving your existing data to the deployed site
 
@@ -64,4 +70,12 @@ move to the new web address by itself.
 
 ## Updating
 
-When you change files, bump `VERSION` in `public/sw.js` (e.g. `mj-v2`) so installed copies pick up the new version.
+When you change `common.js` or `theme.css`, bump the `?v=` number in all three HTML files and in `public/sw.js` (plus `VERSION`). Installed apps check for updates when reopened and reload once by themselves. Pages, `common.js`
+and `theme.css` are fetched network-first, so a deploy never mixes a new page with old shared code.
+
+## Product notes
+
+- **Support:** the check-in shows helpline info when someone feels Heavy or Anxious; "Find support" is also in
+  Settings, the Journal sidebar and the landing footer. Mind Journal is self-care, not a substitute for care.
+- **Interview Reps** (flashcards) is opt-in under Settings → A little extra. It stays on for anyone who already used it.
+- **Planner quick add** understands `gym 7am 30m daily #health` (time, length, repeat, list).

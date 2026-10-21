@@ -10,11 +10,9 @@
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="theme.css">
-  <script vite-ignore src="common.js"></script>
+  <link rel="preload" href="fonts/figtree-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="theme.css?v=5">
+  <script vite-ignore src="common.js?v=5"></script>
   <style>
     .journal {
       padding-top: 12px;
@@ -38,6 +36,17 @@
     .gap-lg > * + * { margin-top: 20px; }
 
     /* ── today hub ── */
+    .narrow {
+      max-width: 720px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #view-wins {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
     .day-bar {
       display: flex;
       align-items: center;
@@ -87,6 +96,10 @@
       white-space: nowrap;
     }
 
+    .back-today {
+      margin-left: 6px;
+    }
+
     .hello-greet {
       font-size: 18px;
       font-weight: 600;
@@ -122,8 +135,22 @@
       max-width: 560px;
     }
 
-    .mood-card {
-      margin-top: 26px;
+    .ios-hint {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 20px;
+      padding: 14px 16px;
+      border-radius: var(--r-lg);
+      background: var(--brand-tint);
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--ink);
+    }
+
+    .mood-card,
+    .focus-card {
+      margin-top: 24px;
       padding: 24px;
     }
 
@@ -150,9 +177,9 @@
       flex-direction: column;
       align-items: center;
       gap: 6px;
-      padding: 6px 0;
+      padding: 8px 0 6px;
       border-radius: var(--r-md);
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
       color: var(--ink-2);
       transition: background var(--t-fast) var(--ease);
@@ -160,6 +187,7 @@
 
     .mood-mini:hover {
       background: var(--brand-tint);
+      color: var(--ink);
     }
 
     .mood-mini:hover .orb {
@@ -170,84 +198,183 @@
       transition: transform var(--t-med) var(--ease-bounce);
     }
 
-    .checked-in {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-top: 18px;
-      padding: 14px 16px;
-      border-radius: var(--r-lg);
-      background: var(--brand-tint);
-      font-size: 15px;
+    /* the one thing for right now */
+    .focus-card {
+      position: relative;
+      overflow: hidden;
     }
 
+    .focus-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 92px;
+      background: var(--tint, var(--brand-tint));
+      opacity: .32;
+    }
+
+    :root[data-theme="dark"] .focus-card::before {
+      opacity: .16;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) .focus-card::before {
+        opacity: .16;
+      }
+    }
+
+    .focus-mood {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .focus-mood .t-h3 {
+      font-size: 18px;
+    }
+
+    .on-mind {
+      position: relative;
+      margin-top: 14px;
+      font-size: 15px;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    .on-mind b {
+      color: var(--ink);
+    }
+
+    .suggest {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+    }
+
+    .suggest-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .suggest-row .t-h2 {
+      font-size: 24px;
+    }
+
+    .suggest-row .t-body {
+      margin-top: 2px;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .suggest-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    /* rituals, grouped by time of day */
     .section-row {
       display: flex;
       align-items: baseline;
       justify-content: space-between;
-      margin: 34px 4px 14px;
+      gap: 12px;
+      margin: 36px 4px 8px;
+    }
+
+    .r-group + .r-group {
+      margin-top: 18px;
+    }
+
+    .r-group-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 4px 8px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+
+    .now-pill {
+      padding: 2px 8px;
+      border-radius: var(--pill);
+      background: var(--brand-soft);
+      color: var(--brand-ink);
+      font-size: 11px;
+      letter-spacing: .04em;
     }
 
     .ritual-list {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      background: var(--card);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-1);
+      overflow: hidden;
     }
 
     .ritual-card {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
       padding: 14px 18px 14px 14px;
-      border-radius: var(--r-lg);
-      background: var(--card);
-      box-shadow: var(--shadow-1);
       text-decoration: none;
       color: var(--ink);
-      transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease), background var(--t-med);
+      transition: background var(--t-fast) var(--ease);
+    }
+
+    .ritual-card + .ritual-card {
+      border-top: 1px solid var(--line);
     }
 
     .ritual-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-2);
+      background: var(--card-2);
+    }
+
+    .ritual-card:focus-visible {
+      outline-offset: -3px;
     }
 
     .ritual-card .r-title {
+      display: block;
       font-size: 17px;
       font-weight: 700;
       line-height: 1.3;
     }
 
     .ritual-card .r-sub {
+      display: block;
       font-size: 14px;
       color: var(--ink-2);
       line-height: 1.4;
     }
 
-    .ritual-card.done .r-title {
+    .ritual-card .r-dur {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-3);
+      white-space: nowrap;
+    }
+
+    .ritual-card .chev {
+      color: var(--ink-3);
+      flex-shrink: 0;
+    }
+
+    .ritual-card.done .r-sub {
       color: var(--ink-2);
     }
 
-    .ritual-card.next {
-      background: var(--brand);
-      color: var(--on-brand);
-      padding: 18px 18px 18px 14px;
-    }
-
-    .ritual-card.next .r-sub {
-      color: var(--on-brand);
-      opacity: .8;
-      font-weight: 600;
-    }
-
-    .ritual-card.next .pill {
-      background: var(--canvas);
-    }
-
     .done-mark {
-      width: 48px;
-      height: 48px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       background: var(--mint);
       display: grid;
@@ -256,58 +383,117 @@
       color: #1F1D1B;
     }
 
-    .play-mark {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: var(--dark);
+    /* sidebar */
+    .week {
       display: grid;
-      place-items: center;
-      flex-shrink: 0;
-      color: var(--brand);
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 4px;
     }
 
-    .duo {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-      margin-top: 12px;
-    }
-
-    .duo a {
-      text-decoration: none;
-      color: var(--ink);
+    .week-day {
+      -webkit-appearance: none;
+      appearance: none;
+      border: none;
+      background: none;
+      padding: 6px 0;
+      border-radius: var(--r-md);
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      padding: 20px;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink-3);
+      cursor: pointer;
+    }
+
+    .week-day:hover:not(:disabled) {
+      background: var(--brand-tint);
+    }
+
+    .week-day:disabled {
+      cursor: default;
+    }
+
+    .week-day.is-today {
+      color: var(--ink);
+    }
+
+    .week-day.is-sel {
+      background: var(--brand-tint);
+      color: var(--ink);
+    }
+
+    .week-dot {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 2px var(--line-2);
+      display: grid;
+      place-items: center;
+    }
+
+    .week-dot.some {
+      background: var(--brand-soft);
+      box-shadow: none;
+    }
+
+    .week-dot.future {
+      box-shadow: inset 0 0 0 2px var(--line);
+      opacity: .6;
+    }
+
+    .week-note {
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--ink-2);
+    }
+
+    .wins-teaser {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--ink);
+    }
+
+    .wins-teaser .wt-quote {
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.45;
+      letter-spacing: -0.01em;
     }
 
     .quote-card {
-      margin-top: 28px;
-      padding: 28px;
-      text-align: center;
+      padding: 22px;
     }
 
     .quote-card #daily-quote {
-      font-size: 19px;
+      font-size: 17px;
       line-height: 1.6;
       font-weight: 600;
       letter-spacing: -0.01em;
     }
 
     .quote-card .insight-author {
-      margin-top: 10px;
+      margin-top: 8px;
       font-size: 14px;
       color: var(--brand-ink);
     }
 
-    .hub-links {
-      display: flex;
-      justify-content: center;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-top: 18px;
+    @media (min-width: 1000px) {
+      .hub-main {
+        padding-top: 4px;
+      }
+
+      .mood-card,
+      .focus-card {
+        padding: 28px;
+      }
+
+      .hub-main .t-h1 {
+        font-size: 48px;
+      }
     }
 
     /* ── ritual views ── */
@@ -361,6 +547,10 @@
       justify-content: flex-end;
       gap: 14px;
       margin-top: 26px;
+    }
+
+    .ritual-foot .kbd-hint {
+      margin-right: auto;
     }
 
     .saved-note {
@@ -796,6 +986,29 @@
       margin-top: 6px;
     }
 
+    .wins-lists {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    @media (min-width: 900px) {
+      .wins-lists {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        align-items: start;
+      }
+    }
+
+    .done-panel .mj-support {
+      text-align: left;
+      margin-top: 6px;
+      padding: 18px;
+      border-radius: var(--r-lg);
+      background: var(--card);
+      width: 100%;
+    }
+
     .card-label {
       display: flex;
       align-items: center;
@@ -953,71 +1166,78 @@
 
 <body data-mj-page="journal">
 
-  <main class="wrap-narrow journal" id="main">
+  <main class="app-wrap journal" id="main">
 
     <!-- ═════════ TODAY ═════════ -->
     <section class="view" id="view-today" aria-labelledby="hub-title">
-      <div class="day-bar">
-        <div class="date-pill">
-          <button type="button" onclick="changeDay(-1)" aria-label="Previous day">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
-          </button>
-          <span id="current-date"></span>
-          <button type="button" id="next-day" onclick="changeDay(1)" aria-label="Next day">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
-          </button>
-        </div>
-        <span class="pill" id="streak-badge"></span>
-      </div>
-
-      <p class="hello-greet rise" style="--i:0"><span id="greet-word">Hello</span>,</p>
-      <h1 class="t-h1 rise" id="hub-title" style="--i:1"><button type="button" class="name-btn" data-mj-name title="Change your name"><span id="name-text">friend</span></button></h1>
-      <p class="cheer rise" id="mj-cheer" style="--i:2"></p>
-
-      <div class="card mood-card rise" style="--i:3">
-        <div class="mood-head">
-          <span id="hub-orb"></span>
-          <div>
-            <div class="t-h3" id="mood-q">How are you, really?</div>
-            <div class="t-small" id="mood-sub">No judgement. Just notice.</div>
+      <div class="app-grid">
+        <div class="hub-main">
+          <div class="day-bar">
+            <div class="row" style="--gap:0">
+              <div class="date-pill">
+                <button type="button" onclick="changeDay(-1)" aria-label="Previous day">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+                </button>
+                <span id="current-date" aria-live="polite"></span>
+                <button type="button" id="next-day" onclick="changeDay(1)" aria-label="Next day">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+                </button>
+              </div>
+              <button type="button" class="btn btn-quiet btn-sm back-today" id="back-today" onclick="goToday()" hidden>Back to today</button>
+            </div>
+            <span class="pill" id="streak-badge"></span>
           </div>
+
+          <p class="hello-greet rise" style="--i:0"><span id="greet-word">Hello</span>,</p>
+          <h1 class="t-h1 rise" id="hub-title" style="--i:1"><button type="button" class="name-btn" data-mj-name title="Change your name"><span id="name-text">friend</span></button></h1>
+          <p class="cheer rise" id="mj-cheer" style="--i:2"></p>
+
+          <div id="ios-hint"></div>
+
+          <!-- before checking in: the one question that matters -->
+          <div class="card mood-card rise" id="mood-card" style="--i:3">
+            <div class="mood-head">
+              <span id="hub-orb"></span>
+              <div>
+                <h2 class="t-h3" id="mood-q">How are you, really?</h2>
+                <div class="t-small" id="mood-sub">Tap the one that feels closest. No judgement.</div>
+              </div>
+            </div>
+            <div class="mood-strip" id="mood-strip" role="group" aria-label="How you feel"></div>
+          </div>
+
+          <!-- after checking in: how you are + one gentle suggestion -->
+          <div class="card focus-card rise" id="focus-card" style="--i:3" hidden></div>
+
+          <div class="section-row">
+            <h2 class="t-h2">Your rituals</h2>
+            <span class="t-small" id="ritual-progress"></span>
+          </div>
+          <div id="rituals"></div>
         </div>
-        <div class="mood-strip" id="mood-strip"></div>
-        <div class="checked-in" id="checked-in" hidden></div>
-      </div>
 
-      <div class="section-row rise" style="--i:4">
-        <h2 class="t-h2">Today's rituals</h2>
-        <span class="t-small" id="ritual-progress"></span>
-      </div>
-      <div class="ritual-list" id="rituals"></div>
-
-      <div class="duo">
-        <a class="card card-lift" href="#breathe" id="hub-breathe">
-          <span id="breathe-mini"></span>
-          <span class="card-title">Breathe</span>
-          <span class="t-small">One slow round of 4-7-8 · 2 min</span>
-        </a>
-        <a class="card card-lift card-soft" href="#wins" id="hub-wins">
-          <span id="wins-mini"></span>
-          <span class="card-title">Wins Jar</span>
-          <span class="t-small" id="wins-mini-count">Your good things, saved</span>
-        </a>
-      </div>
-
-      <div class="card card-sunny quote-card">
-        <p id="daily-quote"></p>
-        <div class="insight-author"></div>
-      </div>
-
-      <div class="hub-links">
-        <a class="btn btn-quiet btn-sm" href="#history">Your journal history</a>
-        <button type="button" class="btn btn-quiet btn-sm" data-mj-letter>This week's letter</button>
+        <aside class="app-side" aria-label="Your week and wins">
+          <div class="card side-card">
+            <div class="side-title">This week</div>
+            <div class="week" id="week"></div>
+            <p class="week-note" id="week-note"></p>
+          </div>
+          <a class="card side-card card-soft wins-teaser card-lift" href="#wins" id="wins-teaser"></a>
+          <div class="card card-sunny quote-card">
+            <p id="daily-quote"></p>
+            <div class="insight-author"></div>
+          </div>
+          <div class="side-links">
+            <a class="link-quiet" href="#history">Journal history</a>
+            <button type="button" class="link-quiet" data-mj-letter>This week's letter</button>
+            <button type="button" class="link-quiet" data-mj-support>Find support</button>
+          </div>
+        </aside>
       </div>
     </section>
 
     <!-- ═════════ CHECK-IN ═════════ -->
-    <section class="view ritual" id="view-checkin" data-ritual="checkin">
+    <section class="view ritual narrow" id="view-checkin" data-ritual="checkin">
       <div class="ritual-top"><a class="btn btn-quiet btn-sm" href="#today">← Today</a><span class="pill pill-soft">2 min</span></div>
       <div class="ritual-head">
         <span data-orb="checkin"></span>
@@ -1044,6 +1264,7 @@
         </div>
       </div>
       <div class="ritual-foot">
+        <span class="t-caption kbd-hint"><span class="kbd">Ctrl</span> + <span class="kbd">Enter</span> to save</span>
         <span class="saved-note" id="save-badge-checkin">Saved</span>
         <button type="button" class="btn btn-primary btn-lg" onclick="saveSection('checkin')">Save check-in</button>
       </div>
@@ -1051,7 +1272,7 @@
     </section>
 
     <!-- ═════════ BRAIN DUMP ═════════ -->
-    <section class="view ritual" id="view-braindump" data-ritual="braindump">
+    <section class="view ritual narrow" id="view-braindump" data-ritual="braindump">
       <div class="ritual-top"><a class="btn btn-quiet btn-sm" href="#today">← Today</a><span class="pill pill-soft">10 min</span></div>
       <div class="ritual-head">
         <span data-orb="braindump"></span>
@@ -1083,6 +1304,7 @@
         </details>
       </div>
       <div class="ritual-foot">
+        <span class="t-caption kbd-hint"><span class="kbd">Ctrl</span> + <span class="kbd">Enter</span> to save</span>
         <span class="saved-note" id="save-badge-braindump">Saved</span>
         <button type="button" class="btn btn-primary btn-lg" onclick="saveSection('braindump')">I'm done for now</button>
       </div>
@@ -1090,7 +1312,7 @@
     </section>
 
     <!-- ═════════ WORRY PARKING ═════════ -->
-    <section class="view ritual" id="view-worry" data-ritual="worry">
+    <section class="view ritual narrow" id="view-worry" data-ritual="worry">
       <div class="ritual-top"><a class="btn btn-quiet btn-sm" href="#today">← Today</a><span class="pill pill-soft">3 min</span></div>
       <div class="ritual-head">
         <span data-orb="worry"></span>
@@ -1115,6 +1337,7 @@
         </div>
       </div>
       <div class="ritual-foot">
+        <span class="t-caption kbd-hint"><span class="kbd">Ctrl</span> + <span class="kbd">Enter</span> to save</span>
         <span class="saved-note" id="save-badge-worry">Saved</span>
         <button type="button" class="btn btn-primary btn-lg" onclick="saveSection('worry')">Park them all</button>
       </div>
@@ -1122,7 +1345,7 @@
     </section>
 
     <!-- ═════════ REFRAME ═════════ -->
-    <section class="view ritual" id="view-reframe" data-ritual="reframe">
+    <section class="view ritual narrow" id="view-reframe" data-ritual="reframe">
       <div class="ritual-top"><a class="btn btn-quiet btn-sm" href="#today">← Today</a><span class="pill pill-soft">5 min</span></div>
       <div class="ritual-head">
         <span data-orb="reframe"></span>
@@ -1149,6 +1372,7 @@
         </div>
       </div>
       <div class="ritual-foot">
+        <span class="t-caption kbd-hint"><span class="kbd">Ctrl</span> + <span class="kbd">Enter</span> to save</span>
         <span class="saved-note" id="save-badge-reframe">Saved</span>
         <button type="button" class="btn btn-primary btn-lg" onclick="saveSection('reframe')">Save reframe</button>
       </div>
@@ -1156,7 +1380,7 @@
     </section>
 
     <!-- ═════════ GRATITUDE ═════════ -->
-    <section class="view ritual" id="view-gratitude" data-ritual="gratitude">
+    <section class="view ritual narrow" id="view-gratitude" data-ritual="gratitude">
       <div class="ritual-top"><a class="btn btn-quiet btn-sm" href="#today">← Today</a><span class="pill pill-soft">2 min</span></div>
       <div class="ritual-head">
         <span data-orb="gratitude"></span>
@@ -1184,6 +1408,7 @@
         </div>
       </div>
       <div class="ritual-foot">
+        <span class="t-caption kbd-hint"><span class="kbd">Ctrl</span> + <span class="kbd">Enter</span> to save</span>
         <span class="saved-note" id="save-badge-gratitude">Saved</span>
         <button type="button" class="btn btn-primary btn-lg" onclick="saveSection('gratitude')">Add to my Wins Jar</button>
       </div>
@@ -1191,7 +1416,7 @@
     </section>
 
     <!-- ═════════ EVENING ═════════ -->
-    <section class="view ritual" id="view-evening" data-ritual="evening">
+    <section class="view ritual narrow" id="view-evening" data-ritual="evening">
       <div class="ritual-top"><a class="btn btn-quiet btn-sm" href="#today">← Today</a><span class="pill pill-soft">5 min</span></div>
       <div class="ritual-head">
         <span data-orb="evening"></span>
@@ -1218,6 +1443,7 @@
         </div>
       </div>
       <div class="ritual-foot">
+        <span class="t-caption kbd-hint"><span class="kbd">Ctrl</span> + <span class="kbd">Enter</span> to save</span>
         <span class="saved-note" id="save-badge-evening">Saved</span>
         <button type="button" class="btn btn-primary btn-lg" onclick="saveSection('evening')">Close the day</button>
       </div>
@@ -1225,7 +1451,7 @@
     </section>
 
     <!-- ═════════ BREATHE ═════════ -->
-    <section class="view" id="view-breathe">
+    <section class="view narrow" id="view-breathe">
       <div class="ritual-top"><a class="btn btn-quiet btn-sm" href="#today">← Today</a><span class="pill pill-soft">2 min</span></div>
       <div class="ritual-head">
         <h1 class="t-h1">Breathe</h1>
@@ -1258,22 +1484,24 @@
         <div class="wins-pick-date" id="wins-pick-date"></div>
         <button type="button" class="btn btn-dark btn-lg" id="wins-pick-btn" onclick="pickWin()">Pick one for me</button>
       </div>
-      <div class="card" style="margin-top:16px">
-        <div class="card-label">Things I did okay</div>
-        <ul class="wins-list" id="wins-list-win"></ul>
-      </div>
-      <div class="card" style="margin-top:12px">
-        <div class="card-label">Kind things I told myself</div>
-        <ul class="wins-list" id="wins-list-kind"></ul>
-      </div>
-      <div class="card" style="margin-top:12px">
-        <div class="card-label">Good things I noticed</div>
-        <ul class="wins-list" id="wins-list-grat"></ul>
+      <div class="wins-lists">
+        <div class="card">
+          <h2 class="card-label">Things I did okay</h2>
+          <ul class="wins-list" id="wins-list-win"></ul>
+        </div>
+        <div class="card">
+          <h2 class="card-label">Kind things I told myself</h2>
+          <ul class="wins-list" id="wins-list-kind"></ul>
+        </div>
+        <div class="card">
+          <h2 class="card-label">Good things I noticed</h2>
+          <ul class="wins-list" id="wins-list-grat"></ul>
+        </div>
       </div>
     </section>
 
     <!-- ═════════ HISTORY ═════════ -->
-    <section class="view" id="view-history">
+    <section class="view narrow" id="view-history">
       <div class="ritual-top"><a class="btn btn-quiet btn-sm" href="#today">← Today</a><button type="button" class="btn btn-soft btn-sm" data-mj-letter>This week's letter</button></div>
       <div class="ritual-head">
         <h1 class="t-h1">Your journal</h1>
@@ -1341,10 +1569,27 @@
         ? 'Today, ' + currentDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })
         : currentDate.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
       document.getElementById('next-day').disabled = isToday();
+      document.getElementById('back-today').hidden = isToday();
       loadDayData();
     }
 
+    function goToday() {
+      flushAutosave();
+      currentDate = new Date(); currentDate.setHours(0, 0, 0, 0);
+      updateDateDisplay();
+    }
+
+    function setDay(iso) {
+      flushAutosave();
+      const d = new Date(iso + 'T00:00:00');
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      if (d > today) return;
+      currentDate = d;
+      updateDateDisplay();
+    }
+
     function changeDay(dir) {
+      flushAutosave();
       const d = new Date(currentDate);
       d.setDate(d.getDate() + dir);
       const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -1358,13 +1603,25 @@
       return `mj_${getDateKey(currentDate)}_${section}`;
     }
 
+    let saveFailedShown = false;
     function saveData(section, data) {
-      localStorage.setItem(getKey(section), JSON.stringify(data));
+      try {
+        localStorage.setItem(getKey(section), JSON.stringify(data));
+        return true;
+      } catch (e) {
+        if (!saveFailedShown) {
+          saveFailedShown = true;
+          showToast('Couldn\'t save — this browser\'s storage is full or blocked (private mode?). Download a backup from Settings.', 6000);
+        }
+        return false;
+      }
     }
 
     function loadData(section) {
-      const raw = localStorage.getItem(getKey(section));
-      return raw ? JSON.parse(raw) : null;
+      try {
+        const raw = localStorage.getItem(getKey(section));
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) { return null; }
     }
 
     // ─── VIEWS (hash routing: #today, #checkin, #wins …) ─────────────
@@ -1391,7 +1648,7 @@
       if (changed) window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    window.addEventListener('hashchange', () => renderView(location.hash.slice(1)));
+    window.addEventListener('hashchange', () => { flushAutosave(); renderView(location.hash.slice(1)); });
 
     // ─── MOOD ─────────────────────────────────────────────────────────
     function selectMood(btn, mood) {
@@ -1399,6 +1656,8 @@
       btn.classList.add('selected');
       const o = btn.querySelector('.orb');
       if (o) { o.classList.remove('orb-bounce'); void o.offsetWidth; o.classList.add('orb-bounce'); }
+      document.querySelectorAll('.mood-btn').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+      scheduleAutosave('checkin');
     }
 
     function energyWord(v) {
@@ -1415,7 +1674,7 @@
     function buildMoodPickers() {
       const keys = Object.keys(MJ.MOODS);
       document.getElementById('mood-grid').innerHTML = keys.map(k =>
-        `<button type="button" class="mood-btn" data-mood="${k}" onclick="selectMood(this, '${k}')">${MJ.orb({ mood: k, size: 56 })}${MJ.MOODS[k].label}</button>`
+        `<button type="button" class="mood-btn" data-mood="${k}" aria-pressed="false" onclick="selectMood(this, '${k}')">${MJ.orb({ mood: k, size: 56 })}${MJ.MOODS[k].label}</button>`
       ).join('');
       document.getElementById('mood-strip').innerHTML = keys.map(k =>
         `<button type="button" class="mood-mini" onclick="quickMood('${k}')" aria-label="I feel ${MJ.MOODS[k].label.toLowerCase()}">${MJ.orb({ mood: k, size: 40 })}${MJ.MOODS[k].label}</button>`
@@ -1470,12 +1729,13 @@
         };
       }
 
-      saveData(section, data);
+      if (!saveData(section, data)) return;
       showSavedBadge(section, explicit);
       updateStreak();
       if (explicit) {
         showDonePanel(section);
         cheerSave(section);
+        MJ.afterSave();
       }
     }
 
@@ -1493,9 +1753,11 @@
       const panel = document.getElementById('done-' + section);
       if (!panel) return;
       const idx = RITUAL_IDS.indexOf(section);
-      const nextId = RITUAL_IDS.slice(idx + 1).find(id => loadData(id) === null);
-      const next = RITUALS.find(r => r.id === nextId);
+      const sug = suggestion();
+      const next = sug && sug.id !== 'breathe' && sug.id !== section ? RITUALS.find(r => r.id === sug.id) : null;
       const r = RITUALS[idx];
+      const ci = loadData('checkin');
+      const needsCare = section === 'checkin' && ci && (ci.mood === 'heavy' || ci.mood === 'anxious');
       panel.innerHTML =
         MJ.orb({ color: r.color, face: section === 'evening' ? 'sleepy' : 'joy', size: 84, cls: 'orb-bounce' }) +
         `<h2 class="t-h2">${MJ.esc(withName(SAVE_CHEERS[section]))}</h2>` +
@@ -1504,7 +1766,8 @@
         (section === 'evening'
           ? '<a class="btn btn-primary" href="#breathe">Breathe before sleep</a>'
           : next ? `<a class="btn btn-primary" href="#${next.id}">Next: ${next.title}</a>` : '') +
-        '<a class="btn btn-soft" href="#today">Back to Today</a></div>';
+        '<a class="btn btn-soft" href="#today">Back to Today</a></div>' +
+        (needsCare ? MJ.supportHTML.replace('<div class="mj-support">', '<div class="mj-support"><p class="t-small" style="margin-bottom:8px">Heavy days happen. If it\'s more than a hard day:</p>') : '');
       panel.hidden = false;
       setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'center' }), 120);
     }
@@ -1514,7 +1777,7 @@
       const idx = RITUAL_IDS.indexOf(section);
       view.querySelector('[data-steps]').innerHTML = RITUAL_IDS.map((id, i) =>
         `<i class="${i === idx ? 'on' : loadData(id) !== null ? 'done' : ''}"></i>`).join('') +
-        `<span class="t-caption" style="margin-left:8px">${idx + 1} of ${RITUAL_IDS.length}</span>`;
+        `<span class="t-caption" style="margin-left:8px">${idx + 1} of ${RITUAL_IDS.length} rituals</span>`;
     }
 
     // ─── LOAD DAY DATA ────────────────────────────────────────────────
@@ -1526,7 +1789,7 @@
         updateEnergy(ci.energy || 5);
         document.getElementById('energy-slider').value = ci.energy || 5;
         document.getElementById('heaviest-thought').value = ci.heaviest || '';
-        document.querySelectorAll('.mood-btn').forEach(b => { if (b.dataset.mood === ci.mood) b.classList.add('selected'); });
+        document.querySelectorAll('.mood-btn').forEach(b => { const on = b.dataset.mood === ci.mood; b.classList.toggle('selected', on); b.setAttribute('aria-pressed', String(on)); });
       } else {
         document.getElementById('energy-slider').value = 5;
         updateEnergy(5);
@@ -1597,51 +1860,162 @@
       return 'Done';
     }
 
-    function renderHub() {
-      const statuses = RITUALS.map(r => ritualStatus(r.id));
-      const doneCount = statuses.filter(Boolean).length;
-      let nextIdx = statuses.findIndex(s => s === null);
-      // after 7pm, the evening wind-down is the kindest next step
-      if (isToday() && new Date().getHours() >= 19 && statuses[5] === null) nextIdx = 5;
+    const GROUPS = [
+      { id: 'morning', label: 'Morning', ids: ['checkin', 'braindump'] },
+      { id: 'anytime', label: 'When you need it', ids: ['worry', 'reframe', 'breathe'] },
+      { id: 'evening', label: 'Evening', ids: ['gratitude', 'evening'] },
+    ];
+    const BREATHE = { id: 'breathe', title: 'Breathe', mins: 2, color: 'var(--mint)', face: 'sleepy', todo: 'One slow round of 4-7-8' };
 
-      document.getElementById('ritual-progress').textContent = `${doneCount} of ${RITUALS.length} done`;
-      document.getElementById('rituals').innerHTML = RITUALS.map((r, i) => {
-        const st = statuses[i];
-        const isNext = i === nextIdx;
-        const lead = st ? `<span class="done-mark">${CHECK_SVG}</span>`
-          : isNext ? `<span class="play-mark">${PLAY_SVG}</span>`
-            : MJ.orb({ color: r.color, face: r.face, size: 48 });
-        return `<a class="ritual-card rise ${st ? 'done' : ''} ${isNext ? 'next' : ''}" style="--i:${i + 5}" href="#${r.id}">` +
-          lead +
-          `<span class="grow"><span class="r-title" style="display:block">${r.title}</span>` +
-          `<span class="r-sub" style="display:block">${st ? MJ.esc(st) : isNext ? 'Up next · ' + r.todo.toLowerCase() : r.todo}</span></span>` +
-          (st ? '' : `<span class="pill ${isNext ? '' : 'pill-outline'}">${r.mins} min</span>`) +
-          '</a>';
-      }).join('');
+    function period() {
+      const h = new Date().getHours();
+      return h < 12 && h >= 4 ? 'morning' : h >= 18 || h < 4 ? 'evening' : 'anytime';
+    }
 
-      // mood card
+    const WHY = {
+      braindump: 'Empty your head onto the page before the day fills it.',
+      worry: 'Write each worry down and park it for later. Your mind can rest.',
+      reframe: 'Take one heavy thought for a gentle walk — towards something truer.',
+      gratitude: 'Notice three small good things. They\'re easy to miss.',
+      evening: 'Close the day\'s open tabs, so your mind can switch off.',
+      breathe: 'Four slow breaths. The long exhale tells your body it\'s safe.',
+    };
+
+    // The one kindest next step, from time of day and how you feel.
+    function suggestion() {
+      if (!isToday()) return null;
+      const done = id => loadData(id) !== null;
       const ci = loadData('checkin');
-      const hubOrb = document.getElementById('hub-orb');
-      const box = document.getElementById('checked-in');
-      if (ci && ci.mood && MJ.MOODS[ci.mood]) {
-        hubOrb.innerHTML = MJ.orb({ mood: ci.mood, size: 72, cls: 'orb-float' });
-        document.getElementById('mood-q').textContent = `${isToday() ? 'You\'re feeling' : 'You felt'} ${MJ.MOODS[ci.mood].label.toLowerCase()}`;
-        document.getElementById('mood-sub').textContent = `Energy ${ci.energy}/10 · ${energyWord(ci.energy).toLowerCase()}`;
-        document.getElementById('mood-strip').hidden = true;
-        box.hidden = false;
-        box.innerHTML = `<span>${ci.heaviest ? 'On your mind: <b>' + MJ.esc(ci.heaviest) + '</b>' : 'Thank you for checking in.'}</span><a class="btn btn-quiet btn-sm" href="#checkin">Update</a>`;
+      const mood = ci && ci.mood;
+      const per = period();
+      let order;
+      if (per === 'evening') order = ['gratitude', 'evening'];
+      else if (mood === 'anxious' || mood === 'restless') order = ['worry', 'braindump', 'reframe', 'gratitude'];
+      else if (mood === 'heavy' || mood === 'flat') order = ['reframe', 'braindump', 'gratitude'];
+      else if (per === 'morning') order = ['braindump', 'worry', 'gratitude'];
+      else order = ['braindump', 'gratitude', 'worry'];
+      let id = order.find(x => !done(x));
+      let why = WHY[id];
+      if (id === 'worry' && mood === 'anxious') why = 'Anxious minds loop. Park each worry for later — it really helps.';
+      if (id === 'reframe' && (mood === 'heavy' || mood === 'flat')) why = 'Feeling ' + MJ.MOODS[mood].label.toLowerCase() + '? Untangle one thought — no forced positivity.';
+      if (!id) {
+        if (per === 'evening' && done('evening')) return { id: 'breathe', why: 'You\'ve closed the day. One slow breath before sleep?', rest: true };
+        if (!done('evening') && per === 'evening') id = 'evening';
+        else return { id: 'breathe', why: WHY.breathe, rest: true };
+      }
+      return { id, why };
+    }
+
+    function ritualById(id) { return id === 'breathe' ? BREATHE : RITUALS.find(r => r.id === id); }
+
+    function renderHub() {
+      const today = isToday();
+      const ci = loadData('checkin');
+      const checked = !!(ci && ci.mood && MJ.MOODS[ci.mood]);
+
+      // 1 · before check-in: the mood question is the whole first screen
+      const moodCard = document.getElementById('mood-card');
+      const focus = document.getElementById('focus-card');
+      if (!checked) {
+        moodCard.hidden = false;
+        focus.hidden = true;
+        document.getElementById('hub-orb').innerHTML = MJ.orb({ mood: 'okay', size: 64, cls: 'orb-float' });
+        document.getElementById('mood-q').textContent = today ? 'How are you, really?' : 'No check-in this day';
+        document.getElementById('mood-sub').textContent = today ? 'Tap the one that feels closest. No judgement.' : 'That\'s okay. Not every day needs one.';
+        document.getElementById('mood-strip').hidden = !today;
       } else {
-        hubOrb.innerHTML = MJ.orb({ mood: 'okay', size: 72, cls: 'orb-float' });
-        document.getElementById('mood-q').textContent = isToday() ? 'How are you, really?' : 'No check-in this day';
-        document.getElementById('mood-sub').textContent = isToday() ? 'Tap the one that feels closest. No judgement.' : 'That\'s okay. Every day doesn\'t need one.';
-        document.getElementById('mood-strip').hidden = false;
-        box.hidden = true;
+        // 2 · after: how you are, and one gentle suggestion
+        moodCard.hidden = true;
+        focus.hidden = false;
+        const m = MJ.MOODS[ci.mood];
+        focus.style.setProperty('--tint', m.color);
+        const sug = suggestion();
+        let html = `<div class="focus-mood">${MJ.orb({ mood: ci.mood, size: 52, cls: 'orb-float' })}` +
+          `<div class="grow"><div class="t-h3">${today ? 'You\'re feeling' : 'You felt'} ${m.label.toLowerCase()}</div>` +
+          `<div class="t-small">Energy ${MJ.esc(ci.energy)}/10 · ${energyWord(ci.energy).toLowerCase()}</div></div>` +
+          `<a class="btn btn-quiet btn-sm" href="#checkin">${today ? 'Update' : 'View'}</a></div>`;
+        if (ci.heaviest && ci.heaviest.trim()) html += `<p class="on-mind">On your mind: <b>${MJ.esc(ci.heaviest)}</b></p>`;
+        if (sug) {
+          const r = ritualById(sug.id);
+          html += `<div class="suggest"><span class="eyebrow">${sug.rest ? 'If you like' : 'A kind next step'}</span>` +
+            `<div class="suggest-row">${MJ.orb({ color: r.color, face: r.face, size: 56 })}` +
+            `<div class="grow"><div class="t-h2">${r.title}</div><p class="t-body">${MJ.esc(sug.why)}</p></div></div>` +
+            `<div class="suggest-actions"><a class="btn btn-primary" href="#${r.id}">Start · ${r.mins} min</a>` +
+            `<span class="t-small">or pick any ritual below</span></div></div>`;
+        }
+        focus.innerHTML = html;
       }
 
-      // wins mini
+      // 3 · rituals, grouped by the time of day they suit
+      const per = today ? period() : null;
+      let doneCount = 0;
+      document.getElementById('rituals').innerHTML = GROUPS.map(g => {
+        const rows = g.ids.filter(id => !(id === 'checkin' && today && !checked)).map(id => {
+          const r = ritualById(id);
+          const st = id === 'breathe' ? null : ritualStatus(id);
+          if (st) doneCount++;
+          const lead = st ? `<span class="done-mark">${CHECK_SVG}</span>` : MJ.orb({ color: r.color, face: r.face, size: 44 });
+          return `<a class="ritual-card ${st ? 'done' : ''}" href="#${id}">` + lead +
+            `<span class="grow"><span class="r-title">${r.title}</span>` +
+            `<span class="r-sub">${st ? MJ.esc(st) : r.todo}</span></span>` +
+            (st ? '' : `<span class="r-dur">${r.mins} min</span>`) +
+            `<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>`;
+        }).join('');
+        return `<div class="r-group"><h3 class="r-group-head">${g.label}${per === g.id ? '<span class="now-pill">Now</span>' : ''}</h3><div class="ritual-list">${rows}</div></div>`;
+      }).join('');
+      document.getElementById('ritual-progress').textContent = doneCount
+        ? `${doneCount} done ${today ? 'today' : 'this day'} 🌿`
+        : (today ? 'Even one counts' : '');
+
+      renderWeek();
+      renderWinsTeaser();
+      renderIOSHint();
+    }
+
+    function renderWeek() {
+      const todayISO = MJ.localISO();
+      const sel = getDateKey(currentDate);
+      const start = MJ.weekStartISO(todayISO);
+      let wrote = 0;
+      const days = [];
+      for (let i = 0; i < 7; i++) {
+        const iso = MJ.addDaysISO(start, i);
+        const day = MJ.journalDay(iso);
+        const future = iso > todayISO;
+        const any = Object.keys(day).length > 0;
+        if (any) wrote++;
+        const mood = day.checkin && day.checkin.mood && MJ.MOODS[day.checkin.mood] ? day.checkin.mood : null;
+        const label = new Date(iso + 'T12:00:00').toLocaleDateString('en-IN', { weekday: 'narrow' });
+        const full = MJ.prettyDate(iso, { weekday: 'long', day: 'numeric', month: 'short' });
+        const dot = mood ? MJ.orb({ mood, size: 30 }) : `<span class="week-dot ${future ? 'future' : any ? 'some' : ''}"></span>`;
+        days.push(`<button type="button" class="week-day ${iso === todayISO ? 'is-today' : ''} ${iso === sel ? 'is-sel' : ''}" ${future ? 'disabled' : ''} onclick="setDay('${iso}')" aria-label="${full}${mood ? ', felt ' + MJ.MOODS[mood].label.toLowerCase() : any ? ', wrote' : ''}"${iso === sel ? ' aria-current="date"' : ''}>${label}${dot}</button>`);
+      }
+      document.getElementById('week').innerHTML = days.join('');
+      document.getElementById('week-note').textContent = wrote
+        ? `You made space for yourself on ${wrote} ${wrote === 1 ? 'day' : 'days'} this week.`
+        : 'Each day you check in gets a little face here.';
+    }
+
+    function renderWinsTeaser() {
       const w = collectWins();
-      const total = w.win.length + w.kind.length + w.grat.length;
-      document.getElementById('wins-mini-count').textContent = total ? `${total} good ${total === 1 ? 'thing' : 'things'} saved` : 'Your good things, saved';
+      const pool = w.win.concat(w.kind, w.grat);
+      const el = document.getElementById('wins-teaser');
+      if (!pool.length) {
+        el.innerHTML = `<div class="row">${MJ.orb({ mood: 'good', size: 40, cls: 'orb-breathe' })}<span class="t-h3">Wins Jar</span></div>` +
+          '<span class="t-small">Every good thing you write lands here — for the hard days.</span>';
+        return;
+      }
+      const d = new Date();
+      const pick = pool[(d.getDate() + d.getMonth()) % pool.length];
+      el.innerHTML = `<div class="row">${MJ.orb({ mood: 'good', size: 40, cls: 'orb-breathe' })}<span class="t-h3">Wins Jar</span><span class="t-small" style="margin-left:auto">${pool.length} saved</span></div>` +
+        `<span class="wt-quote">“${MJ.esc(pick.text)}”</span><span class="t-caption">— you, ${MJ.prettyDate(pick.iso)}</span>`;
+    }
+
+    function renderIOSHint() {
+      const box = document.getElementById('ios-hint');
+      if (!MJ.shouldShowIOSHint()) { box.innerHTML = ''; return; }
+      box.innerHTML = `<div class="ios-hint">${MJ.orb({ mood: 'calm', size: 40 })}<span class="grow"><b>Keep your journal safe on iPhone.</b> Tap Share → “Add to Home Screen”. Safari can clear websites you don't open for a week.</span>` +
+        `<button type="button" class="btn btn-soft btn-sm" onclick="MJ.dismissIOSHint();renderIOSHint()">Got it</button></div>`;
     }
 
     // ─── WORRY ────────────────────────────────────────────────────────
@@ -1871,11 +2245,27 @@
     // ─── TOAST ────────────────────────────────────────────────────────
     function showToast(msg, ms) { MJ.toast(msg, ms); }
 
-    // ─── AUTOSAVE (quiet — never interrupts) ──────────────────────────
+    // ─── AUTOSAVE (quiet — never interrupts, never loses words) ─────
     let autosaveTimeout = {};
+    function scheduleAutosave(section) {
+      clearTimeout(autosaveTimeout[section]);
+      autosaveTimeout[section] = setTimeout(() => { delete autosaveTimeout[section]; saveSection(section, false); }, 800);
+    }
+    // Save anything still waiting — before leaving a view, switching day, or closing the tab.
+    function flushAutosave() {
+      Object.keys(autosaveTimeout).forEach(section => {
+        clearTimeout(autosaveTimeout[section]);
+        delete autosaveTimeout[section];
+        saveSection(section, false);
+      });
+    }
+    window.addEventListener('pagehide', flushAutosave);
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flushAutosave(); });
+    document.addEventListener('click', e => { if (e.target.closest('a[href$=".html"], a[href*=".html#"]')) flushAutosave(); }, true);
+
     function setupAutosave() {
       const autoSaveSections = {
-        checkin: ['heaviest-thought'],
+        checkin: ['heaviest-thought', 'energy-slider'],
         braindump: ['braindump-text'],
         worry: ['worry-time'],
         reframe: ['reframe-1', 'reframe-2', 'reframe-3', 'reframe-4'],
@@ -1886,13 +2276,28 @@
         ids.forEach(id => {
           const el = document.getElementById(id);
           if (!el) return;
-          el.addEventListener('input', () => {
-            clearTimeout(autosaveTimeout[section]);
-            autosaveTimeout[section] = setTimeout(() => saveSection(section, false), 1500);
-          });
+          el.addEventListener('input', () => scheduleAutosave(section));
         });
       }
     }
+
+    // Ctrl/⌘ + Enter saves the ritual you're in.
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Enter' || !(e.ctrlKey || e.metaKey)) return;
+      if (!RITUAL_IDS.includes(currentView)) return;
+      e.preventDefault();
+      saveSection(currentView);
+    });
+
+    // Another tab saved something for the day you're looking at: show it (unless you're typing).
+    window.addEventListener('storage', e => {
+      if (!e.key || !e.key.startsWith('mj_')) return;
+      const a = document.activeElement;
+      if (a && (a.tagName === 'TEXTAREA' || a.tagName === 'INPUT')) return;
+      if (Object.keys(autosaveTimeout).length) return;
+      loadDayData();
+      if (currentView === 'wins') renderWins();
+    });
 
     // ─── YOUR NAME + APPRECIATION ────────────────────────────────────
     let currentStreak = 0;
@@ -2031,8 +2436,6 @@
       const r = RITUALS.find(x => x.id === el.dataset.orb);
       el.innerHTML = MJ.orb({ color: r.color, face: r.face, size: 64, cls: 'orb-float' });
     });
-    document.getElementById('breathe-mini').innerHTML = MJ.orb({ color: 'var(--mint)', face: 'sleepy', size: 48, cls: 'orb-breathe' });
-    document.getElementById('wins-mini').innerHTML = MJ.orb({ mood: 'good', size: 48, cls: 'orb-breathe' });
     breatheOrb('calm');
     renderGreeting();
     updateDateDisplay();

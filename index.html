@@ -10,18 +10,20 @@
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <!-- Link previews (WhatsApp, X, LinkedIn…). After deploying, change og:image to the full URL,
-       e.g. https://your-app.vercel.app/icons/icon-512.png — most apps ignore relative paths. -->
+  <!-- Link previews (WhatsApp, X, LinkedIn…). %SITE_URL% is filled in at build time
+       (vite.config.ts) from SITE_URL or Vercel's production URL, so og:image is absolute. -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Mind Journal — a gentle journal + day planner">
   <meta property="og:description" content="Put your thoughts down, plan a kinder day, and collect your small wins. Free, no account, private to your device.">
-  <meta property="og:image" content="/icons/icon-512.png">
-  <meta name="twitter:card" content="summary">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="theme.css">
-  <script vite-ignore src="common.js"></script>
+  <meta property="og:url" content="%SITE_URL%/">
+  <meta property="og:image" content="%SITE_URL%/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Mind Journal — a gentle journal and day planner, with little mood characters">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preload" href="fonts/figtree-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="theme.css?v=5">
+  <script vite-ignore src="common.js?v=5"></script>
   <style>
     body {
       overflow-x: hidden;
@@ -970,6 +972,20 @@
       }
     }
 
+    .care-note {
+      max-width: 640px;
+      margin: 8px auto 0;
+      padding: 0 24px;
+      text-align: center;
+      font-size: 14px;
+      color: var(--ink-2);
+      line-height: 1.6;
+    }
+
+    .care-note .link-quiet {
+      font-size: 14px;
+    }
+
     /* reveal on scroll — slow and soft */
     .reveal {
       opacity: 0;
@@ -1018,6 +1034,60 @@
       .scene .o-c,
       .scene .o-d {
         display: none;
+      }
+
+      .hero {
+        padding-top: 24px;
+        padding-bottom: 48px;
+      }
+
+      .hero .wrap {
+        gap: 12px;
+      }
+
+      .scene {
+        height: auto;
+        padding-top: 280px;
+      }
+
+      .sun {
+        width: 250px;
+        height: 250px;
+        top: 140px;
+      }
+
+      .scene .o-main {
+        top: 140px;
+      }
+
+      .scene .o-a {
+        left: 0;
+        top: 150px;
+      }
+
+      .scene .o-b {
+        right: 0;
+        top: 175px;
+      }
+
+      .mood-bubble {
+        position: relative;
+        left: auto;
+        bottom: auto;
+        transform: none;
+        width: 100%;
+      }
+
+      .mood-chips {
+        justify-content: center;
+      }
+
+      .hero-ctas .btn {
+        flex: 1 1 100%;
+      }
+
+      .trust {
+        gap: 10px 18px;
       }
 
       .letgo-row {
@@ -1187,9 +1257,9 @@
           <h2 class="t-h1">Gentle, and grounded in research</h2>
         </div>
         <div class="sci-grid">
-          <div class="card sci reveal" style="--i:0"><div class="stat">15 min</div><div class="t-h3">of writing eases anxiety</div><p class="t-small">Pennebaker &amp; Beall (1986): expressive writing reduced anxiety and improved wellbeing for months after.</p></div>
-          <div class="card sci reveal" style="--i:1"><div class="stat">↓</div><div class="t-h3">fewer looping thoughts</div><p class="t-small">Lepore et al. (2002): expressive writing reduces intrusive thoughts, freeing up the mind.</p></div>
-          <div class="card sci reveal" style="--i:2"><div class="stat">4-7-8</div><div class="t-h3">breathing to switch off</div><p class="t-small">A long exhale calms the nervous system — built in as a one-tap reset.</p></div>
+          <div class="card sci reveal" style="--i:0"><div class="stat">15 min</div><div class="t-h3">of writing can ease the load</div><p class="t-small">In Pennebaker &amp; Beall's studies (1986), short sessions of expressive writing were linked to better wellbeing in the months after.</p></div>
+          <div class="card sci reveal" style="--i:1"><div class="stat">↓</div><div class="t-h3">fewer looping thoughts</div><p class="t-small">Research on expressive writing (e.g. Lepore et al.) suggests it can quieten intrusive, looping thoughts.</p></div>
+          <div class="card sci reveal" style="--i:2"><div class="stat">4-7-8</div><div class="t-h3">breathing to switch off</div><p class="t-small">Slow breathing with a long exhale helps many people settle — built in as a one-tap reset.</p></div>
         </div>
       </div>
     </section>
@@ -1204,6 +1274,8 @@
         </div>
       </div>
     </section>
+
+    <p class="care-note reveal">Mind Journal is a gentle self-care tool, not a replacement for professional care. If things feel like too much, <button type="button" class="link-quiet" data-mj-support>find support near you</button>.</p>
 
     <!-- FINAL -->
     <section class="final">
@@ -1302,6 +1374,7 @@
             <li><button type="button" class="linkish" data-mj-settings>Back up &amp; restore</button></li>
             <li><button type="button" class="linkish" id="f-sound">Calm sounds</button></li>
             <li><button type="button" class="linkish" data-mj-settings>Settings</button></li>
+            <li><button type="button" class="linkish" data-mj-support>Find support</button></li>
           </ul>
         </nav>
         <div class="f-col">
@@ -1370,14 +1443,15 @@
     });
     document.getElementById('brand-orb').innerHTML = MJ.orb({ mood: 'good', size: 34 });
     document.getElementById('final-orb').innerHTML = MJ.orb({ mood: 'light', size: 96, cls: 'orb-float' });
-    document.getElementById('orb-a').innerHTML = MJ.orb({ color: 'var(--mint)', face: 'calm', size: 130, cls: 'orb-float' });
-    document.getElementById('orb-b').innerHTML = MJ.orb({ color: 'var(--lavender)', face: 'o', size: 104, cls: 'orb-float' });
+    const small = innerWidth < 520;
+    document.getElementById('orb-a').innerHTML = MJ.orb({ color: 'var(--mint)', face: 'calm', size: small ? 84 : 130, cls: 'orb-float' });
+    document.getElementById('orb-b').innerHTML = MJ.orb({ color: 'var(--lavender)', face: 'o', size: small ? 70 : 104, cls: 'orb-float' });
     document.getElementById('orb-c').innerHTML = MJ.orb({ color: 'var(--sky)', face: 'joy', size: 72, cls: 'orb-float' });
     document.getElementById('orb-d').innerHTML = MJ.orb({ color: 'var(--coral)', face: 'smile', size: 56, cls: 'orb-float' });
 
     // the big orb changes with the mood you tap
     const mainOrb = document.getElementById('main-orb');
-    const mainSize = innerWidth < 520 ? 200 : 250;
+    const mainSize = small ? 160 : 250;
     function setMain(mood) {
       mainOrb.innerHTML = MJ.orb({ mood, size: mainSize, cls: 'orb-breathe' });
       if (!reduceMotion) {

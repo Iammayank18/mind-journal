@@ -1,14 +1,20 @@
-/* Offline support. Pages: network first (so updates show up), cache as fallback.
-   Everything else: cache first, refreshed in the background.
+/* Shared files are loaded as common.js?v=N / theme.css?v=N. Bump N in the three
+   HTML files and here together, so an old service worker can never pair a new page
+   with an old common.js.
+
+   Offline support. Pages and shared code: network first (so updates always arrive
+   together), cache as fallback. Fonts/icons/hashed assets: cache first.
    Bump VERSION when you change the list of files below. */
-const VERSION = "mj-v3";
+const VERSION = "mj-v5";
 const ASSETS = [
   "./",
   "./index.html",
   "./planner.html",
   "./journal.html",
-  "./common.js",
-  "./theme.css",
+  "./common.js?v=5",
+  "./theme.css?v=5",
+  "./fonts/figtree-latin-wght-normal.woff2",
+  "./fonts/figtree-latin-ext-wght-normal.woff2",
   "./manifest.webmanifest",
   "./icons/icon.svg",
   "./icons/icon-192.png",
@@ -31,30 +37,29 @@ self.addEventListener("activate", (e) => {
 self.addEventListener("fetch", (e) => {
   const req = e.request;
   if (req.method !== "GET" || new URL(req.url).origin !== location.origin) return;
-
+  const url = new URL(req.url);
   const isPage = req.mode === "navigate" || (req.headers.get("accept") || "").includes("text/html");
-  if (isPage) {
+  // Fonts, icons and hashed build files never change under the same name: cache first.
+  const immutable = /\/(fonts|icons|assets)\//.test(url.pathname);
+
+  if (immutable) {
     e.respondWith(
-      fetch(req)
-        .then((res) => {
-          const copy = res.clone();
-          caches.open(VERSION).then((c) => c.put(req, copy));
-          return res;
-        })
-        .catch(() => caches.match(req, { ignoreSearch: true }).then((r) => r || caches.match("./journal.html")))
+      caches.match(req).then((cached) => cached || fetch(req).then((res) => {
+        if (res.ok) { const copy = res.clone(); caches.open(VERSION).then((c) => c.put(req, copy)); }
+        return res;
+      }))
     );
     return;
   }
 
+  // Pages, common.js, theme.css: network first so an update is never half-applied
+  // (a new page with an old common.js), cache as the offline fallback.
   e.respondWith(
-    caches.match(req).then((cached) => {
-      const fresh = fetch(req)
-        .then((res) => {
-          if (res.ok) { const copy = res.clone(); caches.open(VERSION).then((c) => c.put(req, copy)); }
-          return res;
-        })
-        .catch(() => cached);
-      return cached || fresh;
-    })
+    fetch(req)
+      .then((res) => {
+        if (res.ok) { const copy = res.clone(); caches.open(VERSION).then((c) => c.put(req, copy)); }
+        return res;
+      })
+      .catch(() => caches.match(req, { ignoreSearch: true }).then((r) => r || (isPage ? caches.match("./journal.html") : undefined)))
   );
 });

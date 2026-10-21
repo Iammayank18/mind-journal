@@ -497,23 +497,402 @@
       margin-top: 18px;
     }
 
-    footer {
-      padding: 28px 0 40px;
-      border-top: 1px solid var(--line);
+    /* ═══ FOOTER (structure inspired by Headspace: scene → share row → columns → dark bar) ═══ */
+    .f {
+      --f-band: var(--yolk);
+      --f-bg: var(--card-2);
+      --f-cloud: #FFFFFF;
+      --f-bar: #2B2826;
+      --f-bar-ink: #F4EDE3;
+      --f-bar-ink-2: #C9C0B4;
+      background: var(--f-bg);
+      margin-top: 24px;
     }
 
-    footer .wrap {
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) .f {
+        --f-band: #3A2D14;
+        --f-cloud: #3A352E;
+        --f-bar: #0F0E0C;
+      }
+    }
+
+    :root[data-theme="dark"] .f {
+      --f-band: #3A2D14;
+      --f-cloud: #3A352E;
+      --f-bar: #0F0E0C;
+    }
+
+    .f-scene {
+      position: relative;
+      height: clamp(260px, 34vw, 500px);
+      overflow: hidden;
+    }
+
+    .f-scene > svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .f-sun {
+      transform: translateY(90px);
+      transition: transform 2.6s var(--ease);
+    }
+
+    .f-scene.in .f-sun {
+      transform: none;
+    }
+
+    .f-cloud {
+      animation: fDrift 16s ease-in-out infinite alternate;
+    }
+
+    .f-cloud.slow {
+      animation-duration: 22s;
+      animation-delay: -6s;
+    }
+
+    @keyframes fDrift {
+      from { transform: translateX(-18px); }
+      to { transform: translateX(26px); }
+    }
+
+    .f-spark {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: fTwinkle 3.6s ease-in-out infinite;
+    }
+
+    .f-spark:nth-of-type(2) { animation-delay: -1.2s; }
+    .f-spark:nth-of-type(3) { animation-delay: -2.4s; }
+
+    @keyframes fTwinkle {
+      0%, 100% { transform: scale(.7) rotate(0deg); opacity: .55; }
+      50% { transform: scale(1.1) rotate(20deg); opacity: 1; }
+    }
+
+    .f-friend {
+      transform-box: fill-box;
+      transform-origin: center bottom;
+      animation: fBob 7s var(--ease-breath) infinite;
+    }
+
+    .f-friend.b { animation-delay: -2.5s; }
+    .f-friend.c { animation-delay: -4.5s; }
+
+    @keyframes fBob {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-7px) scale(1.03); }
+    }
+
+    .f-body {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 8px 24px 40px;
+    }
+
+    .f-loop {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) minmax(0, 380px);
+      gap: 28px;
+      align-items: center;
+      padding: 8px 0 32px;
+      border-bottom: 1px solid var(--line-2);
+    }
+
+    .f-loop h3 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .f-loop p {
+      margin-top: 6px;
+      font-size: 15px;
+      color: var(--ink-2);
+      line-height: 1.55;
+    }
+
+    .f-loop .fine {
+      font-size: 12.5px;
+      color: var(--ink-3);
+    }
+
+    .f-loop .fine a {
+      color: inherit;
+    }
+
+    .f-loop-form {
       display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .f-loop-form .input {
+      min-height: 50px;
       font-size: 14px;
       color: var(--ink-2);
+      background: var(--card);
     }
 
-    footer a {
+    .f-cols {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr)) auto auto;
+      gap: 28px;
+      padding: 34px 0 10px;
+    }
+
+    .f-col h4 {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--ink-2);
+      margin: 0 0 14px;
+      white-space: nowrap;
+    }
+
+    .f-col ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .f-col a,
+    .f-col .linkish {
+      font-size: 14px;
+      color: var(--ink-3);
+      text-decoration: none;
+      transition: color var(--t-fast);
+    }
+
+    .f-col .linkish {
+      -webkit-appearance: none;
+      appearance: none;
+      border: none;
+      background: none;
+      padding: 0;
+      cursor: pointer;
+      text-align: left;
+      font: inherit;
+      font-size: 14px;
+    }
+
+    .f-col a:hover,
+    .f-col .linkish:hover {
       color: var(--ink);
-      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .f-badge {
+      -webkit-appearance: none;
+      appearance: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 170px;
+      padding: 9px 16px 9px 12px;
+      border-radius: 12px;
+      border: none;
+      background: var(--dark);
+      color: var(--on-dark);
+      text-align: left;
+      cursor: pointer;
+      transition: transform var(--t-fast) var(--ease), opacity var(--t-fast);
+    }
+
+    .f-badge + .f-badge {
+      margin-top: 10px;
+    }
+
+    .f-badge:hover {
+      transform: translateY(-2px);
+    }
+
+    .f-badge small {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--on-dark-2);
+      line-height: 1.2;
+    }
+
+    .f-badge b {
+      display: block;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .f-top {
+      display: flex;
+      justify-content: flex-end;
+      padding-top: 8px;
+    }
+
+    .f-top button {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: background var(--t-fast), transform var(--t-med) var(--ease-bounce);
+    }
+
+    .f-top button:hover {
+      background: var(--brand-tint);
+      transform: translateY(-3px);
+    }
+
+    .f-bar {
+      background: var(--f-bar);
+      color: var(--f-bar-ink);
+    }
+
+    .f-bar .wrap {
+      display: flex;
+      align-items: center;
+      gap: 18px 28px;
+      flex-wrap: wrap;
+      padding-top: 18px;
+      padding-bottom: 18px;
+      font-size: 13px;
+    }
+
+    .f-legal {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 24px;
+      color: var(--f-bar-ink-2);
+    }
+
+    .f-legal a,
+    .f-legal button {
+      color: var(--f-bar-ink-2);
+      text-decoration: none;
+      background: none;
+      border: none;
+      padding: 0;
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .f-legal a:hover,
+    .f-legal button:hover {
+      color: var(--f-bar-ink);
+      text-decoration: underline;
+    }
+
+    .f-social {
+      display: flex;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .f-social a,
+    .f-social button {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: none;
+      background: var(--f-bar-ink);
+      color: var(--f-bar);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: transform var(--t-fast) var(--ease-bounce), background var(--t-fast);
+    }
+
+    .f-social a:hover,
+    .f-social button:hover {
+      transform: translateY(-2px);
+      background: var(--brand);
+      color: #1F1D1B;
+    }
+
+    .f-theme {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 46px;
+      padding: 0 18px;
+      border-radius: var(--pill);
+      box-shadow: inset 0 0 0 1.5px var(--f-bar-ink);
+      color: var(--f-bar-ink);
+      cursor: pointer;
+    }
+
+    .f-theme select {
+      -webkit-appearance: none;
+      appearance: none;
+      border: none;
+      background: transparent;
+      color: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      padding-right: 22px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .f-theme select option {
+      color: #1F1D1B;
+    }
+
+    .f-theme .chev {
+      position: absolute;
+      right: 16px;
+      pointer-events: none;
+    }
+
+    .f-theme:focus-within {
+      box-shadow: inset 0 0 0 2px var(--brand);
+    }
+
+    @media (max-width: 900px) {
+      .f-loop {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+      }
+
+      .f-loop > svg {
+        display: none;
+      }
+
+      .f-cols {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 28px 20px;
+      }
+
+      .f-social {
+        margin-left: 0;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .f-loop-form {
+        flex-direction: column;
+      }
+
+      .f-bar .wrap {
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
 
     /* reveal on scroll — slow and soft */
@@ -741,7 +1120,7 @@
     </section>
 
     <!-- PRIVACY -->
-    <section class="privacy">
+    <section class="privacy" id="privacy">
       <div class="wrap">
         <div class="trio">
           <div class="card reveal" style="--i:0"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><div><div class="t-h3">Stays on your device</div><p class="t-small">No servers, no tracking. Your words are yours.</p></div></div>
@@ -766,10 +1145,135 @@
     </section>
   </main>
 
-  <footer>
-    <div class="wrap">
-      <span style="font-weight:800;color:var(--ink)">mind journal</span>
-      <span>Made with care · <a href="journal.html">Journal</a> · <a href="planner.html">Planner</a></span>
+  <footer class="f" aria-labelledby="f-title">
+    <!-- the closing scene: our sunny orb rising from soft clouds -->
+    <div class="f-scene" id="f-scene">
+      <svg viewBox="0 0 1440 520" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+        <rect width="1440" height="520" style="fill:var(--f-band)"/>
+        <g class="f-sun">
+          <circle cx="720" cy="560" r="432" style="fill:var(--rose)"/>
+          <circle cx="720" cy="560" r="364" style="fill:var(--sky)"/>
+          <circle cx="720" cy="560" r="296" style="fill:var(--mint)"/>
+          <circle cx="720" cy="560" r="228" style="fill:var(--brand)"/>
+          <circle cx="612" cy="446" r="16" style="fill:var(--coral)" opacity=".4"/>
+          <circle cx="828" cy="446" r="16" style="fill:var(--coral)" opacity=".4"/>
+          <path d="M650 410 Q674 436 698 410" style="stroke:var(--orb-ink)" fill="none" stroke-width="11" stroke-linecap="round"/>
+          <path d="M742 410 Q766 436 790 410" style="stroke:var(--orb-ink)" fill="none" stroke-width="11" stroke-linecap="round"/>
+          <path d="M636 452 Q720 512 804 452" style="stroke:var(--orb-ink)" fill="none" stroke-width="11" stroke-linecap="round"/>
+        </g>
+        <g class="f-cloud " style="fill:var(--f-cloud)"><g transform="translate(220 150) scale(1)"><circle cx="0" cy="40" r="46"/><circle cx="58" cy="8" r="60"/><circle cx="118" cy="38" r="44"/><rect x="-46" y="38" width="208" height="48" rx="24"/></g></g><g class="f-cloud slow" style="fill:var(--f-cloud)"><g transform="translate(1120 320) scale(0.78)"><circle cx="0" cy="40" r="46"/><circle cx="58" cy="8" r="60"/><circle cx="118" cy="38" r="44"/><rect x="-46" y="38" width="208" height="48" rx="24"/></g></g><g class="f-cloud slow" style="fill:var(--f-cloud)"><g transform="translate(940 90) scale(0.5)"><circle cx="0" cy="40" r="46"/><circle cx="58" cy="8" r="60"/><circle cx="118" cy="38" r="44"/><rect x="-46" y="38" width="208" height="48" rx="24"/></g></g>
+        <path class="f-spark" style="fill:#FFFFFF" transform="translate(1195 250) scale(1)" d="M0 -24 C3 -7 7 -3 24 0 C7 3 3 7 0 24 C-3 7 -7 3 -24 0 C-7 -3 -3 -7 0 -24Z"/><path class="f-spark" style="fill:#FFFFFF" transform="translate(395 330) scale(0.6)" d="M0 -24 C3 -7 7 -3 24 0 C7 3 3 7 0 24 C-3 7 -7 3 -24 0 C-7 -3 -3 -7 0 -24Z"/><path class="f-spark" style="fill:#FFFFFF" transform="translate(1010 200) scale(0.45)" d="M0 -24 C3 -7 7 -3 24 0 C7 3 3 7 0 24 C-3 7 -7 3 -24 0 C-7 -3 -3 -7 0 -24Z"/>
+        <g style="fill:var(--f-bg)"><circle cx="-20" cy="500" r="190"/><circle cx="230" cy="560" r="150"/><circle cx="400" cy="610" r="125"/><circle cx="560" cy="650" r="125"/><circle cx="720" cy="668" r="130"/><circle cx="880" cy="650" r="125"/><circle cx="1040" cy="595" r="130"/><circle cx="1210" cy="545" r="160"/><circle cx="1450" cy="500" r="180"/><rect x="0" y="505" width="1440" height="20"/></g>
+        <svg class="f-friend " x="96" y="316" width="96" height="96" viewBox="0 0 120 120" overflow="visible"><circle cx="60" cy="60" r="56" style="fill:var(--lavender)"/><g style="fill:var(--orb-ink)"><circle cx="46" cy="56" r="6"/><circle cx="74" cy="56" r="6"/></g><path d="M48 76 Q60 86 72 76" style="stroke:var(--orb-ink)" fill="none" stroke-width="6" stroke-linecap="round"/></svg><svg class="f-friend b" x="1262" y="317" width="84" height="84" viewBox="0 0 120 120" overflow="visible"><circle cx="60" cy="60" r="56" style="fill:var(--mint)"/><path d="M36 58 Q44 65 52 58" style="stroke:var(--orb-ink)" fill="none" stroke-width="6" stroke-linecap="round"/><path d="M68 58 Q76 65 84 58" style="stroke:var(--orb-ink)" fill="none" stroke-width="6" stroke-linecap="round"/><path d="M48 76 Q60 86 72 76" style="stroke:var(--orb-ink)" fill="none" stroke-width="6" stroke-linecap="round"/></svg><svg class="f-friend c" x="1060" y="391" width="56" height="56" viewBox="0 0 120 120" overflow="visible"><circle cx="60" cy="60" r="56" style="fill:var(--sky)"/><path d="M37 61 Q45 51 53 61" style="stroke:var(--orb-ink)" fill="none" stroke-width="6" stroke-linecap="round"/><path d="M67 61 Q75 51 83 61" style="stroke:var(--orb-ink)" fill="none" stroke-width="6" stroke-linecap="round"/><path d="M44 73 Q60 91 76 73" style="stroke:var(--orb-ink)" fill="none" stroke-width="6" stroke-linecap="round"/></svg>
+      </svg>
+    </div>
+
+    <div class="f-body">
+      <!-- share row (where Headspace has "Stay in the loop") -->
+      <div class="f-loop">
+        <svg width="82" height="60" viewBox="0 0 82 60" fill="none" stroke="var(--ink)" stroke-width="3.5" stroke-linecap="round" aria-hidden="true"><path d="M14 22 Q20 30 27 22"/><path d="M40 16 Q46 24 53 16"/><path d="M6 44 Q40 62 76 30"/><path d="M70 10 L74 4 M77 16 L82 13"/></svg>
+        <div>
+          <h3 id="f-title">Share a little calm</h3>
+          <p>Know someone whose mind could use a quiet place? Send them the link — they get their own private space.</p>
+          <p class="fine">Nothing is tracked. Every journal stays on its owner's device. More in <a href="#privacy">privacy</a>.</p>
+        </div>
+        <form class="f-loop-form" id="f-share-form">
+          <label for="f-url" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Link to share</label>
+          <input class="input" id="f-url" readonly value="mind-journal (link appears once deployed)">
+          <button type="submit" class="btn btn-dark">Share link</button>
+        </form>
+      </div>
+
+      <div class="f-cols">
+        <nav class="f-col" aria-label="Get started">
+          <h4>Get started</h4>
+          <ul>
+            <li><a href="journal.html">Open the journal</a></li>
+            <li><a href="journal.html#checkin">Your first check-in</a></li>
+            <li><a href="planner.html">Plan my day</a></li>
+            <li><a href="journal.html#wins">Wins Jar</a></li>
+            <li><a href="journal.html#history">Journal history</a></li>
+          </ul>
+        </nav>
+        <nav class="f-col" aria-label="Rituals">
+          <h4>Rituals</h4>
+          <ul>
+            <li><a href="journal.html#checkin">Check-in</a></li>
+            <li><a href="journal.html#braindump">Brain dump</a></li>
+            <li><a href="journal.html#worry">Worry parking</a></li>
+            <li><a href="journal.html#reframe">Thought reframe</a></li>
+            <li><a href="journal.html#gratitude">Gratitude &amp; wins</a></li>
+            <li><a href="journal.html#evening">Evening wind-down</a></li>
+            <li><a href="journal.html#breathe">Breathe 4-7-8</a></li>
+          </ul>
+        </nav>
+        <nav class="f-col" aria-label="How it works">
+          <h4>How it works</h4>
+          <ul>
+            <li><a href="#try">Let a thought go</a></li>
+            <li><a href="#rituals">What your mind needs</a></li>
+            <li><a href="#day">A gentle day</a></li>
+            <li><a href="#why">The research</a></li>
+          </ul>
+        </nav>
+        <nav class="f-col" aria-label="Your data">
+          <h4>Your data</h4>
+          <ul>
+            <li><a href="#privacy">Stays on your device</a></li>
+            <li><button type="button" class="linkish" data-mj-settings>Back up &amp; restore</button></li>
+            <li><button type="button" class="linkish" id="f-sound">Calm sounds</button></li>
+            <li><button type="button" class="linkish" data-mj-settings>Settings</button></li>
+          </ul>
+        </nav>
+        <div class="f-col">
+          <h4>Your space</h4>
+          <a class="btn btn-primary" href="journal.html" style="color:var(--on-brand);text-decoration:none">Open app</a>
+        </div>
+        <div class="f-col">
+          <h4>Get the app</h4>
+          <button type="button" class="f-badge" data-install="ios">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>
+            <span><small>iPhone &amp; iPad</small><b>Add to Home</b></span>
+          </button>
+          <button type="button" class="f-badge" data-install="android">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+            <span><small>Android &amp; desktop</small><b>Install app</b></span>
+          </button>
+        </div>
+      </div>
+      <div class="f-top">
+        <button type="button" id="f-top" aria-label="Back to top">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="f-bar">
+      <div class="wrap">
+        <div class="f-legal">
+          <span>© <span id="f-year">2026</span> Mind Journal</span>
+          <a href="#privacy">Privacy</a>
+          <button type="button" data-mj-settings>Your data &amp; backup</button>
+          <a href="#why">The research</a>
+          <span>Made with care</span>
+        </div>
+        <div class="f-social" aria-label="Share Mind Journal">
+          <a id="f-wa" href="#" target="_blank" rel="noopener" title="Share on WhatsApp" aria-label="Share on WhatsApp"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.2A8.5 8.5 0 1 1 21 12z"/></svg></a>
+          <a id="f-x" href="#" target="_blank" rel="noopener" title="Share on X" aria-label="Share on X"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 4l14 16M19 4L5 20"/></svg></a>
+          <a id="f-li" href="#" target="_blank" rel="noopener" title="Share on LinkedIn" aria-label="Share on LinkedIn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></a>
+          <a id="f-mail" href="#" title="Share by email" aria-label="Share by email"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></a>
+          <button type="button" id="f-copy" title="Copy link" aria-label="Copy link"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button>
+        </div>
+        <label class="f-theme">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg>
+          <select id="f-theme" aria-label="Colour theme">
+            <option value="auto">Auto theme</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+          <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </label>
+      </div>
     </div>
   </footer>
 
@@ -941,6 +1445,50 @@
         relMsg.style.opacity = 1;
       }, reduceMotion ? 100 : 1500);
     });
+
+    /* ── footer ── */
+    (function () {
+      const scene = document.getElementById('f-scene');
+      new IntersectionObserver((en, obs) => {
+        if (en[0].isIntersecting) { scene.classList.add('in'); obs.disconnect(); }
+      }, { threshold: 0.25 }).observe(scene);
+
+      document.getElementById('f-year').textContent = new Date().getFullYear();
+      const deployed = /^https?:/.test(location.protocol);
+      const url = deployed ? location.origin + location.pathname.replace(/[^/]*$/, '') : '';
+      const msg = "I've been using this little journal + day planner — it's private (everything stays on your own device). Thought you might like it 🌿";
+      if (deployed) document.getElementById('f-url').value = url.replace(/^https?:\/\//, '');
+      const links = {
+        'f-wa': 'https://wa.me/?text=' + encodeURIComponent(msg + ' ' + url),
+        'f-x': 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(msg) + '&url=' + encodeURIComponent(url),
+        'f-li': 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(url),
+        'f-mail': 'mailto:?subject=' + encodeURIComponent('A quiet place for your mind') + '&body=' + encodeURIComponent(msg + '\n\n' + url),
+      };
+      Object.keys(links).forEach(id => {
+        const a = document.getElementById(id);
+        a.href = links[id];
+        a.addEventListener('click', e => { if (!deployed) { e.preventDefault(); MJ.toast('Deploy the site first — then you can share its link.'); } });
+      });
+      document.getElementById('f-copy').addEventListener('click', () => {
+        if (!deployed) { MJ.toast('Deploy the site first — then you can share its link.'); return; }
+        navigator.clipboard && navigator.clipboard.writeText(url).then(() => MJ.toast('Link copied'));
+      });
+      document.getElementById('f-share-form').addEventListener('submit', e => {
+        e.preventDefault();
+        document.getElementById('share-btn').click();
+      });
+      document.getElementById('f-top').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+      document.getElementById('f-sound').addEventListener('click', () => soundBtn.click());
+      document.querySelectorAll('[data-install]').forEach(b => b.addEventListener('click', () => {
+        if (MJ.install()) return;
+        MJ.toast(b.dataset.install === 'ios'
+          ? 'On iPhone: open this site in Safari, tap Share, then “Add to Home Screen”.'
+          : MJ.installHelp() || 'Use your browser menu → “Install app”.', 4200);
+      }));
+      const themeSel = document.getElementById('f-theme');
+      themeSel.value = MJ.getTheme();
+      themeSel.addEventListener('change', () => MJ.setTheme(themeSel.value));
+    })();
 
     /* ── share ── */
     document.getElementById('share-btn').addEventListener('click', () => {

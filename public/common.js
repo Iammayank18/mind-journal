@@ -930,6 +930,14 @@
     toast: toast, celebrate: celebrate, checkMilestones: checkMilestones,
     journalDay: journalDay, journalDates: journalDates, journalStreak: journalStreak,
     plannerData: plannerData, plannerDoneOn: plannerDoneOn, plannerTotals: plannerTotals,
-    weekStats: weekStats, esc: esc
+    weekStats: weekStats, esc: esc,
+    getTheme: getTheme, setTheme: setTheme,
+    installHelp: installHelp,
+    install: function () {
+      if (!installEvt || isStandalone()) return false;
+      installEvt.prompt();
+      installEvt.userChoice.finally(function () { installEvt = null; });
+      return true;
+    }
   };
 })();

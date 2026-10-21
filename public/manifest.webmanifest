@@ -1,0 +1,20 @@
+{
+  "name": "Mind Journal",
+  "short_name": "Mind Journal",
+  "description": "A gentle daily journal and day planner. Private — everything stays on your device.",
+  "start_url": "./journal.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f5f0",
+  "theme_color": "#6b8f71",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Daily Planner", "url": "./planner.html", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Journal check-in", "url": "./journal.html#checkin", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Wins Jar", "url": "./journal.html#wins", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

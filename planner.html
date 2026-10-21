@@ -5,6 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Daily Planner</title>
+  <meta name="description" content="A gentle day planner that celebrates your progress. Private — everything stays on your device.">
+  <meta name="theme-color" content="#f7f5f0">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <script vite-ignore src="common.js"></script>
   <style>
     * {
       margin: 0;
@@ -31,6 +37,62 @@
       --radius-sm: 8px;
       --shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
       --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.10);
+      --on-accent: #ffffff;
+      --heat-1: #cfe0d2;
+      --heat-2: #a3c4a9;
+      --warm: #c8894a;
+      --accent-strong: var(--accent-dark);
+      color-scheme: light;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #1b1a18;
+      --surface: #24221f;
+      --surface2: #2c2925;
+      --border: #3b3732;
+      --text: #ece7df;
+      --text-soft: #b5aca0;
+      --text-muted: #8a8276;
+      --accent: #8fb795;
+      --accent-dark: #b3d4b8;
+      --accent-light: #25322a;
+      --accent2: #c9a57d;
+      --accent2-light: #352c22;
+      --red: #e58a86;
+      --red-light: #3b2524;
+      --shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+      --on-accent: #13201a;
+      --heat-1: #2e4433;
+      --heat-2: #4a6f51;
+      --warm: #d9a066;
+      }
+    }
+
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #1b1a18;
+      --surface: #24221f;
+      --surface2: #2c2925;
+      --border: #3b3732;
+      --text: #ece7df;
+      --text-soft: #b5aca0;
+      --text-muted: #8a8276;
+      --accent: #8fb795;
+      --accent-dark: #b3d4b8;
+      --accent-light: #25322a;
+      --accent2: #c9a57d;
+      --accent2-light: #352c22;
+      --red: #e58a86;
+      --red-light: #3b2524;
+      --shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+      --on-accent: #13201a;
+      --heat-1: #2e4433;
+      --heat-2: #4a6f51;
+      --warm: #d9a066;
     }
 
     body {
@@ -125,7 +187,7 @@
 
     .tab-action:hover {
       background: var(--accent);
-      color: white;
+      color: var(--on-accent);
     }
 
     /* MAIN */
@@ -360,7 +422,7 @@
 
     .status-now {
       background: var(--accent);
-      color: #fff;
+      color: var(--on-accent);
     }
 
     .status-next {
@@ -399,7 +461,7 @@
       right: -4px;
       z-index: 60;
       background: var(--text);
-      color: #f7f5f0;
+      color: var(--bg);
       font-size: 12px;
       line-height: 1.6;
       font-weight: normal;
@@ -434,7 +496,7 @@
     }
 
     .tip .tip-box b {
-      color: #fff;
+      color: var(--bg);
     }
 
     .push-btn {
@@ -722,7 +784,7 @@
 
     .btn-primary {
       background: var(--accent);
-      color: white;
+      color: var(--on-accent);
     }
 
     .btn-primary:hover {
@@ -836,11 +898,11 @@
     }
 
     .heatmap-cell.level-1 {
-      background: #cfe0d2;
+      background: var(--heat-1);
     }
 
     .heatmap-cell.level-2 {
-      background: #a3c4a9;
+      background: var(--heat-2);
     }
 
     .heatmap-cell.level-3 {
@@ -902,7 +964,7 @@
     .tab-count {
       display: inline-block;
       background: var(--accent);
-      color: #fff;
+      color: var(--on-accent);
       border-radius: 20px;
       font-size: 10px;
       font-weight: 600;
@@ -1091,13 +1153,13 @@
     .start-btn:hover {
       background: var(--accent);
       border-color: var(--accent);
-      color: #fff;
+      color: var(--on-accent);
     }
 
     .start-btn.running {
       background: var(--accent);
       border-color: var(--accent);
-      color: #fff;
+      color: var(--on-accent);
     }
 
     .start-btn.blocked {
@@ -1181,7 +1243,7 @@
     .timer-bar .timer-btn.primary {
       background: var(--accent);
       border-color: var(--accent);
-      color: #fff;
+      color: var(--on-accent);
     }
 
     .timer-bar .timer-btn.primary:hover {
@@ -1258,7 +1320,7 @@
       bottom: 32px;
       right: 32px;
       background: var(--text);
-      color: white;
+      color: var(--bg);
       padding: 14px 20px;
       border-radius: 10px;
       font-size: 14px;
@@ -1348,75 +1410,79 @@
       line-height: 1.5;
     }
 
-    .name-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(44, 40, 37, 0.45);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      z-index: 1000;
-    }
-
-    .name-overlay.show {
+    /* MOOD LINK (from the journal) */
+    .mood-strip {
       display: flex;
-    }
-
-    .name-dialog {
-      background: var(--surface);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-lg);
-      padding: 32px 28px;
-      width: 100%;
-      max-width: 420px;
-      text-align: center;
-      animation: cheerPop 0.35s ease;
-    }
-
-    .name-dialog .wave {
-      font-size: 34px;
-    }
-
-    .name-dialog h2 {
-      font-weight: normal;
-      font-size: 22px;
-      margin: 10px 0 6px;
-      color: var(--text);
-    }
-
-    .name-dialog p {
-      color: var(--text-soft);
-      font-size: 14px;
-      line-height: 1.6;
-      margin-bottom: 18px;
-    }
-
-    .name-dialog input {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1.5px solid var(--border);
+      gap: 10px;
+      align-items: flex-start;
+      margin-top: 10px;
+      padding: 11px 16px;
+      border: 1px dashed var(--border);
       border-radius: var(--radius-sm);
-      font-family: 'Georgia', serif;
-      font-size: 16px;
-      text-align: center;
-      background: var(--bg);
-      color: var(--text);
-      outline: none;
+      color: var(--text-soft);
+      font-size: 13.5px;
+      line-height: 1.55;
+      text-decoration: none;
       transition: border-color 0.2s, background 0.2s;
     }
 
-    .name-dialog input:focus {
+    .mood-strip:hover {
       border-color: var(--accent);
       background: var(--surface);
     }
 
-    .name-dialog .actions {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      margin-top: 18px;
-      flex-wrap: wrap;
+    .mood-strip b {
+      color: var(--text);
+      font-weight: normal;
+    }
+
+    .mood-strip .go {
+      margin-left: auto;
+      color: var(--accent);
+      white-space: nowrap;
+      padding-left: 8px;
+    }
+
+    /* MOOD & ENERGY ANALYTICS */
+    .mood-row {
+      display: grid;
+      grid-template-columns: 120px 1fr 92px;
+      gap: 12px;
+      align-items: center;
+      font-size: 13.5px;
+      padding: 6px 0;
+    }
+
+    .mood-row .bar {
+      height: 10px;
+      background: var(--surface2);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .mood-row .bar span {
+      display: block;
+      height: 100%;
+      background: var(--accent);
+      border-radius: 10px;
+    }
+
+    .mood-row .num {
+      color: var(--text-soft);
+      font-size: 12.5px;
+      text-align: right;
+    }
+
+    .mood-insight {
+      margin-top: 14px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    .mood-insight a,
+    .empty-analytics a {
+      color: var(--accent);
     }
 
     @media print {
@@ -1468,7 +1534,7 @@
   </style>
 </head>
 
-<body>
+<body data-mj-page="planner">
 
   <header class="header">
     <div class="logo">daily <span>planner</span></div>
@@ -1486,7 +1552,7 @@
 
     <div id="plannerView" class="view active">
       <div class="page-intro">
-        <h1 class="page-title"><span id="greetWord">Hello</span>, <button type="button" class="name-btn" id="nameBtn" title="Change your name"><span id="nameText">friend</span></button>.<button type="button" class="name-edit no-print" id="nameEditBtn" title="Change your name" aria-label="Change your name">✎</button></h1>
+        <h1 class="page-title"><span id="greetWord">Hello</span>, <button type="button" class="name-btn" data-mj-name title="Change your name"><span id="nameText">friend</span></button>.<button type="button" class="name-edit no-print" data-mj-name title="Change your name" aria-label="Change your name">✎</button></h1>
         <p class="page-desc">Your day, your rules — add sections and tasks for whatever you want, with or without times.
         </p>
         <div class="progress-wrap" id="progressWrap" style="display:none;">
@@ -1496,6 +1562,7 @@
           <span class="progress-label" id="progressLabel"></span>
         </div>
         <p class="appreciation" id="plannerCheer"></p>
+        <a class="mood-strip no-print" id="moodStrip" href="journal.html"></a>
       </div>
 
       <div class="card">
@@ -1601,6 +1668,19 @@
         <div class="card-label"><span class="icon">🔁</span> By Frequency</div>
         <div class="stat-grid" id="freqStatGrid"></div>
       </div>
+
+      <div class="card">
+        <div class="card-label"><span class="icon">🌡</span> Mood &amp; Energy</div>
+        <p class="hint">How your journal check-ins line up with what you got done — so you can plan with your energy, not
+          against it.</p>
+        <div id="moodStatsWrap"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-label"><span class="icon">💌</span> This Week's Letter</div>
+        <p class="hint">A short note about your week — what you did, how you felt, and what you were proud of.</p>
+        <button type="button" class="btn btn-secondary" data-mj-letter>Read your letter</button>
+      </div>
     </div>
 
   </main>
@@ -1614,19 +1694,6 @@
     <button type="button" class="timer-btn" id="timerPlusBtn">+5m</button>
     <button type="button" class="timer-btn primary" id="timerDoneBtn">Done ✓</button>
     <button type="button" class="timer-close" id="timerStopBtn" title="Stop timer">✕</button>
-  </div>
-
-  <div class="name-overlay no-print" id="nameOverlay" role="dialog" aria-modal="true" aria-labelledby="nameDialogTitle">
-    <div class="name-dialog">
-      <div class="wave">👋</div>
-      <h2 id="nameDialogTitle">Welcome! What should I call you?</h2>
-      <p id="nameDialogDesc">This space is yours — adding your name makes it feel that way.</p>
-      <input type="text" id="nameInput" maxlength="30" placeholder="Your first name" autocomplete="given-name">
-      <div class="actions">
-        <button type="button" class="btn btn-secondary" id="nameSkipBtn">Maybe later</button>
-        <button type="button" class="btn btn-primary" id="nameSaveBtn">Let's begin</button>
-      </div>
-    </div>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -1738,9 +1805,9 @@
         return {
           version: DATA_VERSION,
           sections: [
-            { id: uid(), name: "DSA" },
-            { id: uid(), name: "Job Search" },
-            { id: uid(), name: "English" }
+            { id: uid(), name: "Work" },
+            { id: uid(), name: "Learning" },
+            { id: uid(), name: "Health & Me" }
           ],
           tasks: [], tomorrow: [], log: {}, timer: null,
           reps: { cards: [], hidden: [], states: {}, reviewedLog: {} }
@@ -2832,41 +2899,16 @@
           return '<div class="stat-box"><div class="stat-value">' + doneCount + ' / ' + tasksOfFreq.length + '</div><div class="stat-label">' + freqLabels[f] + suffix + '</div></div>';
         }).join("");
         freqStatGrid.innerHTML = freqHtml;
+        renderMoodInsights();
       }
 
       // ================= YOUR NAME + A LITTLE APPRECIATION =================
-      // The name lives under its own key (not inside planner data) and is shared
-      // with Mind Journal, so setting it once personalises both pages.
-      var NAME_KEY = "mindjournal_userName";
-      var NAME_ASKED_KEY = "mindjournal_nameAsked";
-
-      function getName() {
-        try { return (localStorage.getItem(NAME_KEY) || "").trim(); } catch (e) { return ""; }
-      }
-      function setName(n) {
-        try {
-          if (n) localStorage.setItem(NAME_KEY, n);
-          else localStorage.removeItem(NAME_KEY);
-        } catch (e) { }
-      }
-      function nameAsked() {
-        try { return !!localStorage.getItem(NAME_ASKED_KEY); } catch (e) { return true; }
-      }
-      function markNameAsked() {
-        try { localStorage.setItem(NAME_ASKED_KEY, "1"); } catch (e) { }
-      }
-      function displayName() { return getName() || "friend"; }
-      function withName(str) { return str.replace(/\{name\}/g, displayName()); }
+      // Name, settings, backup and celebrations live in common.js (shared with the Journal).
+      function displayName() { return MJ.displayName(); }
+      function withName(str) { return MJ.withName(str); }
       function dayOfYear() {
         var d = new Date();
         return Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000);
-      }
-      function greetingWord() {
-        var h = new Date().getHours();
-        if (h < 5) return "Still up";
-        if (h < 12) return "Good morning";
-        if (h < 17) return "Good afternoon";
-        return "Good evening";
       }
 
       var DAILY_NOTES = [
@@ -2889,9 +2931,9 @@
       ];
 
       function renderGreeting() {
-        document.getElementById("greetWord").textContent = greetingWord();
+        document.getElementById("greetWord").textContent = MJ.greetingWord();
         document.getElementById("nameText").textContent = displayName();
-        var t = getName() ? "Daily Planner — " + getName() : "Daily Planner";
+        var t = MJ.getName() ? "Daily Planner — " + MJ.getName() : "Daily Planner";
         if (document.title === baseTitle) document.title = t; // leave a running timer's title alone
         baseTitle = t;
       }
@@ -2908,6 +2950,34 @@
         else msg = DAILY_NOTES[dayOfYear() % DAILY_NOTES.length];
         el.textContent = withName(msg);
         el.classList.toggle("celebrate", allDone);
+        renderMoodStrip();
+      }
+
+      // A gentle link to the Journal: today's mood shapes the advice.
+      function renderMoodStrip() {
+        var strip = document.getElementById("moodStrip");
+        var day = MJ.journalDay(todayISO());
+        var ci = day.checkin;
+        var hour = new Date().getHours();
+        var icon, text, go, href = "journal.html#checkin";
+        if (hour >= 20 && !day.evening && (ci || data.tasks.some(isTaskChecked))) {
+          icon = "🌙"; go = "Wind down →"; href = "journal.html#evening";
+          text = "Ready to close the day? A 5-minute evening wind-down helps your mind switch off.";
+        } else if (!ci || !ci.mood) {
+          icon = "🌡"; go = "Check in →";
+          text = "How are you feeling today? A 2-minute check-in helps you plan a kinder day.";
+        } else {
+          var e = +ci.energy || 5;
+          var low = e <= 4 || ["heavy", "anxious", "flat"].indexOf(ci.mood) !== -1;
+          var high = e >= 8 || ["good", "light"].indexOf(ci.mood) !== -1;
+          icon = low ? "🫶" : high ? "⚡" : "🌿"; go = "Journal →"; href = "journal.html";
+          text = "Today you're feeling <b>" + escapeAttr(ci.moodLabel || ci.mood) + "</b> · energy " + e + "/10. " +
+            (low ? "Low-energy day — pick your top 3 and let the rest wait. That's still a good day."
+              : high ? "Good energy today — a great day to tackle the hard thing first."
+                : "A steady day — one thing at a time.");
+        }
+        strip.href = href;
+        strip.innerHTML = "<span>" + icon + "</span><span>" + text + "</span><span class=\"go\">" + go + "</span>";
       }
 
       function cheerDone() {
@@ -2915,6 +2985,7 @@
         var done = data.tasks.filter(isTaskChecked).length;
         if (total && done === total) showToast(withName("All done for today, {name}! 🎉 Take a bow."), 3200);
         else showToast(withName(CHEERS[Math.floor(Math.random() * CHEERS.length)]), 2400);
+        MJ.checkMilestones();
       }
 
       function renderAnalyticsCheer(total, streaks) {
@@ -2930,58 +3001,73 @@
         document.getElementById("analyticsCheer").textContent = withName(msg);
       }
 
-      var nameOverlay = document.getElementById("nameOverlay");
-      var nameInput = document.getElementById("nameInput");
+      // Mood/energy (from journal check-ins) vs tasks completed that day.
+      function renderMoodInsights() {
+        var wrap = document.getElementById("moodStatsWrap");
+        var logDates = Object.keys(data.log).sort();
+        var firstPlannerDay = logDates[0];
+        var byMood = {}, hi = [], lo = [], days = 0;
+        MJ.journalDates().forEach(function (d) {
+          if (!firstPlannerDay || d < firstPlannerDay || d > todayISO()) return;
+          var ci = MJ.journalDay(d).checkin;
+          if (!ci || !ci.mood) return;
+          var n = countForDay(d);
+          days++;
+          var m = byMood[ci.mood] || (byMood[ci.mood] = { label: ci.moodLabel || ci.mood, days: 0, tasks: 0 });
+          m.days++; m.tasks += n;
+          var e = +ci.energy;
+          if (e >= 7) hi.push(n); else if (e && e <= 4) lo.push(n);
+        });
+        if (days < 3) {
+          wrap.innerHTML = '<div class="empty-analytics">Check in on the <a href="journal.html#checkin">Journal</a> for a few days' +
+            (days ? " (" + days + " so far)" : "") + " — this will show which moods and energy levels your best days come from.</div>";
+          return;
+        }
+        var rows = Object.keys(byMood).map(function (k) {
+          var m = byMood[k];
+          return { label: m.label, days: m.days, avg: m.tasks / m.days };
+        }).sort(function (a, b) { return b.avg - a.avg; });
+        var max = Math.max.apply(null, rows.map(function (r) { return r.avg; })) || 1;
+        var html = rows.map(function (r) {
+          return '<div class="mood-row"><span>' + escapeAttr(r.label) + '</span>' +
+            '<div class="bar"><span style="width:' + Math.max(4, Math.round(r.avg / max * 100)) + '%"></span></div>' +
+            '<span class="num">' + (Math.round(r.avg * 10) / 10) + (Math.round(r.avg * 10) / 10 === 1 ? ' task/day' : ' tasks/day') + '</span></div>';
+        }).join("");
+        function avg(a) { return a.reduce(function (x, y) { return x + y; }, 0) / a.length; }
+        var notes = [];
+        if (rows[0].avg > 0) notes.push("You get the most done on <b>" + escapeAttr(rows[0].label) + "</b> days.");
+        if (hi.length && lo.length) {
+          notes.push("On high-energy days (7+) you finish about <b>" + (Math.round(avg(hi) * 10) / 10) +
+            "</b> tasks; on low-energy days (4 or less), about <b>" + (Math.round(avg(lo) * 10) / 10) +
+            "</b>. So when energy dips, a shorter list isn't slacking — it's planning well.");
+        }
+        notes.push("Based on " + days + " days with both a check-in and planner activity.");
+        wrap.innerHTML = html + '<p class="mood-insight">' + notes.join(" ") + '</p>';
+      }
 
-      function openNameDialog(first) {
-        document.getElementById("nameDialogTitle").textContent = first ? "Welcome! What should I call you?" : "What should I call you?";
-        document.getElementById("nameDialogDesc").textContent = first
-          ? "This space is yours — adding your name makes it feel that way. It's saved only on this device."
-          : "Change it any time. It's saved only on this device, and Mind Journal uses it too.";
-        document.getElementById("nameSkipBtn").textContent = first ? "Maybe later" : "Cancel";
-        document.getElementById("nameSaveBtn").textContent = first ? "Let's begin" : "Save";
-        nameInput.value = getName();
-        nameOverlay.classList.add("show");
-        setTimeout(function () { nameInput.focus(); nameInput.select(); }, 30);
-      }
-      function closeNameDialog() {
-        nameOverlay.classList.remove("show");
-        markNameAsked();
-      }
       function refreshNameEverywhere() {
         renderGreeting();
         renderCheer();
         if (views.analytics.view.classList.contains("active")) renderAnalytics();
         if (views.reps.view.classList.contains("active")) renderReps();
       }
-      function commitName() {
-        var n = nameInput.value.replace(/\s+/g, " ").trim().slice(0, 30);
-        var had = getName();
-        setName(n);
-        closeNameDialog();
-        refreshNameEverywhere();
-        if (n && n !== had) showToast((had ? "Got it — hi, " : "Lovely to meet you, ") + n + " 🌿", 2600);
-        else if (!n && had) showToast("Name cleared");
-      }
+      MJ.onNameChange(refreshNameEverywhere);
 
-      document.getElementById("nameBtn").addEventListener("click", function () { openNameDialog(false); });
-      document.getElementById("nameEditBtn").addEventListener("click", function () { openNameDialog(false); });
-      document.getElementById("nameSaveBtn").addEventListener("click", commitName);
-      document.getElementById("nameSkipBtn").addEventListener("click", closeNameDialog);
-      nameOverlay.addEventListener("click", function (e) { if (e.target === nameOverlay) closeNameDialog(); });
-      nameInput.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") commitName();
-        if (e.key === "Escape") closeNameDialog();
-      });
-      // pick up a name change made in Mind Journal (another tab)
-      window.addEventListener("storage", function (e) {
-        if (e.key === NAME_KEY) refreshNameEverywhere();
-      });
+      // Interview Reps can be hidden from Settings (handy for friends who aren't job-hunting).
+      function applyRepsPref() {
+        var show = MJ.prefs().showReps !== false;
+        views.reps.tab.style.display = show ? "" : "none";
+        if (!show && views.reps.view.classList.contains("active")) views.planner.tab.click();
+      }
+      MJ.onPrefsChange(applyRepsPref);
+      applyRepsPref();
+
+      // coming back from the Journal tab: refresh the mood link
+      window.addEventListener("focus", function () { renderCheer(); });
 
       render();
       renderTimerBar(); // resume a running timer after reload
       updateRepsBadge();
-      if (!getName() && !nameAsked()) openNameDialog(true);
 
       // keep the timeline's sense of "now" fresh
       setInterval(function () {

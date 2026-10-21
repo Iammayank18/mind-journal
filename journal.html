@@ -4,9 +4,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="shortcut icon" href="brain.png" type="image/x-icon">
 
   <title>Mind Journal</title>
+  <meta name="description" content="A gentle daily journal to put your thoughts down and feel lighter. Private — everything stays on your device.">
+  <meta name="theme-color" content="#f7f5f0">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <script vite-ignore src="common.js"></script>
   <style>
     * {
       margin: 0;
@@ -38,6 +43,74 @@
       --radius-sm: 8px;
       --shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
       --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.10);
+      --on-accent: #ffffff;
+      --accent-strong: #3d6b44;
+      --insight-border: #c5dac8;
+      --insight-text: #3d6b44;
+      --warm-text: #7a4f24;
+      color-scheme: light;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #1b1a18;
+      --surface: #24221f;
+      --surface2: #2c2925;
+      --border: #3b3732;
+      --text: #ece7df;
+      --text-soft: #b5aca0;
+      --text-muted: #8a8276;
+      --accent: #8fb795;
+      --accent-light: #25322a;
+      --accent2: #c9a57d;
+      --accent2-light: #352c22;
+      --red: #e58a86;
+      --red-light: #3b2524;
+      --blue: #8fb0d6;
+      --blue-light: #222c38;
+      --purple: #b0a5d6;
+      --purple-light: #2b2838;
+      --warm: #d9a066;
+      --warm-light: #362a1d;
+      --shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+      --on-accent: #13201a;
+      --accent-strong: #b3d4b8;
+      --insight-border: #3a5240;
+      --insight-text: #b9d6be;
+      --warm-text: #e7bf8f;
+      }
+    }
+
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #1b1a18;
+      --surface: #24221f;
+      --surface2: #2c2925;
+      --border: #3b3732;
+      --text: #ece7df;
+      --text-soft: #b5aca0;
+      --text-muted: #8a8276;
+      --accent: #8fb795;
+      --accent-light: #25322a;
+      --accent2: #c9a57d;
+      --accent2-light: #352c22;
+      --red: #e58a86;
+      --red-light: #3b2524;
+      --blue: #8fb0d6;
+      --blue-light: #222c38;
+      --purple: #b0a5d6;
+      --purple-light: #2b2838;
+      --warm: #d9a066;
+      --warm-light: #362a1d;
+      --shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+      --on-accent: #13201a;
+      --accent-strong: #b3d4b8;
+      --insight-border: #3a5240;
+      --insight-text: #b9d6be;
+      --warm-text: #e7bf8f;
     }
 
     body {
@@ -352,7 +425,7 @@
     .timer-btn:hover,
     .timer-btn.running {
       background: var(--accent);
-      color: white;
+      color: var(--on-accent);
     }
 
     .timer-hint {
@@ -387,7 +460,7 @@
     .add-btn {
       padding: 10px 18px;
       background: var(--accent);
-      color: white;
+      color: var(--on-accent);
       border: none;
       border-radius: var(--radius-sm);
       cursor: pointer;
@@ -579,7 +652,7 @@
     /* INSIGHT CARD */
     .insight {
       background: var(--accent-light);
-      border: 1px solid #c5dac8;
+      border: 1px solid var(--insight-border);
       border-radius: var(--radius);
       padding: 20px 24px;
       margin-bottom: 20px;
@@ -587,7 +660,7 @@
 
     .insight p {
       font-size: 14px;
-      color: #3d6b44;
+      color: var(--insight-text);
       line-height: 1.7;
       font-style: italic;
     }
@@ -609,7 +682,7 @@
     .save-btn {
       padding: 12px 28px;
       background: var(--accent);
-      color: white;
+      color: var(--on-accent);
       border: none;
       border-radius: 30px;
       font-size: 14px;
@@ -848,7 +921,7 @@
       width: 180px;
       height: 180px;
       background: var(--accent);
-      color: white;
+      color: var(--on-accent);
     }
 
     .breathe-text {
@@ -866,7 +939,7 @@
       margin-top: 20px;
       padding: 10px 24px;
       background: var(--accent);
-      color: white;
+      color: var(--on-accent);
       border: none;
       border-radius: 24px;
       font-size: 14px;
@@ -885,7 +958,7 @@
       bottom: 32px;
       right: 32px;
       background: var(--text);
-      color: white;
+      color: var(--bg);
       padding: 14px 20px;
       border-radius: 10px;
       font-size: 14px;
@@ -905,7 +978,7 @@
     /* YOUR NAME + APPRECIATION */
     .name-btn {
       font: inherit;
-      color: #3d6b44;
+      color: var(--insight-text);
       background: none;
       border: none;
       padding: 0;
@@ -946,7 +1019,7 @@
       background: var(--warm-light);
       border-left: 3px solid var(--warm);
       border-radius: var(--radius-sm);
-      color: #7a4f24;
+      color: var(--warm-text);
       font-size: 14px;
       line-height: 1.6;
       font-style: italic;
@@ -961,95 +1034,126 @@
       line-height: 1.5;
     }
 
-    .name-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(44, 40, 37, 0.45);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      z-index: 1000;
-    }
-
-    .name-overlay.show {
-      display: flex;
-    }
-
-    .name-dialog {
-      background: var(--surface);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-lg);
-      padding: 32px 28px;
-      width: 100%;
-      max-width: 420px;
+    /* WINS JAR */
+    .wins-hero {
       text-align: center;
-      animation: dialogIn 0.35s ease;
+      background: var(--warm-light);
+      border-color: transparent;
     }
 
-    @keyframes dialogIn {
-      from { transform: scale(0.97); opacity: 0.4; }
-      to { transform: scale(1); opacity: 1; }
-    }
-
-    .name-dialog .wave {
-      font-size: 34px;
-    }
-
-    .name-dialog h2 {
-      font-weight: normal;
-      font-size: 22px;
-      margin: 10px 0 6px;
-      color: var(--text);
-    }
-
-    .name-dialog p {
-      color: var(--text-soft);
-      font-size: 14px;
+    .wins-count {
+      font-size: 15px;
+      color: var(--warm-text);
       line-height: 1.6;
-      margin-bottom: 18px;
     }
 
-    .name-dialog input {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius-sm);
-      font-family: 'Georgia', serif;
-      font-size: 16px;
-      text-align: center;
-      background: var(--bg);
+    .wins-pick {
+      font-size: 19px;
+      line-height: 1.6;
       color: var(--text);
-      outline: none;
-      transition: border-color 0.2s, background 0.2s;
+      font-style: italic;
+      margin: 18px auto 6px;
+      max-width: 520px;
     }
 
-    .name-dialog input:focus {
-      border-color: var(--accent);
-      background: var(--surface);
+    .wins-pick:empty {
+      display: none;
     }
 
-    .name-dialog .actions {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      margin-top: 18px;
-      flex-wrap: wrap;
-    }
-
-    .name-dialog .ghost-btn {
-      padding: 12px 22px;
-      background: none;
+    .wins-pick-date {
+      font-size: 12px;
       color: var(--text-soft);
-      border: 1.5px solid var(--border);
-      border-radius: 30px;
-      font-size: 14px;
-      font-family: 'Georgia', serif;
-      cursor: pointer;
-      transition: all 0.2s;
+      margin-bottom: 14px;
     }
 
-    .name-dialog .ghost-btn:hover {
+    .wins-hero .save-btn {
+      margin-top: 14px;
+    }
+
+    .wins-list {
+      list-style: none;
+    }
+
+    .wins-list li {
+      padding: 10px 0;
+      border-top: 1px solid var(--border);
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: var(--text);
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .wins-list li:first-child {
+      border-top: none;
+    }
+
+    .wins-list .when {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .wins-more {
+      background: none;
+      border: none;
+      color: var(--accent);
+      font: 13px Georgia, serif;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .wins-empty {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* EVENING: what you got done (from the planner) */
+    .done-list {
+      list-style: none;
+      margin-bottom: 10px;
+    }
+
+    .done-list li {
+      font-size: 14px;
+      padding: 5px 0;
+      color: var(--text);
+    }
+
+    .done-list li::before {
+      content: "✓";
+      color: var(--accent);
+      margin-right: 10px;
+    }
+
+    .done-list .sec {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-left: 6px;
+    }
+
+    .done-note {
+      font-size: 13.5px;
+      color: var(--text-soft);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .letter-link {
+      margin-top: 12px;
+      background: none;
+      border: 1.5px solid var(--border);
+      border-radius: 24px;
+      padding: 8px 16px;
+      font: 13px Georgia, serif;
+      color: var(--text-soft);
+      cursor: pointer;
+    }
+
+    .letter-link:hover {
       border-color: var(--accent);
       color: var(--accent);
     }
@@ -1071,11 +1175,53 @@
       .section-title {
         font-size: 22px;
       }
+
+      .header {
+        gap: 8px;
+      }
+
+      .logo {
+        font-size: 17px;
+        white-space: nowrap;
+      }
+
+      .date-nav {
+        gap: 6px;
+      }
+
+      .date-nav button {
+        padding: 3px 8px;
+      }
+
+      #current-date {
+        min-width: 0;
+        font-size: 12.5px;
+        white-space: nowrap;
+      }
+
+      .streak {
+        font-size: 12px;
+        padding: 4px 10px;
+        white-space: nowrap;
+      }
+
+      .toast {
+        right: 16px;
+        left: 16px;
+        bottom: 20px;
+        max-width: none;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .logo span {
+        display: none;
+      }
     }
   </style>
 </head>
 
-<body>
+<body data-mj-page="journal">
 
   <!-- HEADER -->
   <header class="header">
@@ -1111,6 +1257,9 @@
     <button class="tab" onclick="showTab('breathe')" id="tab-breathe">
       ✦ Breathe
     </button>
+    <button class="tab" onclick="showTab('wins')" id="tab-wins">
+      🫙 Wins Jar
+    </button>
     <button class="tab" onclick="showTab('history')" id="tab-history">
       History
     </button>
@@ -1122,7 +1271,7 @@
     <!-- CHECK-IN -->
     <section class="section active" id="section-checkin">
       <div class="section-header">
-        <h1 class="section-title"><span id="greet-word">Hello</span>, <button type="button" class="name-btn" id="name-btn" title="Change your name"><span id="name-text">friend</span></button>.<button type="button" class="name-edit" id="name-edit-btn" title="Change your name" aria-label="Change your name">✎</button></h1>
+        <h1 class="section-title"><span id="greet-word">Hello</span>, <button type="button" class="name-btn" data-mj-name title="Change your name"><span id="name-text">friend</span></button>.<button type="button" class="name-edit" data-mj-name title="Change your name" aria-label="Change your name">✎</button></h1>
         <p class="section-desc">Just a quick check before we begin. No judgement — just honest.</p>
         <p class="appreciation" id="mj-cheer"></p>
       </div>
@@ -1371,6 +1520,11 @@
           heavy.</p>
       </div>
 
+      <div class="card" id="evening-done-card" style="display:none;">
+        <div class="card-label"><span class="icon">✅</span> <span id="evening-done-label">What you got done today</span></div>
+        <div id="evening-done"></div>
+      </div>
+
       <div class="card">
         <div class="card-label"><span class="icon">🌙</span> How did the day feel?</div>
         <textarea class="journal-area" id="evening-day"
@@ -1427,11 +1581,43 @@
       </div>
     </section>
 
+    <!-- WINS JAR -->
+    <section class="section" id="section-wins">
+      <div class="section-header">
+        <h1 class="section-title">Wins Jar</h1>
+        <p class="section-desc">Every small win, kind word and good thing you've written — collected in one place. Open
+          it on the hard days.</p>
+      </div>
+
+      <div class="card wins-hero">
+        <div class="wins-count" id="wins-count"></div>
+        <div class="wins-pick" id="wins-pick"></div>
+        <div class="wins-pick-date" id="wins-pick-date"></div>
+        <button class="save-btn" id="wins-pick-btn" onclick="pickWin()">Pick one for me 🫙</button>
+      </div>
+
+      <div class="card">
+        <div class="card-label"><span class="icon">⭐</span> Things I did okay</div>
+        <ul class="wins-list" id="wins-list-win"></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-label"><span class="icon">💌</span> Kind things I told myself</div>
+        <ul class="wins-list" id="wins-list-kind"></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-label"><span class="icon">🌿</span> Things I was grateful for</div>
+        <ul class="wins-list" id="wins-list-grat"></ul>
+      </div>
+    </section>
+
     <!-- HISTORY -->
     <section class="section" id="section-history">
       <div class="section-header">
         <h1 class="section-title">Your Journal History</h1>
         <p class="section-desc">Past entries. Tap any to review.</p>
+        <button type="button" class="letter-link" data-mj-letter>💌 Read this week's letter</button>
       </div>
       <div id="history-list">
         <div class="empty">
@@ -1442,20 +1628,6 @@
     </section>
 
   </main>
-
-  <!-- NAME DIALOG -->
-  <div class="name-overlay" id="name-overlay" role="dialog" aria-modal="true" aria-labelledby="name-dialog-title">
-    <div class="name-dialog">
-      <div class="wave">🌿</div>
-      <h2 id="name-dialog-title">Welcome. What should I call you?</h2>
-      <p id="name-dialog-desc">This space is yours — adding your name makes it feel that way.</p>
-      <input type="text" id="name-input" maxlength="30" placeholder="Your first name" autocomplete="given-name">
-      <div class="actions">
-        <button type="button" class="ghost-btn" id="name-skip-btn">Maybe later</button>
-        <button type="button" class="save-btn" id="name-save-btn">Let's begin</button>
-      </div>
-    </div>
-  </div>
 
   <!-- TOAST -->
   <div class="toast" id="toast"></div>
@@ -1486,7 +1658,8 @@
     }
 
     function getDateKey(d) {
-      return d.toISOString().split('T')[0];
+      // local calendar day (toISOString() is UTC and put entries a day early east of UTC)
+      return MJ.localISO(d);
     }
 
     function updateDateDisplay() {
@@ -1525,6 +1698,7 @@
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       document.getElementById('section-' + name).classList.add('active');
       document.getElementById('tab-' + name).classList.add('active');
+      if (name === 'wins') renderWins();
     }
 
     // ─── MOOD ─────────────────────────────────────────────────────────
@@ -1669,6 +1843,8 @@
       document.getElementById('evening-release').value = ev ? ev.release || '' : '';
       document.getElementById('tomorrow-intention').value = ev ? ev.intention || '' : '';
       if (ev) markDot('evening');
+
+      renderEveningDone();
 
       // Quote
       const q = quotes[new Date().getDay() % quotes.length];
@@ -1989,33 +2165,10 @@
     }
 
     // ─── YOUR NAME + APPRECIATION ────────────────────────────────────
-    // Stored under its own key (not a dated entry) and shared with the Daily
-    // Planner, so setting it once personalises both pages.
-    const NAME_KEY = 'mindjournal_userName';
-    const NAME_ASKED_KEY = 'mindjournal_nameAsked';
+    // Name, settings, backup and celebrations live in common.js (shared with the Planner).
     let currentStreak = 0;
-
-    function getName() {
-      try { return (localStorage.getItem(NAME_KEY) || '').trim(); } catch (e) { return ''; }
-    }
-    function setName(n) {
-      try { n ? localStorage.setItem(NAME_KEY, n) : localStorage.removeItem(NAME_KEY); } catch (e) { }
-    }
-    function nameAsked() {
-      try { return !!localStorage.getItem(NAME_ASKED_KEY); } catch (e) { return true; }
-    }
-    function markNameAsked() {
-      try { localStorage.setItem(NAME_ASKED_KEY, '1'); } catch (e) { }
-    }
-    function displayName() { return getName() || 'friend'; }
-    function withName(str) { return str.replace(/\{name\}/g, displayName()); }
-    function greetingWord() {
-      const h = new Date().getHours();
-      if (h < 5) return 'Still up';
-      if (h < 12) return 'Good morning';
-      if (h < 17) return 'Good afternoon';
-      return 'Good evening';
-    }
+    function displayName() { return MJ.displayName(); }
+    function withName(str) { return MJ.withName(str); }
 
     const GENTLE_NOTES = [
       'Thank you for making a little time for yourself today, {name}.',
@@ -2037,9 +2190,9 @@
     const ALL_SECTIONS = ['checkin', 'braindump', 'worry', 'reframe', 'gratitude', 'evening'];
 
     function renderGreeting() {
-      document.getElementById('greet-word').textContent = greetingWord();
+      document.getElementById('greet-word').textContent = MJ.greetingWord();
       document.getElementById('name-text').textContent = displayName();
-      document.title = getName() ? 'Mind Journal — ' + getName() : 'Mind Journal';
+      document.title = MJ.getName() ? 'Mind Journal — ' + MJ.getName() : 'Mind Journal';
     }
 
     function renderMjCheer() {
@@ -2059,52 +2212,81 @@
       } else {
         showToast(withName(SAVE_CHEERS[section] || 'Saved ✓'), 3000);
       }
+      MJ.checkMilestones();
     }
 
-    const nameOverlay = document.getElementById('name-overlay');
-    const nameInput = document.getElementById('name-input');
-
-    function openNameDialog(first) {
-      document.getElementById('name-dialog-title').textContent = first ? 'Welcome. What should I call you?' : 'What should I call you?';
-      document.getElementById('name-dialog-desc').textContent = first
-        ? 'This space is yours — adding your name makes it feel that way. It\'s saved only on this device.'
-        : 'Change it any time. It\'s saved only on this device, and your Daily Planner uses it too.';
-      document.getElementById('name-skip-btn').textContent = first ? 'Maybe later' : 'Cancel';
-      document.getElementById('name-save-btn').textContent = first ? 'Let\'s begin' : 'Save';
-      nameInput.value = getName();
-      nameOverlay.classList.add('show');
-      setTimeout(() => { nameInput.focus(); nameInput.select(); }, 30);
-    }
-    function closeNameDialog() {
-      nameOverlay.classList.remove('show');
-      markNameAsked();
-    }
-    function refreshNameEverywhere() {
-      renderGreeting();
-      renderMjCheer();
-      updateHistory();
-    }
-    function commitName() {
-      const n = nameInput.value.replace(/\s+/g, ' ').trim().slice(0, 30);
-      const had = getName();
-      setName(n);
-      closeNameDialog();
-      refreshNameEverywhere();
-      if (n && n !== had) showToast((had ? 'Got it — hi, ' : 'Lovely to meet you, ') + n + ' 🌿', 2600);
-      else if (!n && had) showToast('Name cleared');
+    // ─── EVENING: what you got done (from the Planner) ──────────────
+    function renderEveningDone() {
+      const card = document.getElementById('evening-done-card');
+      if (!MJ.plannerData()) { card.style.display = 'none'; return; }
+      const iso = getDateKey(currentDate);
+      const isToday = iso === MJ.localISO();
+      const items = MJ.plannerDoneOn(iso);
+      card.style.display = '';
+      document.getElementById('evening-done-label').textContent = isToday ? 'What you got done today' : 'What you got done that day';
+      const box = document.getElementById('evening-done');
+      if (!items.length) {
+        box.innerHTML = `<p class="done-note">${isToday ? 'Nothing ticked off in the planner yet today' : 'Nothing ticked off in the planner that day'} — and that's okay. Resting counts too.</p>`;
+        return;
+      }
+      box.innerHTML = '<ul class="done-list">' + items.map(t =>
+        `<li>${escHtml(t.text)}${t.section ? `<span class="sec">· ${escHtml(t.section)}</span>` : ''}</li>`).join('') + '</ul>' +
+        `<p class="done-note">${items.length === 1 ? 'That one thing' : 'All ' + items.length + ' of these'} happened because of you, ${escHtml(displayName())}. Whatever else the day held, you did this.</p>`;
     }
 
-    document.getElementById('name-btn').addEventListener('click', () => openNameDialog(false));
-    document.getElementById('name-edit-btn').addEventListener('click', () => openNameDialog(false));
-    document.getElementById('name-save-btn').addEventListener('click', commitName);
-    document.getElementById('name-skip-btn').addEventListener('click', closeNameDialog);
-    nameOverlay.addEventListener('click', e => { if (e.target === nameOverlay) closeNameDialog(); });
-    nameInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') commitName();
-      if (e.key === 'Escape') closeNameDialog();
-    });
-    // pick up a name change made in the Daily Planner (another tab)
-    window.addEventListener('storage', e => { if (e.key === NAME_KEY) refreshNameEverywhere(); });
+    // ─── WINS JAR ────────────────────────────────────────────────────
+    let winsCache = null;
+    const WINS_SHOWN = 12;
+    function collectWins() {
+      const out = { win: [], kind: [], grat: [] };
+      MJ.journalDates().slice().reverse().forEach(iso => {
+        const g = MJ.journalDay(iso).gratitude;
+        if (!g) return;
+        if (g.win && g.win.trim()) out.win.push({ text: g.win.trim(), iso });
+        if (g.kind && g.kind.trim()) out.kind.push({ text: g.kind.trim(), iso });
+        ['g1', 'g2', 'g3'].forEach(k => { if (g[k] && g[k].trim()) out.grat.push({ text: g[k].trim(), iso }); });
+      });
+      return out;
+    }
+    function winsListHTML(items, all) {
+      const shown = all ? items : items.slice(0, WINS_SHOWN);
+      return shown.map(w => `<li><span>${escHtml(w.text)}</span><span class="when">${MJ.prettyDate(w.iso)}</span></li>`).join('');
+    }
+    function renderWins() {
+      winsCache = collectWins();
+      const total = winsCache.win.length + winsCache.kind.length + winsCache.grat.length;
+      document.getElementById('wins-count').innerHTML = total
+        ? `You've collected <b>${total}</b> good ${total === 1 ? 'thing' : 'things'} so far, ${escHtml(displayName())}. Each one was real.`
+        : `Your jar is empty for now, ${escHtml(displayName())}. Fill in <a href="#" onclick="showTab('gratitude');return false;">Gratitude</a> and every win lands here.`;
+      document.getElementById('wins-pick-btn').style.display = total ? '' : 'none';
+      [['win', 'Small wins you write in Gratitude will show up here.'],
+       ['kind', 'Kind words to yourself will show up here.'],
+       ['grat', 'The good things you notice will show up here.']].forEach(([k, empty]) => {
+        const ul = document.getElementById('wins-list-' + k);
+        const items = winsCache[k];
+        ul.innerHTML = items.length ? winsListHTML(items, false) : `<li class="wins-empty">${empty}</li>`;
+        const old = ul.nextElementSibling;
+        if (old && old.classList.contains('wins-more')) old.remove();
+        if (items.length > WINS_SHOWN) {
+          const more = document.createElement('button');
+          more.className = 'wins-more';
+          more.textContent = `Show all ${items.length} →`;
+          more.onclick = () => { ul.innerHTML = winsListHTML(items, true); more.remove(); };
+          ul.after(more);
+        }
+      });
+    }
+    function pickWin() {
+      if (!winsCache) winsCache = collectWins();
+      const pool = winsCache.win.concat(winsCache.kind, winsCache.grat);
+      if (!pool.length) return;
+      const w = pool[Math.floor(Math.random() * pool.length)];
+      document.getElementById('wins-pick').textContent = '“' + w.text + '”';
+      document.getElementById('wins-pick-date').textContent = '— you, on ' + MJ.prettyDate(w.iso, { weekday: 'long', day: 'numeric', month: 'long' });
+      document.getElementById('wins-pick-btn').textContent = 'Another one 🫙';
+    }
+
+    MJ.onNameChange(() => { renderGreeting(); renderMjCheer(); updateHistory(); renderEveningDone(); if (document.getElementById('section-wins').classList.contains('active')) renderWins(); });
     // keep "Good morning / afternoon / evening" in step with the clock
     setInterval(renderGreeting, 60000);
 
@@ -2114,7 +2296,11 @@
     updateStreak();
     updateHistory();
     setupAutosave();
-    if (!getName() && !nameAsked()) openNameDialog(true);
+    // deep links like journal.html#evening (used by the Planner)
+    (function () {
+      const h = location.hash.slice(1);
+      if (h && document.getElementById('section-' + h) && document.getElementById('tab-' + h)) showTab(h);
+    })();
   </script>
 </body>
 

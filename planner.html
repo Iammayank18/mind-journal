@@ -11,8 +11,8 @@
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preload" href="fonts/figtree-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="theme.css?v=5">
-  <script vite-ignore src="common.js?v=5"></script>
+  <link rel="stylesheet" href="theme.css?v=8">
+  <script vite-ignore src="common.js?v=8"></script>
   <style>
     .planner-main {
       padding-top: 12px;
@@ -310,7 +310,7 @@
       list-style: none;
       margin: 0;
       padding: 0;
-      background: var(--card);
+      background-color: var(--card);
       border-radius: var(--r-xl);
       box-shadow: var(--shadow-1);
       overflow: hidden;
@@ -1327,7 +1327,7 @@
         <div class="plan-main">
           <p class="appreciation" id="plannerCheer"></p>
 
-          <form class="card quick-add no-print" id="quickAdd" autocomplete="off">
+          <form class="card quick-add glow-yolk no-print" id="quickAdd" autocomplete="off">
             <div class="qa-row">
               <label class="sr-only" for="qaText">Add a task</label>
               <input type="text" id="qaText" maxlength="160" enterkeyhint="done" placeholder="Add a task…">
@@ -1351,7 +1351,7 @@
 
         <aside class="app-side no-print" aria-label="Your day at a glance">
           <a class="mood-strip" id="moodStrip" href="journal.html"></a>
-          <div class="card side-card">
+          <div class="card side-card glow-lav">
             <div class="side-title">For tomorrow</div>
             <p class="hint" style="margin-bottom:12px">Tonight's thoughts need somewhere to rest.</p>
             <ul class="tomorrow-list" id="tomorrowList"></ul>
@@ -1910,7 +1910,7 @@
         document.getElementById("modeList").setAttribute("aria-pressed", String(mode === "list"));
 
         if (!data.tasks.length && mode === "time") {
-          box.innerHTML = '<div class="card day-empty">' + MJ.orb({ mood: "calm", size: 80, cls: "orb-float" }) +
+          box.innerHTML = '<div class="card day-empty glow-mint">' + MJ.orb({ mood: "calm", size: 80, cls: "orb-float" }) +
             '<h3 class="t-h2">A fresh, unhurried day</h3>' +
             '<p class="t-body">Add a few things above — just type naturally, like <b>“gym 7am 30m daily”</b>. Or start with one of these:</p>' +
             '<div class="idea-chips">' + IDEAS.map(function (i) { return '<button type="button" class="chip" data-idea="' + escapeAttr(i) + '">+ ' + escapeAttr(i) + '</button>'; }).join("") + '</div></div>';
@@ -2687,7 +2687,7 @@
         var body = document.getElementById("insBody");
         if (activeDays < 2) {
           body.hidden = true;
-          empty.innerHTML = '<div class="card ins-empty">' + MJ.orb({ mood: "calm", size: 84, cls: "orb-float" }) +
+          empty.innerHTML = '<div class="card ins-empty glow-mint">' + MJ.orb({ mood: "calm", size: 84, cls: "orb-float" }) +
             '<h3 class="t-h2">Your patterns are on their way</h3>' +
             '<p class="t-body">' + (activeDays === 1
               ? "Day one is in. Tick a few things off tomorrow too, and this page starts telling your story."

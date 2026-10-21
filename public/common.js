@@ -28,7 +28,8 @@
     sound: "mindjournal_sound",
     persistAsked: "mindjournal_persistAsked",
     iosHintSeen: "mindjournal_iosHintSeen",
-    planner: "plannerData_v2"
+    planner: "plannerData_v2",
+    meditate: "mindjournal_meditate"
   };
   var JOURNAL_KEY_RE = /^mj_(\d{4}-\d{2}-\d{2})_([a-z]+)$/;
   var SECTIONS = ["checkin", "braindump", "worry", "reframe", "gratitude", "evening"];
@@ -240,6 +241,33 @@
     return { total: total, streak: n };
   }
 
+  // ---------- meditation (sessions saved by meditate.html) ----------
+  // A sit before 3am counts for the day before — late-night meditators keep their streak.
+  function medDay(d) { return localISO(new Date(d.getTime() - 3 * 3600000)); }
+  function meditateData() {
+    var d = lsJSON(KEYS.meditate, null) || {};
+    d.sessions = d.sessions || [];
+    d.progress = d.progress || {};
+    d.favs = d.favs || [];
+    d.prefs = d.prefs || {};
+    return d;
+  }
+  function meditateTotals() {
+    var d = meditateData();
+    var days = {}, mins = 0;
+    d.sessions.forEach(function (s) { days[s.day] = (days[s.day] || 0) + (s.secs || 0); mins += (s.secs || 0) / 60; });
+    var today = medDay(new Date());
+    var n = 0, cur = today;
+    if (!days[cur]) cur = addDaysISO(cur, -1);
+    while (days[cur]) { n++; cur = addDaysISO(cur, -1); }
+    var sorted = Object.keys(days).sort(), best = 0, run = 0, prev = null;
+    sorted.forEach(function (x) { run = prev && addDaysISO(prev, 1) === x ? run + 1 : 1; best = Math.max(best, run); prev = x; });
+    return { streak: n, longest: best, minutes: Math.round(mins), sessions: d.sessions.length, days: days, today: today, didToday: !!days[today] };
+  }
+  function meditatedOn(iso) {
+    return meditateData().sessions.filter(function (s) { return s.day === iso; });
+  }
+
   // ---------- helpers ----------
   function el(tag, attrs, html) {
     var n = document.createElement(tag);
@@ -266,6 +294,7 @@
     sun: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
     cal: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="4"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
     jar: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8M9 3v3c-2 1-4 3-4 7v5a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3v-5c0-4-2-6-4-7V3"/><path d="M12 11l1 2 2 .3-1.5 1.4.4 2.1-1.9-1-1.9 1 .4-2.1L9 13.3l2-.3z"/></svg>',
+    lotus: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20c-4 0-8-2-9-6 3 0 5 1 6 2"/><path d="M12 20c4 0 8-2 9-6-3 0-5 1-6 2"/><path d="M12 20c-2-2-3-4.5-3-7.5S10.5 6 12 4c1.5 2 3 5.5 3 8.5S14 18 12 20z"/></svg>',
     you: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>',
     close: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>'
   };
@@ -452,6 +481,12 @@
     }
     refreshSoundBtn();
   }
+  // lower the background sound while a voice is speaking, then bring it back
+  function duck(on) {
+    if (!ac || !master || !playing) return;
+    master.gain.cancelScheduledValues(ac.currentTime);
+    master.gain.setTargetAtTime((on ? 0.4 : 0.9) * soundState().vol, ac.currentTime, on ? 0.25 : 0.8);
+  }
   function setScape(name) {
     var st = soundState(); st.scape = name; saveSoundState(st);
     if (playing) startSound(); else refreshSoundBtn();
@@ -488,6 +523,31 @@
     });
   }
 
+  // a singing-bowl bell, made live (no audio files): start, interval or end
+  function bell(kind) {
+    var a = audio();
+    if (!a) return;
+    var strikes = kind === "end" ? 3 : 1;
+    var vol = kind === "interval" ? 0.05 : 0.085;
+    var f0 = kind === "interval" ? 293.66 : 220;
+    for (var s = 0; s < strikes; s++) {
+      var t = a.currentTime + 0.05 + s * 2.8;
+      [[1, 1], [2.01, 0.42], [2.76, 0.3], [5.4, 0.12], [8.93, 0.05]].forEach(function (p, i) {
+        [0, i === 0 ? 1.6 : 0].forEach(function (detune, k) {
+          if (k && !detune) return;
+          var o = a.createOscillator(); o.type = "sine"; o.frequency.value = f0 * p[0] + detune;
+          var g = a.createGain();
+          var len = 7 / Math.pow(p[0], 0.35);
+          g.gain.setValueAtTime(0, t);
+          g.gain.linearRampToValueAtTime(vol * p[1] * (k ? 0.6 : 1), t + 0.012);
+          g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+          o.connect(g).connect(a.destination);
+          o.start(t); o.stop(t + len + 0.1);
+        });
+      });
+    }
+  }
+
   // ---------- backup ----------
   function exportBackup() {
     var data = {};
@@ -504,7 +564,10 @@
   // A readable copy of everything — your journal is yours, in a format any app can open.
   function exportMarkdown() {
     var out = ["# Mind Journal — " + displayName(), "", "_Exported " + new Date().toLocaleString() + "_", ""];
-    var dates = journalDates().slice().reverse();
+    var dset = {};
+    journalDates().forEach(function (x) { dset[x] = 1; });
+    meditateData().sessions.forEach(function (x) { dset[x.day] = 1; });
+    var dates = Object.keys(dset).sort().reverse();
     function para(label, txt) { if (txt && String(txt).trim()) out.push("**" + label + ":** " + String(txt).trim()); }
     dates.forEach(function (iso) {
       var d = journalDay(iso);
@@ -515,6 +578,8 @@
       if (d.reframe) { out.push("", "### Reframe", ""); para("The thought", d.reframe.r1); para("Fact or feeling", d.reframe.r2); para("What I'd tell a friend", d.reframe.r3); para("A truer thought", d.reframe.r4); }
       if (d.gratitude) { out.push("", "### Gratitude & wins", ""); [d.gratitude.g1, d.gratitude.g2, d.gratitude.g3].forEach(function (g) { if (g && g.trim()) out.push("- " + g.trim()); }); para("A win", d.gratitude.win); para("Kind words", d.gratitude.kind); }
       if (d.evening) { out.push("", "### Evening", ""); para("How the day felt", d.evening.day); para("Letting go of", d.evening.release); para("Intention for tomorrow", d.evening.intention); }
+      var med = meditatedOn(iso);
+      if (med.length) { out.push("", "### Meditation", ""); med.forEach(function (m) { out.push("- " + (m.title || "Timer") + " · " + Math.max(1, Math.round((m.secs || 0) / 60)) + " min" + (m.note ? " — " + m.note : "")); }); }
       var done = plannerDoneOn(iso);
       if (done.length) { out.push("", "### Done in the planner", ""); done.forEach(function (t) { out.push("- " + t.text + (t.section ? " (" + t.section + ")" : "")); }); }
       out.push("");
@@ -590,7 +655,7 @@
     };
     reader.readAsText(file);
   }
-  function hasAnyData() { return !!plannerData() || journalDates().length > 0; }
+  function hasAnyData() { return !!plannerData() || journalDates().length > 0 || meditateData().sessions.length > 0; }
   function backupAgeDays() {
     var t = lsGet(KEYS.lastBackup);
     return t ? Math.floor((Date.now() - new Date(t).getTime()) / 86400000) : null;
@@ -796,13 +861,20 @@
     { kind: "jstreak", at: [3, 7, 14, 21, 30, 60, 100, 200, 365], mood: "calm",
       title: function (n) { return n + " days of showing up for yourself"; },
       message: function (n) { return n + " days in a row you made space for your mind, {name}. Be really proud of that."; } },
+    { kind: "mstreak", at: [3, 7, 14, 30, 60, 100, 200, 365], mood: "calm",
+      title: function (n) { return n + " days of sitting in a row"; },
+      message: function (n) { return "You've made a little stillness " + n + " days in a row, {name}. That quiet is yours now."; } },
+    { kind: "mmins", at: [60, 300, 600, 1000, 2000, 5000], mood: "light",
+      title: function (n) { return n + " minutes of stillness"; },
+      message: function (n) { return n + " minutes spent simply being with yourself, {name}. Every one of them counted."; } },
     { kind: "jdays", at: [10, 25, 50, 100, 200, 365], mood: "light",
       title: function (n) { return n + " journal days"; },
       message: function (n) { return "You've written on " + n + " different days, {name}. That's a whole story of you looking after yourself."; } }
   ];
   function checkMilestones() {
     var p = plannerTotals();
-    var values = { tasks: p.total, pstreak: p.streak, jstreak: journalStreak(), jdays: journalDates().length };
+    var mt = meditateTotals();
+    var values = { tasks: p.total, pstreak: p.streak, jstreak: journalStreak(), jdays: journalDates().length, mstreak: mt.streak, mmins: mt.minutes };
     var seen = lsJSON(KEYS.milestones, null);
     var baseline = seen === null;
     seen = seen || {};
@@ -829,7 +901,7 @@
     for (var i = 0; i < 7; i++) days.push(addDaysISO(start, i));
     var pdata = plannerData();
     var log = (pdata && pdata.log) || {};
-    var tasks = 0, busiest = null, busiestN = 0, jdays = 0, moods = {}, energy = [], wins = [];
+    var tasks = 0, busiest = null, busiestN = 0, jdays = 0, moods = {}, energy = [], wins = [], medMins = 0, medN = 0;
     days.forEach(function (d) {
       var n = (log[d] || []).length;
       tasks += n;
@@ -839,12 +911,13 @@
       if (j.checkin && j.checkin.mood) moods[j.checkin.mood] = (moods[j.checkin.mood] || 0) + 1;
       if (j.checkin && j.checkin.energy) energy.push(+j.checkin.energy);
       if (j.gratitude && j.gratitude.win && j.gratitude.win.trim()) wins.push(j.gratitude.win.trim());
+      meditatedOn(d).forEach(function (s) { medN++; medMins += (s.secs || 0) / 60; });
     });
     var ranked = Object.keys(moods).sort(function (a, b) { return moods[b] - moods[a]; });
     // only say "mostly felt X" when X clearly came up most
     var topMood = ranked.length && moods[ranked[0]] >= 2 && (ranked.length === 1 || moods[ranked[0]] > moods[ranked[1]]) ? ranked[0] : null;
     var avgE = energy.length ? Math.round(energy.reduce(function (a, b) { return a + b; }, 0) / energy.length * 10) / 10 : null;
-    return { start: start, days: days, tasks: tasks, busiest: busiest, busiestN: busiestN, jdays: jdays, topMood: topMood, avgEnergy: avgE, wins: wins };
+    return { start: start, days: days, tasks: tasks, busiest: busiest, busiestN: busiestN, jdays: jdays, topMood: topMood, avgEnergy: avgE, wins: wins, medMins: Math.round(medMins), medN: medN };
   }
   function letterHTML(s) {
     var parts = [];
@@ -862,6 +935,9 @@
         (s.avgEnergy ? (s.topMood ? " with" : ", with") + " an average energy of " + s.avgEnergy + "/10" : "") + ".</p>");
     } else {
       parts.push("<p>You didn't journal this week, and that's fine — the page will be here whenever you need it.</p>");
+    }
+    if (s.medN) {
+      parts.push("<p>You sat in stillness <b>" + s.medN + (s.medN === 1 ? " time" : " times") + "</b> — <b>" + s.medMins + " minutes</b> of simply being. That's a real gift to yourself.</p>");
     }
     if (s.wins.length) {
       parts.push("<p>Some things you were quietly proud of:</p><ul>" +
@@ -891,7 +967,7 @@
     var start = weekStartISO();
     if (lsGet(KEYS.letterSeen) === start) return false;
     var s = weekStats(start);
-    if (!s.tasks && !s.jdays) return false;
+    if (!s.tasks && !s.jdays && !s.medN) return false;
     setTimeout(openLetter, 1200);
     return true;
   }
@@ -900,6 +976,7 @@
   var NAV = [
     { id: "today", label: "Today", href: "journal.html#today", icon: ICON.sun },
     { id: "planner", label: "Planner", href: "planner.html", icon: ICON.cal },
+    { id: "meditate", label: "Meditate", href: "meditate.html", icon: ICON.lotus },
     { id: "wins", label: "Wins Jar", href: "journal.html#wins", icon: ICON.jar }
   ];
   var activeNav = null;
@@ -941,7 +1018,7 @@
     document.body.appendChild(tabs);
     document.body.classList.add("has-tabbar");
 
-    setActiveNav(page === "planner" ? "planner" : (location.hash === "#wins" ? "wins" : "today"));
+    setActiveNav(page === "planner" || page === "meditate" ? page : (location.hash === "#wins" ? "wins" : "today"));
     refreshAvatar();
     refreshSoundBtn();
     document.getElementById("mj-sound").addEventListener("click", function () {
@@ -1025,7 +1102,12 @@
     onPrefsChange: function (fn) { on("prefs", fn); },
     prefs: prefs, setPref: setPref,
     MOODS: MOODS, orb: orb, icon: ICON,
-    sound: { start: startSound, stop: stopSound, toggle: function () { if (playing) stopSound(); else startSound(); }, isPlaying: function () { return playing; } },
+    sound: {
+      start: startSound, stop: stopSound, toggle: function () { if (playing) stopSound(); else startSound(); }, isPlaying: function () { return playing; },
+      setScape: setScape, scape: function () { return soundState().scape; }, scapes: SCAPES, duck: duck
+    },
+    bell: bell,
+    meditateKey: KEYS.meditate, meditateData: meditateData, meditateTotals: meditateTotals, meditatedOn: meditatedOn, medDay: medDay,
     chime: chime,
     setActiveNav: setActiveNav,
     openNameDialog: openNameDialog, openSettings: openSettings, openLetter: openLetter,

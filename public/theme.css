@@ -79,6 +79,8 @@
   --t-fast: 220ms;
   --t-med: 420ms;
   --t-slow: 700ms;
+  /* the soft corner glow every card carries (colour per card via --glow) */
+  --glow-amt: 22%;
   --font: 'Figtree', ui-rounded, system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
@@ -107,6 +109,7 @@
     --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.3);
     --shadow-2: 0 12px 28px rgba(0, 0, 0, 0.35);
     --shadow-3: 0 24px 60px rgba(0, 0, 0, 0.55);
+    --glow-amt: 17%;
   }
 }
 
@@ -134,6 +137,7 @@
   --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-2: 0 12px 28px rgba(0, 0, 0, 0.35);
   --shadow-3: 0 24px 60px rgba(0, 0, 0, 0.55);
+  --glow-amt: 17%;
 }
 
 /* ── base ─────────────────────────────────────────────────────── */
@@ -412,27 +416,44 @@ svg {
 }
 
 /* ── cards ────────────────────────────────────────────────────── */
+.card,
+.glow {
+  background-color: var(--card);
+  /* a quiet light in the top-right corner — the same language as the Meditate card */
+  background-image: radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, var(--glow, var(--brand)) var(--glow-amt), transparent) 0, transparent 58%);
+  background-repeat: no-repeat;
+}
+
 .card {
-  background: var(--card);
   border-radius: var(--r-xl);
   padding: 24px;
   box-shadow: var(--shadow-1);
 }
 
 .card-soft {
-  background: var(--brand-tint);
+  background-color: var(--brand-tint);
   box-shadow: none;
 }
 
 .card-sunny {
-  background: var(--brand-soft);
+  background-color: var(--brand-soft);
   box-shadow: none;
+  --glow: var(--rose);
 }
 
 .card-dark {
-  background: var(--dark);
+  background-color: var(--dark);
+  background-image: none;
   color: var(--on-dark);
 }
+
+/* the glow's colour, card by card */
+.glow-mint { --glow: var(--mint); }
+.glow-sky { --glow: var(--sky); }
+.glow-lav { --glow: var(--lavender); }
+.glow-rose { --glow: var(--rose); }
+.glow-coral { --glow: var(--coral); }
+.glow-yolk { --glow: var(--yolk); }
 
 .card-lift {
   transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease);

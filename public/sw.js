@@ -5,14 +5,18 @@
    Offline support. Pages and shared code: network first (so updates always arrive
    together), cache as fallback. Fonts/icons/hashed assets: cache first.
    Bump VERSION when you change the list of files below. */
-const VERSION = "mj-v5";
+const VERSION = "mj-v8";
+// recorded meditation voice lives in its own cache, so app updates never wipe downloads
+const AUDIO_CACHE = "mj-audio";
 const ASSETS = [
   "./",
   "./index.html",
   "./planner.html",
   "./journal.html",
-  "./common.js?v=5",
-  "./theme.css?v=5",
+  "./meditate.html",
+  "./meditate-content.js?v=8",
+  "./common.js?v=8",
+  "./theme.css?v=8",
   "./fonts/figtree-latin-wght-normal.woff2",
   "./fonts/figtree-latin-ext-wght-normal.woff2",
   "./manifest.webmanifest",
@@ -29,7 +33,7 @@ self.addEventListener("install", (e) => {
 self.addEventListener("activate", (e) => {
   e.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== VERSION).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k !== VERSION && k !== AUDIO_CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
@@ -41,6 +45,17 @@ self.addEventListener("fetch", (e) => {
   const isPage = req.mode === "navigate" || (req.headers.get("accept") || "").includes("text/html");
   // Fonts, icons and hashed build files never change under the same name: cache first.
   const immutable = /\/(fonts|icons|assets)\//.test(url.pathname);
+
+  // voice files are named by their content, so once saved they never change
+  if (/\/audio\/voice\/.+\.mp3$/.test(url.pathname)) {
+    e.respondWith(
+      caches.open(AUDIO_CACHE).then((c) => c.match(req).then((hit) => hit || fetch(req).then((res) => {
+        if (res.ok) c.put(req, res.clone());
+        return res;
+      })))
+    );
+    return;
+  }
 
   if (immutable) {
     e.respondWith(

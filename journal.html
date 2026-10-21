@@ -11,8 +11,8 @@
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preload" href="fonts/figtree-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="theme.css?v=5">
-  <script vite-ignore src="common.js?v=5"></script>
+  <link rel="stylesheet" href="theme.css?v=8">
+  <script vite-ignore src="common.js?v=8"></script>
   <style>
     .journal {
       padding-top: 12px;
@@ -204,23 +204,9 @@
       overflow: hidden;
     }
 
-    .focus-card::before {
-      content: "";
-      position: absolute;
-      inset: 0 0 auto 0;
-      height: 92px;
-      background: var(--tint, var(--brand-tint));
-      opacity: .32;
-    }
-
-    :root[data-theme="dark"] .focus-card::before {
-      opacity: .16;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root:not([data-theme="light"]) .focus-card::before {
-        opacity: .16;
-      }
+    .focus-card {
+      --glow: var(--tint);
+      --glow-amt: 26%;
     }
 
     .focus-mood {
@@ -1195,7 +1181,7 @@
           <div id="ios-hint"></div>
 
           <!-- before checking in: the one question that matters -->
-          <div class="card mood-card rise" id="mood-card" style="--i:3">
+          <div class="card mood-card glow-yolk rise" id="mood-card" style="--i:3">
             <div class="mood-head">
               <span id="hub-orb"></span>
               <div>
@@ -1217,7 +1203,7 @@
         </div>
 
         <aside class="app-side" aria-label="Your week and wins">
-          <div class="card side-card">
+          <div class="card side-card glow-mint">
             <div class="side-title">This week</div>
             <div class="week" id="week"></div>
             <p class="week-note" id="week-note"></p>
@@ -1354,19 +1340,19 @@
         <p class="t-lead">Take one heavy thought for a gentle walk. Not forced positivity — just a truer version.</p>
       </div>
       <div class="ritual-body">
-        <div class="card step-card">
+        <div class="card step-card glow-sky">
           <div class="row"><span class="num" style="background:var(--sky)">1</span><div><label class="card-label" for="reframe-1" style="margin:0">The thought, as it is</label><p class="hint">Write it exactly as it sounds in your head.</p></div></div>
           <textarea class="textarea" id="reframe-1" placeholder="e.g. I can't do anything right, something is wrong with me…"></textarea>
         </div>
-        <div class="card step-card">
+        <div class="card step-card glow-lav">
           <div class="row"><span class="num" style="background:var(--lavender)">2</span><div><label class="card-label" for="reframe-2" style="margin:0">Fact or feeling?</label><p class="hint">A fact can be checked. A feeling is real, but not always accurate.</p></div></div>
           <textarea class="textarea" id="reframe-2" placeholder="e.g. It's a feeling. I've had clear days before — this is a hard stretch, not forever."></textarea>
         </div>
-        <div class="card step-card">
+        <div class="card step-card glow-mint">
           <div class="row"><span class="num" style="background:var(--mint)">3</span><div><label class="card-label" for="reframe-3" style="margin:0">What would you tell a friend?</label><p class="hint">If someone you love had this thought, what would you say?</p></div></div>
           <textarea class="textarea" id="reframe-3" placeholder="e.g. Feeling stuck doesn't mean you're broken. You need rest, not pressure."></textarea>
         </div>
-        <div class="card step-card">
+        <div class="card step-card glow-yolk">
           <div class="row"><span class="num" style="background:var(--yolk)">4</span><div><label class="card-label" for="reframe-4" style="margin:0">A kinder, truer thought</label><p class="hint">Balanced and honest — something you can actually believe.</p></div></div>
           <textarea class="textarea" id="reframe-4" placeholder="e.g. I'm going through a hard period. It's real, it's temporary, and I'm looking after myself."></textarea>
         </div>
@@ -1641,6 +1627,8 @@
       if (name === 'wins') renderWins();
       if (name === 'history') updateHistory();
       if (RITUAL_IDS.includes(name)) {
+        const rc = RITUALS.find(x => x.id === name);
+        document.getElementById('view-' + name).style.setProperty('--glow', rc.color);
         const panel = document.getElementById('done-' + name);
         if (panel) panel.hidden = true;
         renderSteps(name);
@@ -1862,7 +1850,7 @@
 
     const GROUPS = [
       { id: 'morning', label: 'Morning', ids: ['checkin', 'braindump'] },
-      { id: 'anytime', label: 'When you need it', ids: ['worry', 'reframe', 'breathe'] },
+      { id: 'anytime', label: 'When you need it', ids: ['worry', 'reframe', 'breathe', 'meditate'] },
       { id: 'evening', label: 'Evening', ids: ['gratitude', 'evening'] },
     ];
     const BREATHE = { id: 'breathe', title: 'Breathe', mins: 2, color: 'var(--mint)', face: 'sleepy', todo: 'One slow round of 4-7-8' };
@@ -1906,7 +1894,8 @@
       return { id, why };
     }
 
-    function ritualById(id) { return id === 'breathe' ? BREATHE : RITUALS.find(r => r.id === id); }
+    const MEDITATE = { id: 'meditate', title: 'Meditate', mins: 5, color: 'var(--lavender)', face: 'calm', todo: 'Guided sits, a timer and your streak', href: 'meditate.html' };
+    function ritualById(id) { return id === 'breathe' ? BREATHE : id === 'meditate' ? MEDITATE : RITUALS.find(r => r.id === id); }
 
     function renderHub() {
       const today = isToday();
@@ -1952,10 +1941,10 @@
       document.getElementById('rituals').innerHTML = GROUPS.map(g => {
         const rows = g.ids.filter(id => !(id === 'checkin' && today && !checked)).map(id => {
           const r = ritualById(id);
-          const st = id === 'breathe' ? null : ritualStatus(id);
-          if (st) doneCount++;
+          let st = id === 'breathe' ? null : id === 'meditate' ? meditateStatus() : ritualStatus(id);
+          if (st && id !== 'meditate') doneCount++;
           const lead = st ? `<span class="done-mark">${CHECK_SVG}</span>` : MJ.orb({ color: r.color, face: r.face, size: 44 });
-          return `<a class="ritual-card ${st ? 'done' : ''}" href="#${id}">` + lead +
+          return `<a class="ritual-card ${st ? 'done' : ''}" href="${r.href || '#' + id}">` + lead +
             `<span class="grow"><span class="r-title">${r.title}</span>` +
             `<span class="r-sub">${st ? MJ.esc(st) : r.todo}</span></span>` +
             (st ? '' : `<span class="r-dur">${r.mins} min</span>`) +
@@ -1970,6 +1959,14 @@
       renderWeek();
       renderWinsTeaser();
       renderIOSHint();
+    }
+
+    function meditateStatus() {
+      const iso = getDateKey(currentDate);
+      const sits = MJ.meditatedOn(iso);
+      if (!sits.length) return null;
+      const mins = Math.max(1, Math.round(sits.reduce((a, s) => a + (s.secs || 0), 0) / 60));
+      return `${mins} min of stillness ${isToday() ? 'today' : 'this day'}`;
     }
 
     function renderWeek() {

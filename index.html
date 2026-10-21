@@ -22,8 +22,8 @@
   <meta property="og:image:alt" content="Mind Journal — a gentle journal and day planner, with little mood characters">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preload" href="fonts/figtree-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="theme.css?v=5">
-  <script vite-ignore src="common.js?v=5"></script>
+  <link rel="stylesheet" href="theme.css?v=8">
+  <script vite-ignore src="common.js?v=8"></script>
   <style>
     body {
       overflow-x: hidden;
@@ -1356,6 +1356,7 @@
             <li><a href="journal.html#gratitude">Gratitude &amp; wins</a></li>
             <li><a href="journal.html#evening">Evening wind-down</a></li>
             <li><a href="journal.html#breathe">Breathe 4-7-8</a></li>
+            <li><a href="meditate.html">Meditate</a></li>
           </ul>
         </nav>
         <nav class="f-col" aria-label="How it works">
@@ -1440,6 +1441,8 @@
     document.querySelectorAll('[data-orb]').forEach(el => {
       const [c, face] = el.dataset.orb.split(':');
       el.innerHTML = MJ.orb({ color: COLORS[c], face, size: 64 });
+      const card = el.closest('.card');
+      if (card) card.style.setProperty('--glow', COLORS[c]); // each card glows in its character's colour
     });
     document.getElementById('brand-orb').innerHTML = MJ.orb({ mood: 'good', size: 34 });
     document.getElementById('final-orb').innerHTML = MJ.orb({ mood: 'light', size: 96, cls: 'orb-float' });

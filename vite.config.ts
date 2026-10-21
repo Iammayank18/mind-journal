@@ -25,6 +25,7 @@ export default defineConfig({
         main: resolve(import.meta.dirname, 'index.html'),
         planner: resolve(import.meta.dirname, 'planner.html'),
         journal: resolve(import.meta.dirname, 'journal.html'),
+        meditate: resolve(import.meta.dirname, 'meditate.html'),
       },
     },
   },

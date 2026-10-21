@@ -6,6 +6,7 @@ Plain HTML/CSS/JS, built with Vite as a multi-page site. No backend, no account.
 
 ```
 index.html          home page
+meditate.html       guided courses, meditation timer with bells, streak + stats calendar
 journal.html        check-in, brain dump, worry parking, reframe, gratitude,
                     evening wind-down, breathing, Wins Jar, history
 planner.html        sections & tasks, live timeline, focus timer, interview reps, analytics
@@ -73,9 +74,45 @@ move to the new web address by itself.
 When you change `common.js` or `theme.css`, bump the `?v=` number in all three HTML files and in `public/sw.js` (plus `VERSION`). Installed apps check for updates when reopened and reload once by themselves. Pages, `common.js`
 and `theme.css` are fetched network-first, so a deploy never mixes a new page with old shared code.
 
+## Recorded meditation voice (one-time)
+
+Guided meditations speak each line with a recorded voice when `public/audio/voice/` has clips, and fall back
+to the device's own voice otherwise. Recording is a one-time step on your machine — users never call Google.
+
+1. Google Cloud Console → create a project → enable **Cloud Text-to-Speech API** → enable billing
+   (the monthly free allowance covers this many times over; the whole library is ~8,500 characters).
+2. **APIs & Services → Credentials → Create API key**, and restrict it to the Text-to-Speech API.
+3. In this folder (never commit the key):
+
+```bash
+export GOOGLE_TTS_API_KEY=your-key
+yarn voice --samples            # 8 voices read one line → scripts/voice-samples/ — listen and pick
+yarn voice --list en-IN         # every voice for a language
+yarn voice --voice en-US-Chirp3-HD-Aoede   # record all lines (~170 small MP3s, ~5 MB)
+```
+
+4. Commit `public/audio/voice/` and deploy. Done.
+
+Later: add or edit a line in `public/meditate-content.js` and run `yarn voice` again — only new/changed lines are
+recorded. Changing the voice re-records everything (`--clean` removes old files). Flags: `--rate 0.86`,
+`--pitch -2` (non-Chirp voices), `--dry` (show what would happen).
+
+**Or record by hand (Gemini / AI Studio, no API key):** `yarn voice:script` writes `scripts/voice-script.md` —
+a style prompt plus one batch of lines per session. Generate each batch in AI Studio → Generate speech, save it as
+`scripts/voice-batches/01-learn-1.wav` etc., then `yarn voice:import --voice gemini-Achernar` (needs ffmpeg:
+`brew install ffmpeg`). It splits each recording on its pauses, checks the line count, and tells you which batch
+to redo. Unrecorded lines keep using the device voice.
+
+In the app, each course has **Download for offline**; clips are kept in their own cache, so app updates don't
+delete them.
+
 ## Product notes
 
 - **Support:** the check-in shows helpline info when someone feels Heavy or Anxious; "Find support" is also in
   Settings, the Journal sidebar and the landing footer. Mind Journal is self-care, not a substitute for care.
 - **Interview Reps** (flashcards) is opt-in under Settings → A little extra. It stays on for anyone who already used it.
+- **Meditate:** 5 courses / 19 original guided sits (Learn to meditate, Anxiety SOS, Sleep, Focus, Loving-kindness)
+  in `public/meditate-content.js` — captions always on screen, optional voice via the device's own speech.
+  Timer with interval bells + background sounds, streak (a sit before 3am counts for the day before), calendar,
+  "add a sit" for meditation done elsewhere, and a daily reminder as a calendar (.ics) file. No audio files needed.
 - **Planner quick add** understands `gym 7am 30m daily #health` (time, length, repeat, list).

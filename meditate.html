@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Meditate — Mind Journal</title>
+  <meta name="description" content="Gentle guided meditations, a calm timer and your sitting streak. Private — everything stays on your device.">
+  <meta name="theme-color" content="#FFF6EA">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preload" href="fonts/figtree-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="theme.css?v=8">
+  <script vite-ignore src="common.js?v=8"></script>
+  <script vite-ignore src="meditate-content.js?v=8"></script>
+  <style>
+    .med-main {
+      padding-top: 12px;
+      padding-bottom: 80px;
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+      animation: viewIn var(--t-slow) var(--ease);
+    }
+
+    @keyframes viewIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .stack > * + *,
+    .stack-16 > * + * {
+      margin-top: 16px;
+    }
+
+    .med-head .eyebrow {
+      margin-bottom: 6px;
+    }
+
+    .med-head .t-lead {
+      margin-top: 8px;
+      max-width: 560px;
+    }
+
+    .stat-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .stat-pills .pill {
+      padding: 7px 14px;
+      font-size: 14px;
+      box-shadow: var(--shadow-1);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 34px 4px 12px;
+    }
+
+    /* up next */
+    .next-card {
+      position: relative;
+      overflow: hidden;
+      padding: 24px;
+      margin-top: 22px;
+    }
+
+    .next-card {
+      --glow: var(--tint);
+      --glow-amt: 34%;
+      background-image: radial-gradient(70% 120% at 90% 15%, color-mix(in srgb, var(--glow) var(--glow-amt), transparent) 0, transparent 70%);
+    }
+
+    .next-row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-top: 12px;
+    }
+
+    .next-row .t-h2 {
+      font-size: 26px;
+    }
+
+    .len-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .len-chips .chip {
+      min-height: 38px;
+      padding: 6px 14px;
+      box-shadow: inset 0 0 0 1.5px var(--line-2);
+    }
+
+    .next-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    /* goals */
+    .goal-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .goal {
+      -webkit-appearance: none;
+      appearance: none;
+      border: none;
+      box-shadow: var(--shadow-1);
+      border-radius: var(--r-xl);
+      padding: 16px 12px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: var(--ink);
+      text-align: center;
+      transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease);
+    }
+
+    .goal:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-2);
+    }
+
+    .goal b {
+      font-size: 16px;
+    }
+
+    .goal span.t-caption {
+      line-height: 1.3;
+    }
+
+    /* courses */
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .course-card {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 20px;
+      text-decoration: none;
+      color: var(--ink);
+    }
+
+    .course-card .row {
+      align-items: flex-start;
+    }
+
+    .progress {
+      height: 8px;
+      border-radius: var(--pill);
+      background: var(--line);
+      overflow: hidden;
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      border-radius: var(--pill);
+      background: var(--brand);
+    }
+
+    .course-card .meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--ink-2);
+      font-weight: 600;
+    }
+
+    /* timer quick card */
+    .timer-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* side */
+    .week-bars {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 6px;
+      align-items: end;
+      height: 96px;
+    }
+
+    .week-bars div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      height: 100%;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-3);
+    }
+
+    .week-bars i {
+      display: block;
+      width: 100%;
+      max-width: 26px;
+      border-radius: 8px 8px 4px 4px;
+      background: var(--brand-soft);
+      min-height: 4px;
+    }
+
+    .week-bars .today {
+      color: var(--ink);
+    }
+
+    .week-bars .today i {
+      background: var(--brand);
+    }
+
+    .side-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .mini-stat {
+      background: var(--brand-tint);
+      border-radius: var(--r-md);
+      padding: 12px 14px;
+    }
+
+    .mini-stat b {
+      display: block;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .mini-stat span {
+      font-size: 12.5px;
+      color: var(--ink-2);
+    }
+
+    .remind-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .remind-row input {
+      flex: 1 1 130px;
+      min-width: 0;
+    }
+
+    .remind-row .btn {
+      flex: 1 1 auto;
+    }
+
+    /* course view */
+    .back-link {
+      margin-bottom: 14px;
+    }
+
+    .offline-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      margin-top: 14px;
+      padding: 0 4px;
+    }
+
+    .course-hero {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 24px;
+    }
+
+    .s-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      background: var(--card);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-1);
+      overflow: hidden;
+    }
+
+    .s-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 14px 12px 16px;
+    }
+
+    .s-row + .s-row {
+      border-top: 1px solid var(--line);
+    }
+
+    .s-row.is-next {
+      background: var(--brand-tint);
+    }
+
+    .s-num {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      font-weight: 800;
+      font-size: 15px;
+      background: var(--card-2);
+      box-shadow: inset 0 0 0 1.5px var(--line-2);
+    }
+
+    .s-num.done {
+      background: var(--mint);
+      box-shadow: none;
+      color: #1F1D1B;
+    }
+
+    .s-main {
+      -webkit-appearance: none;
+      appearance: none;
+      border: none;
+      background: none;
+      flex: 1;
+      min-width: 0;
+      text-align: left;
+      padding: 6px 2px;
+      cursor: pointer;
+      color: var(--ink);
+    }
+
+    .s-main b {
+      display: block;
+      font-size: 16px;
+    }
+
+    .s-main span {
+      font-size: 13.5px;
+      color: var(--ink-2);
+    }
+
+    .fav-btn {
+      -webkit-appearance: none;
+      appearance: none;
+      border: none;
+      background: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--ink-3);
+      flex-shrink: 0;
+    }
+
+    .fav-btn[aria-pressed="true"] {
+      color: var(--brand-press);
+    }
+
+    .fav-btn[aria-pressed="true"] svg {
+      fill: currentColor;
+    }
+
+    .play-btn {
+      -webkit-appearance: none;
+      appearance: none;
+      border: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--brand-tint);
+      color: var(--ink);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background var(--t-fast);
+    }
+
+    .play-btn:hover,
+    .s-row.is-next .play-btn {
+      background: var(--brand);
+      color: var(--on-brand);
+    }
+
+    /* timer view */
+    .dial {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding: 10px 0 4px;
+    }
+
+    .dial-val {
+      min-width: 150px;
+      text-align: center;
+      font-size: 64px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .dial-val small {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0;
+      color: var(--ink-3);
+      margin-top: 6px;
+    }
+
+    .round-btn {
+      -webkit-appearance: none;
+      appearance: none;
+      border: none;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--brand-tint);
+      font-size: 26px;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--ink);
+    }
+
+    .round-btn:hover {
+      background: var(--brand-soft);
+    }
+
+    .opt + .opt {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    .opt-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 10px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chips .chip {
+      box-shadow: inset 0 0 0 1.5px var(--line-2);
+    }
+
+    /* stats view */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (min-width: 700px) {
+      .stat-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    .stat-box {
+      background: var(--brand-tint);
+      border-radius: var(--r-lg);
+      padding: 16px;
+    }
+
+    .stat-box b {
+      display: block;
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .stat-box span {
+      font-size: 13px;
+      color: var(--ink-2);
+    }
+
+    .cal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .cal {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 6px;
+      text-align: center;
+    }
+
+    .cal .dow {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--ink-3);
+      padding-bottom: 4px;
+    }
+
+    .cal .d {
+      aspect-ratio: 1;
+      max-width: 48px;
+      margin: 0 auto;
+      width: 100%;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink-2);
+    }
+
+    .cal .d.on {
+      background: var(--brand);
+      color: var(--on-brand);
+      font-weight: 800;
+    }
+
+    .cal .d.today {
+      box-shadow: inset 0 0 0 2px var(--ink);
+      color: var(--ink);
+    }
+
+    .cal .d.on.today {
+      color: var(--on-brand);
+      box-shadow: inset 0 0 0 2px var(--ink), inset 0 0 0 4px var(--brand);
+    }
+
+    .cal .d.future {
+      color: var(--ink-3);
+      font-weight: 500;
+    }
+
+    .hist {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .hist li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .hist li:first-child {
+      border-top: none;
+    }
+
+    .hist .when {
+      font-size: 13px;
+      color: var(--ink-3);
+    }
+
+    .hist .note {
+      font-size: 14px;
+      color: var(--ink-2);
+      margin-top: 2px;
+      overflow-wrap: anywhere;
+    }
+
+    .add-form {
+      display: grid;
+      grid-template-columns: 1fr 110px;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .add-form .full {
+      grid-column: 1 / -1;
+    }
+
+    /* ── the player: full screen, quiet ── */
+    .player {
+      position: fixed;
+      inset: 0;
+      z-index: 900;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: calc(14px + env(safe-area-inset-top, 0px)) 20px calc(24px + env(safe-area-inset-bottom, 0px));
+      background:
+        radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--tint, var(--brand)) 30%, transparent) 0, transparent 62%),
+        var(--canvas);
+      color: var(--ink);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity var(--t-slow) var(--ease), visibility 0s linear var(--t-slow);
+      overflow-y: auto;
+    }
+
+    .player.show {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity var(--t-slow) var(--ease), visibility 0s;
+    }
+
+    .p-top {
+      width: 100%;
+      max-width: 640px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .p-title {
+      flex: 1;
+      min-width: 0;
+      text-align: center;
+    }
+
+    .p-title b {
+      display: block;
+      font-size: 17px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .p-title span {
+      font-size: 13px;
+      color: var(--ink-2);
+    }
+
+    .p-icon {
+      -webkit-appearance: none;
+      appearance: none;
+      border: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--card);
+      box-shadow: var(--shadow-1);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--ink);
+      flex-shrink: 0;
+    }
+
+    .p-icon[aria-pressed="true"] {
+      background: var(--brand);
+      color: var(--on-brand);
+    }
+
+    .p-stage {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      width: 100%;
+      max-width: 560px;
+      padding: 20px 0;
+    }
+
+    .p-ring {
+      position: relative;
+      width: min(300px, 74vw);
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+    }
+
+    .p-ring svg.track {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .p-ring .halo {
+      position: absolute;
+      inset: 14%;
+      border-radius: 50%;
+      background: var(--tint, var(--brand));
+      opacity: .18;
+      transform: scale(.82);
+    }
+
+    .p-orb {
+      position: relative;
+      transform: scale(.86);
+    }
+
+    .breathing .halo,
+    .breathing .p-orb {
+      animation: breath var(--cycle, 10s) var(--ease-breath) infinite;
+    }
+
+    .breathing .halo {
+      animation-name: haloBreath;
+    }
+
+    @keyframes breath {
+      0% { transform: scale(.86); }
+      40% { transform: scale(1.04); }
+      100% { transform: scale(.86); }
+    }
+
+    @keyframes haloBreath {
+      0% { transform: scale(.82); opacity: .14; }
+      40% { transform: scale(1.12); opacity: .28; }
+      100% { transform: scale(.82); opacity: .14; }
+    }
+
+    .paused .halo,
+    .paused .p-orb {
+      animation-play-state: paused;
+    }
+
+    .p-cue {
+      min-height: 3.2em;
+      font-size: clamp(19px, 2.6vw, 23px);
+      line-height: 1.5;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      text-align: center;
+      text-wrap: balance;
+      transition: opacity 900ms var(--ease);
+    }
+
+    .p-cue.fade {
+      opacity: 0;
+    }
+
+    .p-time {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink-2);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .p-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      width: 100%;
+    }
+
+    .p-main-btn {
+      -webkit-appearance: none;
+      appearance: none;
+      border: none;
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: var(--dark);
+      color: var(--on-dark);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-2);
+    }
+
+    .p-done {
+      text-align: center;
+      max-width: 460px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .p-done textarea {
+      min-height: 90px;
+      margin-top: 4px;
+    }
+
+    .feel-chips {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .feel-chips .chip {
+      box-shadow: inset 0 0 0 1.5px var(--line-2);
+    }
+
+    @media (max-width: 760px) {
+      .goal-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .course-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .next-row .t-h2 {
+        font-size: 22px;
+      }
+
+      .dial-val {
+        font-size: 54px;
+        min-width: 120px;
+      }
+
+      .course-hero {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .breathing .halo,
+      .breathing .p-orb {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+
+<body data-mj-page="meditate">
+
+  <main class="app-wrap med-main" id="main">
+
+    <!-- ═════════ HOME ═════════ -->
+    <section class="view" id="view-home" aria-labelledby="med-title">
+      <div class="app-grid">
+        <div>
+          <div class="med-head">
+            <p class="eyebrow">Meditate</p>
+            <h1 class="t-h1" id="med-title">Take a breath, <span id="med-name">friend</span></h1>
+            <p class="t-lead" id="med-lead">A few quiet minutes, whenever you need them. No pressure — even three minutes counts.</p>
+            <div class="stat-pills" id="stat-pills"></div>
+          </div>
+
+          <div class="card next-card" id="next-card"></div>
+
+          <div class="section-title"><h2 class="t-h2">How do you want to feel?</h2></div>
+          <div class="goal-grid" id="goals"></div>
+
+          <div class="section-title"><h2 class="t-h2">Courses</h2><span class="t-small">Go at your own pace</span></div>
+          <div class="course-grid" id="courses"></div>
+
+          <div class="section-title"><h2 class="t-h2">Sit in silence</h2></div>
+          <div class="card timer-card glow-mint">
+            <span id="timer-orb"></span>
+            <div class="grow">
+              <div class="t-h3">Meditation timer</div>
+              <div class="t-small">No voice — just bells and, if you like, a calm sound.</div>
+            </div>
+            <div class="row row-wrap" style="--gap:8px">
+              <button type="button" class="chip" data-quick-timer="5">5 min</button>
+              <button type="button" class="chip" data-quick-timer="10">10 min</button>
+              <button type="button" class="chip" data-quick-timer="20">20 min</button>
+              <a class="btn btn-soft btn-sm" href="#timer">Customise</a>
+            </div>
+          </div>
+
+          <div id="favs-wrap"></div>
+        </div>
+
+        <aside class="app-side" aria-label="Your practice">
+          <div class="card side-card glow-mint">
+            <div class="side-title">This week</div>
+            <div class="week-bars" id="week-bars" role="img"></div>
+            <div class="side-stats" id="side-stats"></div>
+            <a class="btn btn-quiet btn-sm" href="#stats" style="margin-top:12px">All your stats →</a>
+          </div>
+          <div class="card side-card glow-lav">
+            <div class="side-title">Daily reminder</div>
+            <p class="t-small">Add a gentle daily nudge to your phone's calendar. It works even though this app has no account.</p>
+            <div class="remind-row">
+              <label class="sr-only" for="remind-time">Reminder time</label>
+              <input type="time" class="input" id="remind-time" value="07:30">
+              <button type="button" class="btn btn-soft" id="remind-btn">Add to calendar</button>
+            </div>
+          </div>
+          <div class="side-links">
+            <a class="link-quiet" href="journal.html#checkin">Journal check-in</a>
+            <button type="button" class="link-quiet" data-mj-support>Find support</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ═════════ COURSE ═════════ -->
+    <section class="view narrow-wide" id="view-course" style="max-width:820px;margin:0 auto">
+      <a class="btn btn-quiet btn-sm back-link" href="#home">← Meditate</a>
+      <div id="course-body"></div>
+    </section>
+
+    <!-- ═════════ TIMER ═════════ -->
+    <section class="view" id="view-timer" style="max-width:640px;margin:0 auto">
+      <a class="btn btn-quiet btn-sm back-link" href="#home">← Meditate</a>
+      <h1 class="t-h1">Meditation timer</h1>
+      <p class="t-lead" style="margin-top:8px">Sit in your own way. The bells keep time so you don't have to.</p>
+      <div class="card" style="margin-top:20px">
+        <div class="opt">
+          <span class="opt-label" id="len-label">How long</span>
+          <div class="dial" role="group" aria-labelledby="len-label">
+            <button type="button" class="round-btn" id="t-minus" aria-label="One minute less">−</button>
+            <div class="dial-val" aria-live="polite"><span id="t-mins">10</span><small>minutes</small></div>
+            <button type="button" class="round-btn" id="t-plus" aria-label="One minute more">+</button>
+          </div>
+          <div class="chips" style="justify-content:center;margin-top:10px" id="t-presets"></div>
+        </div>
+        <div class="opt">
+          <span class="opt-label" id="int-label">Interval bell</span>
+          <div class="chips" role="group" aria-labelledby="int-label" id="t-interval"></div>
+        </div>
+        <div class="opt">
+          <span class="opt-label" id="snd-label">Background sound</span>
+          <div class="chips" role="group" aria-labelledby="snd-label" id="t-sound"></div>
+        </div>
+        <div class="opt">
+          <label class="mj-switch">Settle-in countdown (10 seconds)<input type="checkbox" id="t-prep" checked></label>
+        </div>
+      </div>
+      <button type="button" class="btn btn-primary btn-lg btn-block" id="t-start" style="margin-top:20px">Begin</button>
+    </section>
+
+    <!-- ═════════ STATS ═════════ -->
+    <section class="view" id="view-stats" style="max-width:820px;margin:0 auto">
+      <a class="btn btn-quiet btn-sm back-link" href="#home">← Meditate</a>
+      <h1 class="t-h1">Your practice</h1>
+      <p class="t-lead" style="margin-top:8px" id="stats-lead"></p>
+      <div class="stack-16" style="margin-top:20px">
+        <div class="stat-grid" id="stat-grid"></div>
+        <div class="card">
+          <div class="cal-head">
+            <button type="button" class="btn btn-icon btn-quiet" id="cal-prev" aria-label="Previous month"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+            <h2 class="t-h3" id="cal-title"></h2>
+            <button type="button" class="btn btn-icon btn-quiet" id="cal-next" aria-label="Next month"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+          </div>
+          <div class="cal" id="cal"></div>
+        </div>
+        <div class="card">
+          <h2 class="card-title">Recent sits</h2>
+          <ul class="hist" id="hist"></ul>
+          <details class="disclose" style="margin-top:14px">
+            <summary>Meditated without the app? Add it</summary>
+            <form class="add-form" id="add-form">
+              <div><label class="label" for="add-date">Date</label><input type="date" class="input" id="add-date" required></div>
+              <div><label class="label" for="add-mins">Minutes</label><input type="number" class="input" id="add-mins" min="1" max="240" value="10" required></div>
+              <div class="full"><label class="label" for="add-note">Note (optional)</label><input type="text" class="input" id="add-note" maxlength="200" placeholder="e.g. walking meditation in the park"></div>
+              <button type="submit" class="btn btn-primary full">Add sit</button>
+            </form>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ═════════ PLAYER ═════════ -->
+  <div class="player" id="player" role="dialog" aria-modal="true" aria-labelledby="p-title" hidden>
+    <div class="p-top">
+      <button type="button" class="p-icon" id="p-close" aria-label="End session">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <div class="p-title"><b id="p-title"></b><span id="p-sub"></span></div>
+      <button type="button" class="p-icon" id="p-voice" aria-pressed="false" aria-label="Voice guidance" title="Voice guidance">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M18.5 6.5a8 8 0 0 1 0 11"/></svg>
+      </button>
+      <button type="button" class="p-icon" id="p-sound" aria-pressed="false" aria-label="Background sound" title="Background sound">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg>
+      </button>
+    </div>
+
+    <div class="p-stage" id="p-stage">
+      <div class="p-ring" id="p-ring">
+        <svg class="track" viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r="47" fill="none" stroke="var(--line)" stroke-width="2.5"></circle>
+          <circle id="p-prog" cx="50" cy="50" r="47" fill="none" stroke="var(--brand)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="0 296"></circle>
+        </svg>
+        <div class="halo"></div>
+        <div class="p-orb" id="p-orb"></div>
+      </div>
+      <p class="p-cue" id="p-cue" aria-live="polite"></p>
+      <div class="p-time" id="p-time"></div>
+      <div class="p-controls">
+        <button type="button" class="p-main-btn" id="p-pause" aria-label="Pause"></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      const LIB = window.MEDITATE_LIBRARY;
+      const KEY = MJ.meditateKey;
+      const esc = MJ.esc;
+      const ICON_PLAY = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg>';
+      const ICON_PAUSE = '<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.5"/><rect x="14" y="5" width="4" height="14" rx="1.5"/></svg>';
+      const ICON_PLAY_BIG = '<svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5l12 7-12 7z"/></svg>';
+      const STAR = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>';
+      const CHECK = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>';
+
+      // ─── data ─────────────────────────────────────────────────────
+      function load() { return MJ.meditateData(); }
+      function save(d) {
+        try { localStorage.setItem(KEY, JSON.stringify(d)); return true; }
+        catch (e) { MJ.toast('Couldn\'t save — this browser\'s storage is full or blocked.', 5000); return false; }
+      }
+      let data = load();
+      const prefs = () => data.prefs;
+      function setPref(k, v) { data.prefs[k] = v; save(data); }
+
+      function courseDone(c) { return (data.progress[c.id] || []).filter(id => c.sessions.some(s => s.id === id)); }
+      function nextInCourse(c) { const done = courseDone(c); return c.sessions.find(s => done.indexOf(s.id) === -1) || null; }
+      function lenFor(s) { const l = (prefs().lens || {})[s.id]; return s.lens.indexOf(l) !== -1 ? l : s.len; }
+
+      // Up next: your current course, or a daily pick when you're between courses.
+      function upNext() {
+        const started = LIB.courses.filter(c => courseDone(c).length && nextInCourse(c));
+        const active = started.find(c => c.id === prefs().activeCourse) || started[0];
+        if (active) return { session: nextInCourse(active), course: active, label: 'Continue · ' + active.title };
+        const learn = LIB.courses[0];
+        if (!courseDone(learn).length) return { session: learn.sessions[0], course: learn, label: 'Start here · ' + learn.title };
+        const all = LIB.courses.flatMap(c => c.sessions);
+        const d = new Date();
+        const doy = Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000);
+        const s = all[doy % all.length];
+        return { session: s, course: LIB.courses.find(c => c.id === s.course), label: 'Today\'s sit' };
+      }
+
+      // ─── home ─────────────────────────────────────────────────────
+      function renderHome() {
+        const t = MJ.meditateTotals();
+        document.getElementById('med-name').textContent = MJ.displayName();
+        document.getElementById('med-lead').textContent = t.didToday
+          ? 'You\'ve already sat today. Anything more is a bonus.'
+          : t.streak ? 'Keep your ' + t.streak + '-day streak going — even three minutes counts.'
+            : 'A few quiet minutes, whenever you need them. No pressure — even three minutes counts.';
+        const flame = '<svg width="14" height="14" viewBox="0 0 24 24" style="fill:var(--brand)" aria-hidden="true"><path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-2 1-4 2-5 0 2 1 3 2 3 0-3-1-6 1-9z"/></svg>';
+        document.getElementById('stat-pills').innerHTML = t.sessions
+          ? `<span class="pill">${flame}<b>${t.streak}</b>&nbsp;day streak</span><span class="pill"><b>${t.minutes}</b>&nbsp;minutes</span><span class="pill"><b>${t.sessions}</b>&nbsp;${t.sessions === 1 ? 'sit' : 'sits'}</span>`
+          : '';
+
+        const n = upNext();
+        const s = n.session, len = lenFor(s);
+        const card = document.getElementById('next-card');
+        card.style.setProperty('--tint', s.color);
+        card.innerHTML = `<span class="eyebrow">${esc(n.label)}</span>` +
+          `<div class="next-row">${MJ.orb({ color: s.color, face: s.face, size: 72, cls: 'orb-float' })}` +
+          `<div class="grow"><div class="t-h2">${esc(s.title)}</div><p class="t-body" style="margin-top:4px">${esc(s.sub)}</p></div></div>` +
+          `<p class="t-small" style="margin-top:14px;max-width:520px">${esc(s.about)}</p>` +
+          `<div class="next-actions">` +
+          (s.lens.length > 1 ? `<div class="len-chips" role="group" aria-label="Length">${s.lens.map(l => `<button type="button" class="chip" data-len="${l}" aria-pressed="${l === len}">${l} min</button>`).join('')}</div>` : '') +
+          `<button type="button" class="btn btn-primary btn-lg" data-start="${s.id}">${ICON_PLAY} Begin · <span data-len-label>${len}</span> min</button></div>`;
+        card.querySelectorAll('[data-len]').forEach(b => b.onclick = () => {
+          const l = +b.dataset.len;
+          data.prefs.lens = Object.assign({}, data.prefs.lens, { [s.id]: l }); save(data);
+          card.querySelectorAll('[data-len]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+          card.querySelector('[data-len-label]').textContent = l;
+        });
+
+        document.getElementById('goals').innerHTML = LIB.goals.map(g => {
+          const gs = LIB.byId[g.session];
+          return `<button type="button" class="goal glow" style="--glow:${MJ.MOODS[g.mood].color}" data-start="${g.session}">${MJ.orb({ mood: g.mood, size: 52 })}<b>${g.label}</b><span class="t-caption">${g.sub} · ${lenFor(gs)} min</span></button>`;
+        }).join('');
+
+        document.getElementById('courses').innerHTML = LIB.courses.map(c => {
+          const done = courseDone(c).length, total = c.sessions.length;
+          return `<a class="card card-lift course-card" style="--glow:${c.color}" href="#course/${c.id}">` +
+            `<div class="row" style="--gap:14px">${MJ.orb({ color: c.color, face: c.face, size: 52 })}<div class="grow"><div class="t-h3">${esc(c.title)}</div><div class="t-small">${esc(c.sub)}</div></div></div>` +
+            `<div class="progress" aria-hidden="true"><span style="width:${Math.round(done / total * 100)}%"></span></div>` +
+            `<div class="meta"><span>${done ? done + ' of ' + total + ' done' : 'Not started'}</span><span>${done === total ? 'Complete ✓' : ''}</span></div></a>`;
+        }).join('');
+
+        document.getElementById('timer-orb').innerHTML = MJ.orb({ color: 'var(--mint)', face: 'calm', size: 52, cls: 'orb-breathe' });
+
+        const favs = data.favs.map(id => LIB.byId[id]).filter(Boolean);
+        document.getElementById('favs-wrap').innerHTML = favs.length
+          ? `<div class="section-title"><h2 class="t-h2">Your favourites</h2></div><ul class="s-list">${favs.map(s => sessionRow(s, null)).join('')}</ul>`
+          : '';
+
+        renderSide(t);
+      }
+
+      function renderSide(t) {
+        t = t || MJ.meditateTotals();
+        const start = MJ.weekStartISO(t.today);
+        const vals = [];
+        for (let i = 0; i < 7; i++) {
+          const iso = MJ.addDaysISO(start, i);
+          vals.push({ iso, mins: Math.round((t.days[iso] || 0) / 60) });
+        }
+        const max = Math.max(10, ...vals.map(v => v.mins));
+        const bars = document.getElementById('week-bars');
+        bars.innerHTML = vals.map(v => `<div class="${v.iso === t.today ? 'today' : ''}"><i style="height:${v.mins ? Math.max(8, Math.round(v.mins / max * 70)) : 4}px"></i>${new Date(v.iso + 'T12:00:00').toLocaleDateString('en-IN', { weekday: 'narrow' })}</div>`).join('');
+        const weekMins = vals.reduce((a, v) => a + v.mins, 0);
+        bars.setAttribute('aria-label', weekMins + ' minutes of meditation this week');
+        document.getElementById('side-stats').innerHTML =
+          `<div class="mini-stat"><b>${weekMins}</b><span>min this week</span></div>` +
+          `<div class="mini-stat"><b>${t.streak}</b><span>day streak</span></div>` +
+          `<div class="mini-stat"><b>${t.longest}</b><span>best streak</span></div>` +
+          `<div class="mini-stat"><b>${t.minutes}</b><span>total minutes</span></div>`;
+      }
+
+      // ─── course ───────────────────────────────────────────────────
+      function sessionRow(s, nextId) {
+        const c = LIB.courses.find(x => x.id === s.course);
+        const done = (data.progress[s.course] || []).indexOf(s.id) !== -1;
+        const fav = data.favs.indexOf(s.id) !== -1;
+        const len = lenFor(s);
+        return `<li class="s-row ${s.id === nextId ? 'is-next' : ''}">` +
+          `<span class="s-num ${done ? 'done' : ''}" aria-hidden="true">${done ? CHECK : s.index + 1}</span>` +
+          `<button type="button" class="s-main" data-start="${s.id}" aria-label="Begin ${esc(s.title)}, ${len} minutes${done ? ', done' : ''}"><b>${esc(s.title)}</b><span>${esc(nextId === undefined ? c.title : s.sub)} · ${len} min</span></button>` +
+          `<button type="button" class="fav-btn" data-fav="${s.id}" aria-pressed="${fav}" aria-label="Favourite ${esc(s.title)}">${STAR}</button>` +
+          `<button type="button" class="play-btn" data-start="${s.id}" aria-label="Play ${esc(s.title)}" tabindex="-1">${ICON_PLAY}</button></li>`;
+      }
+
+      function renderCourse(id) {
+        const c = LIB.courses.find(x => x.id === id);
+        if (!c) { location.hash = 'home'; return; }
+        const done = courseDone(c).length, next = nextInCourse(c);
+        document.getElementById('course-body').innerHTML =
+          `<div class="card course-hero" style="--glow:${c.color};--glow-amt:24%">${MJ.orb({ color: c.color, face: c.face, size: 88, cls: 'orb-float' })}` +
+          `<div class="grow"><h1 class="t-h1">${esc(c.title)}</h1><p class="t-body" style="margin-top:8px">${esc(c.about)}</p>` +
+          `<div class="progress" style="margin-top:14px" aria-hidden="true"><span style="width:${Math.round(done / c.sessions.length * 100)}%"></span></div>` +
+          `<p class="t-small" style="margin-top:8px">${done} of ${c.sessions.length} done${done === c.sessions.length ? ' — beautifully done 🌿' : ''}</p></div></div>` +
+          (next ? `<button type="button" class="btn btn-primary btn-lg" data-start="${next.id}" style="margin-top:16px">${ICON_PLAY} ${done ? 'Continue' : 'Start'}: ${esc(next.title)} · ${lenFor(next)} min</button>` : '') +
+          `<ul class="s-list" style="margin-top:16px">${c.sessions.map(s => sessionRow(s, next && next.id)).join('')}</ul>` +
+          `<div class="offline-row" id="offline-row" hidden></div>`;
+        renderOffline(c);
+      }
+
+      // ── save a course's recorded voice for offline use (like Medito downloads)
+      function courseFiles(c) {
+        const set = new Set();
+        c.sessions.forEach(s => LIB.textsFor(s).forEach(t => { if (VOICE && VOICE[t]) set.add(VOICE[t]); }));
+        return [...set];
+      }
+      async function isSaved(files) {
+        if (!('caches' in window) || !files.length) return false;
+        try {
+          const cache = await caches.open('mj-audio');
+          const hits = await Promise.all(files.map(f => cache.match(new URL(clipPath(f), location.href).href)));
+          return hits.every(Boolean);
+        } catch (e) { return false; }
+      }
+      async function renderOffline(c) {
+        await voiceReady;
+        const row = document.getElementById('offline-row');
+        if (!row || !VOICE || !('serviceWorker' in navigator)) return;
+        const files = courseFiles(c);
+        if (!files.length) return;
+        row.hidden = false;
+        if (await isSaved(files)) {
+          row.innerHTML = '<span class="t-small">✓ Saved for offline — the voice plays even without internet.</span>';
+          return;
+        }
+        row.innerHTML = '<button type="button" class="btn btn-soft btn-sm" id="dl-btn">Download for offline</button><span class="t-small" id="dl-note">About ' + Math.max(1, Math.round(files.length * 35 / 1024)) + ' MB · voice plays without internet</span>';
+        document.getElementById('dl-btn').onclick = async () => {
+          const btn = document.getElementById('dl-btn'), note = document.getElementById('dl-note');
+          btn.disabled = true;
+          let done = 0, failed = 0;
+          const queue = files.slice();
+          await Promise.all([0, 1, 2, 3].map(async () => {
+            while (queue.length) {
+              const f = queue.shift();
+              try { const r = await fetch(clipPath(f)); if (!r.ok) throw 0; await r.blob(); } catch (e) { failed++; }
+              done++;
+              note.textContent = 'Saving… ' + done + ' of ' + files.length;
+            }
+          }));
+          if (failed) { btn.disabled = false; note.textContent = failed + ' couldn\'t download — try again when you\'re online.'; return; }
+          renderOffline(c);
+          MJ.toast('Saved for offline 🌿');
+        };
+      }
+
+      // ─── timer view ───────────────────────────────────────────────
+      const PRESETS = [3, 5, 10, 15, 20, 30, 45, 60];
+      const INTERVALS = [[0, 'None'], [1, 'Every min'], [2, 'Every 2 min'], [5, 'Every 5 min']];
+      const SOUNDS = [['none', 'Silence'], ['waves', 'Waves'], ['rain', 'Rain'], ['hum', 'Warm hum']];
+      function timerMins() { return Math.min(120, Math.max(1, prefs().timerMins || 10)); }
+      function renderTimer() {
+        document.getElementById('t-mins').textContent = timerMins();
+        document.getElementById('t-presets').innerHTML = PRESETS.map(p => `<button type="button" class="chip" data-preset="${p}" aria-pressed="${p === timerMins()}">${p}</button>`).join('');
+        const iv = prefs().interval || 0;
+        document.getElementById('t-interval').innerHTML = INTERVALS.map(i => `<button type="button" class="chip" data-interval="${i[0]}" aria-pressed="${i[0] === iv}">${i[1]}</button>`).join('');
+        const snd = prefs().sound || 'none';
+        document.getElementById('t-sound').innerHTML = SOUNDS.map(x => `<button type="button" class="chip" data-sound="${x[0]}" aria-pressed="${x[0] === snd}">${x[1]}</button>`).join('');
+        document.getElementById('t-prep').checked = prefs().prep !== false;
+      }
+      document.getElementById('t-minus').onclick = () => { setPref('timerMins', timerMins() - 1); renderTimer(); };
+      document.getElementById('t-plus').onclick = () => { setPref('timerMins', timerMins() + 1); renderTimer(); };
+      document.getElementById('view-timer').addEventListener('click', e => {
+        const p = e.target.closest('[data-preset]'); if (p) { setPref('timerMins', +p.dataset.preset); renderTimer(); }
+        const i = e.target.closest('[data-interval]'); if (i) { setPref('interval', +i.dataset.interval); renderTimer(); }
+        const s = e.target.closest('[data-sound]'); if (s) { setPref('sound', s.dataset.sound); renderTimer(); }
+      });
+      document.getElementById('t-prep').onchange = e => setPref('prep', e.target.checked);
+      document.getElementById('t-start').onclick = () => startTimer(timerMins());
+
+      // ─── stats view ───────────────────────────────────────────────
+      let calMonth = null;
+      function renderStats() {
+        const t = MJ.meditateTotals();
+        document.getElementById('stats-lead').textContent = t.sessions
+          ? `${t.minutes} minutes of stillness across ${t.sessions} ${t.sessions === 1 ? 'sit' : 'sits'}. Every one of them counted.`
+          : 'Your first sit will show up here.';
+        document.getElementById('stat-grid').innerHTML =
+          `<div class="stat-box"><b>${t.streak}</b><span>day streak</span></div>` +
+          `<div class="stat-box"><b>${t.longest}</b><span>best streak</span></div>` +
+          `<div class="stat-box"><b>${t.minutes}</b><span>total minutes</span></div>` +
+          `<div class="stat-box"><b>${t.sessions}</b><span>sits</span></div>`;
+        if (!calMonth) { const d = new Date(); calMonth = new Date(d.getFullYear(), d.getMonth(), 1); }
+        const y = calMonth.getFullYear(), m = calMonth.getMonth();
+        document.getElementById('cal-title').textContent = calMonth.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+        const first = (new Date(y, m, 1).getDay() + 6) % 7;
+        const daysIn = new Date(y, m + 1, 0).getDate();
+        let html = ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(d => `<div class="dow" aria-hidden="true">${d}</div>`).join('');
+        for (let i = 0; i < first; i++) html += '<div></div>';
+        for (let d = 1; d <= daysIn; d++) {
+          const iso = MJ.localISO(new Date(y, m, d, 12));
+          const secs = t.days[iso] || 0;
+          const cls = (secs ? ' on' : '') + (iso === t.today ? ' today' : '') + (iso > t.today ? ' future' : '');
+          const label = MJ.prettyDate(iso, { day: 'numeric', month: 'long' }) + (secs ? ', ' + Math.max(1, Math.round(secs / 60)) + ' minutes' : '');
+          html += `<div class="d${cls}" role="img" aria-label="${label}">${d}</div>`;
+        }
+        document.getElementById('cal').innerHTML = html;
+        const now = new Date();
+        document.getElementById('cal-next').disabled = y === now.getFullYear() && m === now.getMonth();
+
+        const recent = data.sessions.slice().sort((a, b) => b.at < a.at ? -1 : 1).slice(0, 30);
+        document.getElementById('hist').innerHTML = recent.length ? recent.map(s => {
+          const sess = LIB.byId[s.sessionId];
+          return `<li>${MJ.orb({ color: sess ? sess.color : 'var(--mint)', face: sess ? sess.face : 'calm', size: 40 })}` +
+            `<div class="grow"><b>${esc(s.title || 'Timer')}</b> · ${Math.max(1, Math.round(s.secs / 60))} min` +
+            `<div class="when">${new Date(s.at).toLocaleString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })}${s.feel ? ' · felt ' + esc(s.feel.toLowerCase()) : ''}</div>` +
+            (s.note ? `<div class="note">${esc(s.note)}</div>` : '') + `</div>` +
+            `<button type="button" class="icon-x btn btn-icon btn-quiet" data-del="${s.id}" aria-label="Delete this sit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg></button></li>`;
+        }).join('') : '<li class="t-small">Nothing yet — your sits will gather here.</li>';
+        const dateIn = document.getElementById('add-date');
+        dateIn.max = t.today;
+        if (!dateIn.value) dateIn.value = t.today;
+      }
+      document.getElementById('cal-prev').onclick = () => { calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() - 1, 1); renderStats(); };
+      document.getElementById('cal-next').onclick = () => { calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() + 1, 1); renderStats(); };
+      document.getElementById('hist').addEventListener('click', e => {
+        const b = e.target.closest('[data-del]'); if (!b) return;
+        const idx = data.sessions.findIndex(s => s.id === b.dataset.del);
+        if (idx === -1) return;
+        data.sessions.splice(idx, 1);
+        save(data); renderStats();
+        MJ.toast('Sit removed');
+      });
+      document.getElementById('add-form').addEventListener('submit', e => {
+        e.preventDefault();
+        const iso = document.getElementById('add-date').value;
+        const mins = Math.max(1, Math.min(240, +document.getElementById('add-mins').value || 0));
+        if (!iso) return;
+        data.sessions.push({ id: uid(), at: iso + 'T12:00:00', day: iso, secs: mins * 60, kind: 'manual', title: 'On my own', note: document.getElementById('add-note').value.trim() });
+        save(data);
+        document.getElementById('add-note').value = '';
+        renderStats();
+        MJ.toast('Added — every sit counts 🌿');
+        MJ.checkMilestones();
+      });
+
+      // ─── routing ──────────────────────────────────────────────────
+      function route() {
+        const h = location.hash.slice(1) || 'home';
+        const [view, arg] = h.split('/');
+        const v = ['home', 'course', 'timer', 'stats'].indexOf(view) !== -1 ? view : 'home';
+        document.querySelectorAll('.view').forEach(el => el.classList.toggle('active', el.id === 'view-' + v));
+        if (v === 'home') renderHome();
+        if (v === 'course') renderCourse(arg);
+        if (v === 'timer') renderTimer();
+        if (v === 'stats') renderStats();
+        window.scrollTo(0, 0);
+      }
+      window.addEventListener('hashchange', route);
+
+      document.getElementById('main').addEventListener('click', e => {
+        const f = e.target.closest('[data-fav]');
+        if (f) {
+          const id = f.dataset.fav, i = data.favs.indexOf(id);
+          if (i === -1) data.favs.push(id); else data.favs.splice(i, 1);
+          save(data);
+          f.setAttribute('aria-pressed', String(i === -1));
+          if (location.hash === '' || location.hash === '#home') renderHome();
+          return;
+        }
+        const st = e.target.closest('[data-start]');
+        if (st) { startGuided(st.dataset.start); return; }
+        const q = e.target.closest('[data-quick-timer]');
+        if (q) { startTimer(+q.dataset.quickTimer); }
+      });
+
+      // daily reminder → a repeating calendar event (.ics), no server needed
+      document.getElementById('remind-btn').onclick = () => {
+        const tm = document.getElementById('remind-time').value || '07:30';
+        const [hh, mm] = tm.split(':');
+        const d = new Date(); d.setDate(d.getDate() + 1);
+        const ymd = MJ.localISO(d).replace(/-/g, '');
+        const stamp = new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z';
+        const url = location.origin && /^https?:/.test(location.protocol) ? location.origin + location.pathname : '';
+        const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Mind Journal//Meditate//EN', 'BEGIN:VEVENT',
+          'UID:mj-meditate-' + Date.now() + '@mindjournal', 'DTSTAMP:' + stamp,
+          'DTSTART:' + ymd + 'T' + hh + mm + '00', 'DURATION:PT10M', 'RRULE:FREQ=DAILY',
+          'SUMMARY:A few quiet minutes 🌿', 'DESCRIPTION:Time to sit. Even three minutes counts.' + (url ? '\\n' + url : ''),
+          url ? 'URL:' + url : '', 'BEGIN:VALARM', 'TRIGGER:PT0M', 'ACTION:DISPLAY', 'DESCRIPTION:Time to meditate', 'END:VALARM',
+          'END:VEVENT', 'END:VCALENDAR'].filter(Boolean).join('\r\n');
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
+        a.download = 'meditate-reminder.ics';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+        setPref('reminder', tm);
+        MJ.toast('Open the file to add a daily reminder at ' + tm, 3500);
+      };
+
+      function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+      // ═════════ PLAYER ═════════
+      const P = {
+        el: document.getElementById('player'),
+        stage: document.getElementById('p-stage'),
+        ring: document.getElementById('p-ring'),
+        prog: document.getElementById('p-prog'),
+        cue: document.getElementById('p-cue'),
+        time: document.getElementById('p-time'),
+        pause: document.getElementById('p-pause'),
+        voice: document.getElementById('p-voice'),
+        sound: document.getElementById('p-sound'),
+      };
+      let run = null; // the session in progress
+      let wakeLock = null;
+      let lastFocus = null;
+
+      function fmt(sec) { sec = Math.max(0, Math.ceil(sec)); return Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0'); }
+
+      // ── voice guidance: recorded clips (scripts/generate-voice.mjs) when available,
+      //    the device's own voice otherwise. Captions are always on screen.
+      let VOICE = null; // { text: file }
+      const clipUrls = new Map(); // file → object URL (fetched whole: no range requests, works offline)
+      const voiceReady = fetch('audio/voice/manifest.json', { cache: 'no-cache' })
+        .then(r => r.ok ? r.json() : null)
+        .then(m => { VOICE = m && m.files && Object.keys(m.files).length ? m.files : null; return VOICE; })
+        .catch(() => null);
+      const clipPath = f => 'audio/voice/' + f;
+      function getClip(text) {
+        const f = VOICE && VOICE[text];
+        if (!f) return Promise.resolve(null);
+        if (clipUrls.has(f)) return clipUrls.get(f);
+        const p = fetch(clipPath(f)).then(r => r.ok ? r.blob() : null).then(b => b ? URL.createObjectURL(b) : null).catch(() => null);
+        clipUrls.set(f, p);
+        p.then(u => { if (!u) clipUrls.delete(f); });
+        return p;
+      }
+      const clip = new Audio();
+      clip.preload = 'auto';
+      clip.addEventListener('play', () => MJ.sound.duck(true));
+      clip.addEventListener('pause', () => MJ.sound.duck(false));
+      clip.addEventListener('ended', () => MJ.sound.duck(false));
+      // iPhone only lets audio play after a tap: play a blip of silence during the Begin tap
+      const SILENCE = (() => {
+        const n = 2400, buf = new ArrayBuffer(44 + n * 2), v = new DataView(buf);
+        const w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+        w(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); w(8, 'WAVE'); w(12, 'fmt '); v.setUint32(16, 16, true);
+        v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, 24000, true); v.setUint32(28, 48000, true);
+        v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, 'data'); v.setUint32(40, n * 2, true);
+        return URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
+      })();
+      function unlockClip() { try { clip.src = SILENCE; const p = clip.play(); if (p) p.catch(() => { }); } catch (e) { } }
+      let sayToken = 0;
+
+      let voicePick = null;
+      function pickVoice() {
+        if (!('speechSynthesis' in window)) return null;
+        const vs = speechSynthesis.getVoices().filter(v => /^en/i.test(v.lang));
+        const pref = [/en-IN/i, /Samantha|Karen|Moira|Serena|Daniel|Google UK English Female|Google US English/i, /en-GB/i];
+        for (const p of pref) { const v = vs.find(x => p.test(x.lang) || p.test(x.name)); if (v) return v; }
+        return vs[0] || null;
+      }
+      if ('speechSynthesis' in window) speechSynthesis.onvoiceschanged = () => { voicePick = pickVoice(); };
+      function voiceAvailable() { return !!VOICE || 'speechSynthesis' in window; }
+      function voiceOn() { return voiceAvailable() && prefs().voice !== false; }
+      function say(text) {
+        if (!voiceOn() || !run || run.kind !== 'guided') return;
+        const token = ++sayToken;
+        if (VOICE && VOICE[text]) {
+          getClip(text).then(url => {
+            if (token !== sayToken || !run || run.paused || run.finished) return;
+            if (!url) { speak(text); return; }
+            clip.src = url;
+            const p = clip.play();
+            if (p) p.catch(() => speak(text));
+          });
+          return;
+        }
+        speak(text);
+      }
+      function speak(text) {
+        if (!('speechSynthesis' in window)) return;
+        try {
+          speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(text);
+          voicePick = voicePick || pickVoice();
+          if (voicePick) u.voice = voicePick;
+          u.rate = 0.86; u.pitch = 0.95; u.volume = 0.9;
+          u.onstart = () => MJ.sound.duck(true);
+          u.onend = () => MJ.sound.duck(false);
+          speechSynthesis.speak(u);
+        } catch (e) { }
+      }
+      function showCue(text, speak) {
+        P.cue.classList.add('fade');
+        setTimeout(() => { P.cue.textContent = text; P.cue.classList.remove('fade'); }, 450);
+        if (speak) say(text);
+      }
+
+      function stopVoice() {
+        sayToken++;
+        try { clip.pause(); } catch (e) { }
+        if ('speechSynthesis' in window) speechSynthesis.cancel();
+        MJ.sound.duck(false);
+      }
+
+      async function keepAwake() {
+        try { if ('wakeLock' in navigator && !wakeLock) { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { wakeLock = null; }); } } catch (e) { }
+      }
+      function letSleep() { try { if (wakeLock) wakeLock.release(); } catch (e) { } wakeLock = null; }
+
+      function startGuided(id) {
+        const s = LIB.byId[id];
+        if (!s) return;
+        const mins = lenFor(s);
+        setPref('activeCourse', s.course);
+        openPlayer({
+          kind: 'guided', session: s, title: s.title, sub: LIB.courses.find(c => c.id === s.course).title + ' · ' + mins + ' min',
+          total: mins * 60, cues: LIB.cuesFor(s, mins), color: s.color, face: s.face, breath: s.breath || [4, 6],
+          prep: 0, interval: 0, endBell: !s.noEndBell
+        });
+      }
+
+      function startTimer(mins) {
+        openPlayer({
+          kind: 'timer', session: null, title: 'Meditation timer', sub: mins + ' min' + ((prefs().interval || 0) ? ' · bell every ' + prefs().interval + ' min' : ''),
+          total: mins * 60, cues: [], color: 'var(--mint)', face: 'calm', breath: [5, 5],
+          prep: prefs().prep === false ? 0 : 10, interval: (prefs().interval || 0) * 60, endBell: true,
+          sound: prefs().sound || 'none'
+        });
+      }
+
+      function openPlayer(cfg) {
+        run = Object.assign(cfg, { elapsed: 0, startedAt: null, paused: false, cueIdx: 0, nextBell: cfg.interval || 0, prepLeft: cfg.prep, finished: false });
+        lastFocus = document.activeElement;
+        P.el.style.setProperty('--tint', cfg.color);
+        document.getElementById('p-title').textContent = cfg.title;
+        document.getElementById('p-sub').textContent = cfg.sub;
+        document.getElementById('p-orb').innerHTML = MJ.orb({ color: cfg.color, face: cfg.face, size: Math.min(190, Math.round(innerWidth * 0.46)) });
+        const cyc = cfg.breath[0] + cfg.breath[1];
+        P.ring.style.setProperty('--cycle', cyc + 's');
+        P.voice.hidden = cfg.kind !== 'guided' || !voiceAvailable();
+        if (cfg.kind === 'guided') {
+          unlockClip();
+          if (VOICE) cfg.cues.forEach(c => getClip(c.text));
+        }
+        P.voice.setAttribute('aria-pressed', String(voiceOn()));
+        resetStage();
+        P.el.hidden = false;
+        requestAnimationFrame(() => P.el.classList.add('show'));
+        document.body.style.overflow = 'hidden';
+        // background sound
+        if (cfg.kind === 'timer' && cfg.sound && cfg.sound !== 'none') { MJ.sound.setScape(cfg.sound); if (!MJ.sound.isPlaying()) MJ.sound.start(); }
+        P.sound.setAttribute('aria-pressed', String(MJ.sound.isPlaying()));
+        keepAwake();
+        // first sound must come from this tap (iPhone rule): a soft bell to begin
+        MJ.bell('start');
+        if (cfg.prep) {
+          showCue('Settle in. Find a comfortable posture…', false);
+          P.time.textContent = 'Starting in ' + cfg.prep;
+        } else {
+          run.startedAt = performance.now();
+          P.ring.classList.add('breathing');
+        }
+        setPause(false);
+        tick();
+        run.timer = setInterval(tick, 250);
+        setTimeout(() => P.pause.focus({ preventScroll: true }), 200);
+      }
+
+      function resetStage() {
+        P.stage.innerHTML = '';
+        P.stage.append(P.ring, P.cue, P.time, P.pause.parentNode);
+        P.cue.textContent = '';
+        P.prog.setAttribute('stroke-dasharray', '0 296');
+        P.ring.classList.remove('breathing', 'paused');
+      }
+
+      function elapsedNow() {
+        if (!run.startedAt) return 0;
+        return run.elapsed + (run.paused ? 0 : (performance.now() - run.startedAt) / 1000);
+      }
+
+      function tick() {
+        if (!run || run.finished) return;
+        // settle-in countdown
+        if (run.prepLeft > 0) {
+          if (!run.prepStarted) run.prepStarted = performance.now();
+          const left = run.prep - (performance.now() - run.prepStarted) / 1000;
+          if (run.paused) { run.prepStarted += 250; return; }
+          if (left > 0) { P.time.textContent = 'Starting in ' + Math.ceil(left); return; }
+          run.prepLeft = 0;
+          run.startedAt = performance.now();
+          P.ring.classList.add('breathing');
+          MJ.bell('start');
+          showCue(run.kind === 'timer' ? 'Begin. Rest with whatever is here.' : '', false);
+        }
+        const el = elapsedNow();
+        const total = run.total;
+        if (run.paused) { P.time.textContent = 'Paused · ' + fmt(total - el) + ' left'; return; }
+        // cues — if the phone slept and we skipped ahead, show only the latest (never a backlog)
+        let fired = null;
+        while (run.cueIdx < run.cues.length && run.cues[run.cueIdx].at <= el) { fired = run.cues[run.cueIdx]; run.cueIdx++; }
+        if (fired) showCue(fired.text, el - fired.at < 3);
+        // interval bells
+        if (run.interval && el >= run.nextBell && run.nextBell < total - 5) {
+          if (el - run.nextBell < 3) MJ.bell('interval');
+          while (run.nextBell <= el) run.nextBell += run.interval;
+        }
+        const pct = Math.min(1, el / total);
+        P.prog.setAttribute('stroke-dasharray', (pct * 295.3).toFixed(1) + ' 296');
+        P.time.textContent = fmt(total - el) + ' left';
+        if (el >= total) finish(true);
+      }
+
+      function setPause(p) {
+        if (!run) return;
+        if (p && !run.paused && run.startedAt) { run.elapsed += (performance.now() - run.startedAt) / 1000; }
+        if (!p && run.paused && run.startedAt) { run.startedAt = performance.now(); }
+        run.paused = p;
+        P.ring.classList.toggle('paused', p);
+        P.pause.innerHTML = p ? ICON_PLAY_BIG : ICON_PAUSE;
+        P.pause.setAttribute('aria-label', p ? 'Resume' : 'Pause');
+        if (p) stopVoice();
+        if (p) { P.time.textContent = 'Paused · ' + fmt(run.total - elapsedNow()) + ' left'; letSleep(); } else keepAwake();
+      }
+      P.pause.onclick = () => setPause(!run.paused);
+      P.voice.onclick = () => {
+        const on = !voiceOn();
+        setPref('voice', on);
+        P.voice.setAttribute('aria-pressed', String(on));
+        if (!on) stopVoice();
+        MJ.toast(on ? 'Voice guidance on' : 'Voice off — words stay on screen', 1800);
+      };
+      P.sound.onclick = () => { MJ.sound.toggle(); P.sound.setAttribute('aria-pressed', String(MJ.sound.isPlaying())); };
+      document.getElementById('p-close').onclick = () => {
+        if (!run) return;
+        if (run.finished) { closePlayer(); return; }
+        finish(false);
+      };
+      document.addEventListener('keydown', e => {
+        if (!run || P.el.hidden) return;
+        if (e.key === 'Escape') { e.preventDefault(); document.getElementById('p-close').click(); }
+        if (e.key === ' ' && !run.finished && document.activeElement.tagName !== 'TEXTAREA') { e.preventDefault(); setPause(!run.paused); }
+      });
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && run && !run.paused && !run.finished) { keepAwake(); tick(); } });
+
+      function record(secs) {
+        const now = new Date();
+        const entry = {
+          id: uid(), at: now.toISOString(), day: MJ.medDay(now), secs: Math.round(secs), kind: run.kind,
+          sessionId: run.session ? run.session.id : null, courseId: run.session ? run.session.course : null,
+          title: run.kind === 'timer' ? 'Timer' : run.session.title
+        };
+        data = load();
+        data.sessions.push(entry);
+        if (run.session && secs >= run.total * 0.6) {
+          const list = data.progress[run.session.course] = data.progress[run.session.course] || [];
+          if (list.indexOf(run.session.id) === -1) list.push(run.session.id);
+        }
+        save(data);
+        return entry;
+      }
+
+      function finish(complete) {
+        if (!run || run.finished) return;
+        const secs = Math.min(run.total, elapsedNow());
+        run.finished = true;
+        clearInterval(run.timer);
+        stopVoice();
+        P.ring.classList.remove('breathing');
+        letSleep();
+        if (complete && run.endBell) MJ.bell('end');
+        if (secs < 60) {
+          // too short to count — just close gently
+          closePlayer();
+          if (secs > 5) MJ.toast('No problem. Come back whenever you\'re ready.', 2600);
+          return;
+        }
+        const before = MJ.meditateTotals();
+        const entry = record(secs);
+        const after = MJ.meditateTotals();
+        const mins = Math.max(1, Math.round(secs / 60));
+        const streakUp = after.streak > before.streak;
+        P.stage.innerHTML = `<div class="p-done">${MJ.orb({ color: run.color, face: 'joy', size: 110, cls: 'orb-bounce' })}` +
+          `<h2 class="t-h1">${complete ? 'Well done, ' + esc(MJ.displayName()) : 'That counts too'}</h2>` +
+          `<p class="t-lead">You sat for <b>${mins} ${mins === 1 ? 'minute' : 'minutes'}</b>.${after.sessions === 1 ? ' Your very first sit — a lovely start.' : streakUp && after.streak > 1 ? ' That\'s a <b>' + after.streak + '-day streak</b> 🔥' : after.streak > 1 ? ' Your streak: <b>' + after.streak + ' days</b>.' : ''}</p>` +
+          `<span class="opt-label" style="margin:10px 0 0" id="feel-label">How do you feel now?</span>` +
+          `<div class="feel-chips" role="group" aria-labelledby="feel-label">${['Calmer', 'Lighter', 'Clearer', 'The same', 'Restless'].map(f => `<button type="button" class="chip" data-feel="${f}" aria-pressed="false">${f}</button>`).join('')}</div>` +
+          `<label class="sr-only" for="p-note">A note about this sit</label><textarea class="textarea" id="p-note" maxlength="400" placeholder="Anything you noticed? (optional)"></textarea>` +
+          `<div class="row row-wrap" style="justify-content:center;margin-top:6px"><button type="button" class="btn btn-primary btn-lg" id="p-finish">Done</button>` +
+          `<a class="btn btn-soft btn-lg" href="journal.html#checkin" id="p-journal">Check in</a></div></div>`;
+        P.stage.querySelectorAll('[data-feel]').forEach(b => b.onclick = () => {
+          P.stage.querySelectorAll('[data-feel]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+          entry.feel = b.dataset.feel;
+        });
+        const commit = () => {
+          entry.note = (document.getElementById('p-note').value || '').trim();
+          const d = load();
+          const e = d.sessions.find(x => x.id === entry.id);
+          if (e) { e.note = entry.note; e.feel = entry.feel || ''; save(d); data = d; }
+        };
+        document.getElementById('p-finish').onclick = () => { commit(); closePlayer(); MJ.checkMilestones(); MJ.afterSave(); };
+        document.getElementById('p-journal').onclick = () => { commit(); };
+        MJ.chime('soft');
+        setTimeout(() => document.getElementById('p-finish').focus({ preventScroll: true }), 400);
+      }
+
+      function closePlayer() {
+        if (run && run.timer) clearInterval(run.timer);
+        stopVoice();
+        letSleep();
+        if (run && run.kind === 'timer' && run.sound && run.sound !== 'none' && MJ.sound.isPlaying()) MJ.sound.stop();
+        run = null;
+        P.el.classList.remove('show');
+        setTimeout(() => { P.el.hidden = true; resetStage(); }, 700);
+        document.body.style.overflow = '';
+        route();
+        if (lastFocus && lastFocus.focus && document.contains(lastFocus)) lastFocus.focus({ preventScroll: true });
+      }
+
+      // another tab or an import changed the data
+      window.addEventListener('storage', e => { if (e.key === KEY && !run) { data = load(); route(); } });
+      MJ.onNameChange(() => { if (!run) route(); });
+
+      route();
+      voiceReady.then(v => { if (v && !run && location.hash.indexOf('#course/') === 0) route(); });
+    })();
+  </script>
+</body>
+
+</html>

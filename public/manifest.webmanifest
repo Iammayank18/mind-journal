@@ -14,6 +14,7 @@
   ],
   "shortcuts": [
     { "name": "Daily Planner", "url": "./planner.html", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Meditate", "url": "./meditate.html", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
     { "name": "Journal check-in", "url": "./journal.html#checkin", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
     { "name": "Wins Jar", "url": "./journal.html#wins", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
   ]

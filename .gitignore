@@ -22,3 +22,13 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# voice samples made by `yarn voice --samples` (listen, pick, then delete)
+scripts/voice-samples/
+# secrets (your Google API key lives here)
+.env
+.env.*
+
+# raw batch recordings (only the split clips in public/audio/voice/ ship)
+scripts/voice-batches/*
+!scripts/voice-batches/.gitkeep

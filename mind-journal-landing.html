@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="brain.png" type="image/x-icon">
+
+  <title>Mind Journal — Declutter your mind, one page at a time.</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #f8f6f1;
+      --bg2: #f2ede5;
+      --surface: #ffffff;
+      --border: #e6dfd4;
+      --text: #1c1a17;
+      --soft: #68635b;
+      --muted: #a8a096;
+      --green: #4f8657;
+      --green2: #3a6640;
+      --greenL: #e6f0e8;
+      --warm: #c07a3e;
+      --warmL: #fdf0e2;
+      --blue: #4472a0;
+      --blueL: #e8f0f8;
+      --purple: #6b5f96;
+      --purpleL: #eeebf8;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── ANIMATED BG CANVAS ─────────────────────────────── */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.55;
+    }
+
+    /* ── NAV ─────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 200;
+      padding: 0 56px;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.4s, box-shadow 0.4s;
+    }
+
+    nav.scrolled {
+      background: rgba(248, 246, 241, 0.88);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 1px 0 var(--border);
+    }
+
+    .logo {
+      font-size: 19px;
+      color: var(--text);
+      letter-spacing: -0.3px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo span {
+      color: var(--green);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      color: var(--soft);
+      text-decoration: none;
+      transition: color 0.25s;
+    }
+
+    .nav-links a:hover {
+      color: var(--green);
+    }
+
+    .nav-cta {
+      padding: 9px 24px;
+      background: var(--green);
+      color: white !important;
+      border-radius: 28px;
+      font-size: 14px;
+      transition: background 0.25s, transform 0.2s, box-shadow 0.25s !important;
+      box-shadow: 0 2px 12px rgba(79, 134, 87, 0.28);
+    }
+
+    .nav-cta:hover {
+      background: var(--green2) !important;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(79, 134, 87, 0.35) !important;
+    }
+
+    /* ── HERO ────────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 130px 24px 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--greenL);
+      color: var(--green2);
+      border: 1px solid #b8d4bc;
+      border-radius: 28px;
+      padding: 7px 18px;
+      font-size: 13px;
+      margin-bottom: 36px;
+      opacity: 0;
+      animation: riseIn 0.8s 0.2s cubic-bezier(.22, .68, 0, 1.2) forwards;
+    }
+
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.5;
+        transform: scale(0.7);
+      }
+    }
+
+    .hero-title {
+      font-size: clamp(38px, 6.5vw, 76px);
+      font-weight: normal;
+      line-height: 1.08;
+      letter-spacing: -2px;
+      color: var(--text);
+      max-width: 860px;
+      opacity: 0;
+      animation: riseIn 0.9s 0.35s cubic-bezier(.22, .68, 0, 1.2) forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--green);
+      position: relative;
+    }
+
+    .hero-title em::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--green);
+      opacity: 0.3;
+      border-radius: 2px;
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: underlineIn 0.7s 1.1s ease forwards;
+    }
+
+    @keyframes underlineIn {
+      to {
+        transform: scaleX(1);
+      }
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 2.2vw, 19px);
+      color: var(--soft);
+      max-width: 520px;
+      line-height: 1.75;
+      margin-top: 26px;
+      opacity: 0;
+      animation: riseIn 0.9s 0.5s cubic-bezier(.22, .68, 0, 1.2) forwards;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 14px;
+      margin-top: 44px;
+      flex-wrap: wrap;
+      justify-content: center;
+      opacity: 0;
+      animation: riseIn 0.9s 0.65s cubic-bezier(.22, .68, 0, 1.2) forwards;
+    }
+
+    .btn-primary {
+      padding: 16px 38px;
+      background: var(--green);
+      color: white;
+      border-radius: 40px;
+      font-size: 16px;
+      font-family: 'Georgia', serif;
+      text-decoration: none;
+      transition: all 0.25s;
+      box-shadow: 0 4px 24px rgba(79, 134, 87, 0.32);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover {
+      background: var(--green2);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 32px rgba(79, 134, 87, 0.38);
+    }
+
+    .btn-ghost {
+      padding: 16px 30px;
+      border: 1.5px solid var(--border);
+      color: var(--soft);
+      border-radius: 40px;
+      font-size: 15px;
+      font-family: 'Georgia', serif;
+      text-decoration: none;
+      transition: all 0.25s;
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--green);
+      color: var(--green);
+      background: var(--greenL);
+    }
+
+    .hero-note {
+      margin-top: 20px;
+      font-size: 12.5px;
+      color: var(--muted);
+      letter-spacing: 0.2px;
+      opacity: 0;
+      animation: riseIn 0.9s 0.8s ease forwards;
+    }
+
+    /* ── BROWSER MOCKUP ──────────────────────────────────── */
+    .mockup-wrap {
+      margin-top: 72px;
+      width: 100%;
+      max-width: 860px;
+      opacity: 0;
+      animation: riseIn 1s 0.9s cubic-bezier(.22, .68, 0, 1.2) forwards;
+      filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.12)) drop-shadow(0 4px 16px rgba(0, 0, 0, 0.06));
+      position: relative;
+    }
+
+    .mockup-glow {
+      position: absolute;
+      inset: -40px;
+      background: radial-gradient(ellipse 70% 50% at 50% 60%, rgba(79, 134, 87, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .mockup {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      animation: gentleFloat 7s ease-in-out infinite;
+    }
+
+    @keyframes gentleFloat {
+
+      0%,
+      100% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .mockup-bar {
+      background: #f0ece6;
+      padding: 13px 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+
+    .mockup-url {
+      flex: 1;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      font-family: -apple-system, monospace;
+      background: rgba(255, 255, 255, 0.6);
+      padding: 4px 16px;
+      border-radius: 6px;
+      max-width: 280px;
+      margin: 0 auto;
+    }
+
+    .mockup-body {
+      padding: 28px 32px 32px;
+    }
+
+    .mock-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mock-logo {
+      font-size: 15px;
+    }
+
+    .mock-logo span {
+      color: var(--green);
+    }
+
+    .mock-streak {
+      font-size: 12px;
+      color: var(--green);
+      background: var(--greenL);
+      padding: 4px 12px;
+      border-radius: 16px;
+    }
+
+    .mock-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 22px;
+      overflow: hidden;
+    }
+
+    .mock-tab {
+      padding: 8px 16px;
+      font-size: 12px;
+      color: var(--muted);
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+    }
+
+    .mock-tab.active {
+      color: var(--green);
+      border-bottom-color: var(--green);
+    }
+
+    .mock-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .mock-moods {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .mock-mood {
+      padding: 6px 13px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      font-size: 12px;
+      color: var(--soft);
+    }
+
+    .mock-mood.active {
+      background: var(--greenL);
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .mock-area {
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      font-size: 13px;
+      color: var(--soft);
+      line-height: 1.8;
+      font-style: italic;
+      min-height: 72px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mock-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 14px;
+      background: var(--green);
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 1.1s infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      49% {
+        opacity: 1;
+      }
+
+      50%,
+      100% {
+        opacity: 0;
+      }
+    }
+
+    /* ── SECTION SHARED ──────────────────────────────────── */
+    section {
+      position: relative;
+      z-index: 1;
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    .container-sm {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    .tag {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--green);
+      display: block;
+      margin-bottom: 14px;
+    }
+
+    .h2 {
+      font-size: clamp(28px, 4vw, 46px);
+      font-weight: normal;
+      line-height: 1.15;
+      letter-spacing: -0.8px;
+    }
+
+    .lead {
+      font-size: 17px;
+      color: var(--soft);
+      line-height: 1.75;
+      margin-top: 14px;
+      max-width: 520px;
+    }
+
+    /* ── PAIN ────────────────────────────────────────────── */
+    .pain-section {
+      background: var(--surface);
+      padding: 110px 0;
+    }
+
+    .pain-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 18px;
+      margin-top: 60px;
+    }
+
+    .pain-card {
+      padding: 32px 28px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: default;
+    }
+
+    .pain-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      border-radius: 18px 18px 0 0;
+      opacity: 0.9;
+    }
+
+    .pain-card:nth-child(1)::before {
+      background: var(--green);
+    }
+
+    .pain-card:nth-child(2)::before {
+      background: var(--warm);
+    }
+
+    .pain-card:nth-child(3)::before {
+      background: var(--blue);
+    }
+
+    .pain-card:nth-child(4)::before {
+      background: var(--purple);
+    }
+
+    .pain-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 80% at 50% 120%, rgba(79, 134, 87, 0.05) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .pain-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .pain-card:hover::after {
+      opacity: 1;
+    }
+
+    .pain-icon {
+      font-size: 30px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .pain-title {
+      font-size: 17px;
+      margin-bottom: 9px;
+    }
+
+    .pain-desc {
+      font-size: 14px;
+      color: var(--soft);
+      line-height: 1.75;
+    }
+
+    /* ── HOW IT WORKS ────────────────────────────────────── */
+    .how-section {
+      padding: 110px 0;
+    }
+
+    .steps {
+      margin-top: 64px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: 0 36px;
+      padding: 44px 0;
+      border-bottom: 1px solid var(--border);
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .step:last-child {
+      border-bottom: none;
+    }
+
+    .step.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .step-n {
+      font-size: 52px;
+      color: var(--border);
+      line-height: 1;
+      font-style: italic;
+      user-select: none;
+      padding-top: 2px;
+      transition: color 0.3s;
+    }
+
+    .step:hover .step-n {
+      color: #c8deca;
+    }
+
+    .step-time {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 10px;
+    }
+
+    .step-title {
+      font-size: 24px;
+      font-weight: normal;
+      letter-spacing: -0.3px;
+      margin-bottom: 10px;
+    }
+
+    .step-desc {
+      font-size: 15px;
+      color: var(--soft);
+      line-height: 1.78;
+      max-width: 580px;
+    }
+
+    .step-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .chip {
+      font-size: 12px;
+      padding: 4px 13px;
+      border-radius: 20px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      color: var(--soft);
+    }
+
+    /* ── SCIENCE ─────────────────────────────────────────── */
+    .science-section {
+      padding: 110px 0;
+      background: var(--surface);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .science-section::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 300px;
+      background: radial-gradient(ellipse, rgba(79, 134, 87, 0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .science-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin-top: 60px;
+    }
+
+    .science-card {
+      padding: 34px 28px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--bg);
+      transition: transform 0.3s, box-shadow 0.3s;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.3s;
+    }
+
+    .science-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .science-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.07);
+    }
+
+    .science-stat {
+      font-size: 50px;
+      color: var(--green);
+      line-height: 1;
+      margin-bottom: 12px;
+      font-style: italic;
+    }
+
+    .science-label {
+      font-size: 15px;
+      color: var(--text);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .science-src {
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── FEATURES ────────────────────────────────────────── */
+    .features-section {
+      padding: 110px 0;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-top: 60px;
+    }
+
+    .feat {
+      padding: 28px 24px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--surface);
+      transition: all 0.25s;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.45s ease, transform 0.45s ease, box-shadow 0.25s;
+    }
+
+    .feat.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .feat:hover {
+      box-shadow: 0 6px 28px rgba(0, 0, 0, 0.07);
+      transform: translateY(-3px) !important;
+    }
+
+    .feat-icon {
+      font-size: 26px;
+      margin-bottom: 13px;
+      display: block;
+    }
+
+    .feat-title {
+      font-size: 15px;
+      color: var(--text);
+      margin-bottom: 7px;
+    }
+
+    .feat-desc {
+      font-size: 13px;
+      color: var(--soft);
+      line-height: 1.7;
+    }
+
+    /* ── QUOTE ───────────────────────────────────────────── */
+    .quote-section {
+      padding: 110px 24px;
+      text-align: center;
+      background: var(--green);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quote-section::before,
+    .quote-section::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .quote-section::before {
+      width: 600px;
+      height: 600px;
+      top: -200px;
+      right: -100px;
+    }
+
+    .quote-section::after {
+      width: 400px;
+      height: 400px;
+      bottom: -150px;
+      left: -80px;
+    }
+
+    .big-quote {
+      font-size: clamp(20px, 3.5vw, 34px);
+      color: white;
+      line-height: 1.55;
+      font-style: italic;
+      max-width: 700px;
+      margin: 0 auto 18px;
+      font-weight: normal;
+      position: relative;
+      z-index: 1;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s, transform 0.7s;
+    }
+
+    .big-quote.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .quote-mark {
+      font-size: 80px;
+      color: rgba(255, 255, 255, 0.15);
+      line-height: 0.5;
+      display: block;
+      margin-bottom: 16px;
+      font-family: Georgia, serif;
+      position: relative;
+      z-index: 1;
+    }
+
+    .quote-attr {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.65);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── CTA ─────────────────────────────────────────────── */
+    .cta-section {
+      padding: 130px 24px;
+      text-align: center;
+      position: relative;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 70% at 50% 50%, rgba(79, 134, 87, 0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-h {
+      font-size: clamp(30px, 5vw, 56px);
+      font-weight: normal;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-sub {
+      font-size: 18px;
+      color: var(--soft);
+      max-width: 480px;
+      margin: 0 auto 44px;
+      line-height: 1.7;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── FOOTER ──────────────────────────────────────────── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 36px 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-logo {
+      font-size: 16px;
+    }
+
+    .footer-logo span {
+      color: var(--green);
+    }
+
+    .footer-note {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* ── ANIMATIONS ──────────────────────────────────────── */
+    @keyframes riseIn {
+      from {
+        opacity: 0;
+        transform: translateY(22px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Ripple on primary btn */
+    .btn-primary {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.18);
+      opacity: 0;
+      border-radius: inherit;
+      transition: opacity 0.25s;
+    }
+
+    .btn-primary:active::after {
+      opacity: 1;
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────────────── */
+    @media (max-width: 768px) {
+      nav {
+        padding: 0 20px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .step {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+
+      .step-n {
+        font-size: 36px;
+      }
+
+      footer {
+        padding: 24px 20px;
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .mockup-body {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Animated background -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="logo">mind <span>journal</span></div>
+    <ul class="nav-links">
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#science">The science</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="mind-journal.html" class="nav-cta">Open Journal →</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Science-backed · Free · Stays on your device
+    </div>
+
+    <h1 class="hero-title">
+      Your mind needs a place<br>to <em>put things down.</em>
+    </h1>
+
+    <p class="hero-sub">
+      A structured daily journal that helps you release anxious thoughts, break mental loops, and feel lighter — built
+      on real psychology research.
+    </p>
+
+    <div class="hero-ctas">
+      <a href="mind-journal.html" class="btn-primary">Open Your Journal →</a>
+      <a href="#how" class="btn-ghost">See how it works</a>
+    </div>
+
+    <p class="hero-note">Works in any browser · No account needed · Everything stays private</p>
+
+    <!-- MOCKUP -->
+    <div class="mockup-wrap">
+      <div class="mockup-glow"></div>
+      <div class="mockup">
+        <div class="mockup-bar">
+          <div class="dot" style="background:#ff5f57"></div>
+          <div class="dot" style="background:#febc2e"></div>
+          <div class="dot" style="background:#28c840"></div>
+          <div class="mockup-url">mind journal — today</div>
+        </div>
+        <div class="mockup-body">
+          <div class="mock-header">
+            <div class="mock-logo">mind <span>journal</span></div>
+            <div class="mock-streak">🌱 Day 1</div>
+          </div>
+          <div class="mock-tabs">
+            <div class="mock-tab active">Check-in</div>
+            <div class="mock-tab">Brain Dump</div>
+            <div class="mock-tab">Worry Parking</div>
+            <div class="mock-tab">Reframe</div>
+            <div class="mock-tab">Gratitude</div>
+            <div class="mock-tab">Evening</div>
+          </div>
+          <div class="mock-label">How are you feeling right now?</div>
+          <div class="mock-moods">
+            <div class="mock-mood">😔 Heavy</div>
+            <div class="mock-mood active">😰 Anxious</div>
+            <div class="mock-mood">😶 Flat</div>
+            <div class="mock-mood">🙂 Okay</div>
+            <div class="mock-mood">😌 Calm</div>
+          </div>
+          <div class="mock-area" id="typewriter-area">
+            <span id="typed-text"></span><span class="mock-cursor"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAIN SECTION -->
+  <section class="pain-section" id="why">
+    <div class="container">
+      <span class="tag">Why it exists</span>
+      <h2 class="h2">Sound familiar?</h2>
+      <p class="lead">If your mind feels like this, this journal was made for you.</p>
+
+      <div class="pain-grid">
+        <div class="pain-card reveal">
+          <span class="pain-icon">🌀</span>
+          <div class="pain-title">Thoughts that won't stop</div>
+          <div class="pain-desc">Same thoughts, same loops, no off switch. Like browser tabs you can't close — your
+            brain just keeps running.</div>
+        </div>
+        <div class="pain-card reveal">
+          <span class="pain-icon">🧱</span>
+          <div class="pain-title">Mind goes completely blank</div>
+          <div class="pain-desc">You sit down to work or write — and nothing comes. Not laziness. Your brain is
+            overloaded and shutting down.</div>
+        </div>
+        <div class="pain-card reveal">
+          <span class="pain-icon">⚡</span>
+          <div class="pain-title">Stressed by small things</div>
+          <div class="pain-desc">Things that shouldn't matter send you into tension. Your nervous system is stuck in
+            alert mode all day.</div>
+        </div>
+        <div class="pain-card reveal">
+          <span class="pain-icon">🌧</span>
+          <div class="pain-title">Low before the day starts</div>
+          <div class="pain-desc">You open your eyes and the weight is already there. Morning shouldn't feel heavy before
+            it even begins.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-section" id="how">
+    <div class="container">
+      <span class="tag">How it works</span>
+      <h2 class="h2">A structured daily ritual.<br>Not just a blank page.</h2>
+      <p class="lead">Six purposeful sections. Each one targeting a specific mental pattern. 15–20 minutes a day.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-n">1</div>
+          <div>
+            <div class="step-time">Morning · 2 min</div>
+            <div class="step-title">Check-in</div>
+            <div class="step-desc">Name your mood, your energy, and the one thought sitting heaviest. You can't process
+              what you haven't named. This gives the day a clear starting point instead of vague dread.</div>
+            <div class="step-chips">
+              <span class="chip">Mood tracking</span>
+              <span class="chip">Energy check</span>
+              <span class="chip">Thought naming</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-n">2</div>
+          <div>
+            <div class="step-time">Morning · 10 min</div>
+            <div class="step-title">Brain Dump</div>
+            <div class="step-desc">Write everything in your head — no structure, no grammar, no judgment — for 10
+              minutes with a timer. When thoughts are written down, your brain releases them. This is the single most
+              powerful section.</div>
+            <div class="step-chips">
+              <span class="chip">Pennebaker Method</span>
+              <span class="chip">Timed writing</span>
+              <span class="chip">Mental offloading</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-n">3</div>
+          <div>
+            <div class="step-time">Morning · 3 min</div>
+            <div class="step-title">Worry Parking Lot</div>
+            <div class="step-desc">List every worry, park it, and set a 15-minute window to think about them later.
+              Outside that window, when a worry surfaces, tell yourself "I've parked it." This stops the constant
+              background anxiety loop.</div>
+            <div class="step-chips">
+              <span class="chip">Scheduled worry time</span>
+              <span class="chip">CBT technique</span>
+              <span class="chip">Anxiety containment</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-n">4</div>
+          <div>
+            <div class="step-time">Anytime · 5 min</div>
+            <div class="step-title">Thought Reframe</div>
+            <div class="step-desc">Take one heavy thought through 4 questions: write it raw → fact or feeling? → what
+              would you tell a friend? → what's a more accurate version? Not forced positivity — accurate thinking.
+            </div>
+            <div class="step-chips">
+              <span class="chip">CBT reframing</span>
+              <span class="chip">Cognitive distortions</span>
+              <span class="chip">Self-compassion</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-n">5</div>
+          <div>
+            <div class="step-time">Morning or evening · 2 min</div>
+            <div class="step-title">Gratitude & Wins</div>
+            <div class="step-desc">Three small things you're grateful for, one thing you did okay, one kind thing to say
+              to yourself. Anxiety focuses on what's wrong — this trains your brain to also see what's right.</div>
+            <div class="step-chips">
+              <span class="chip">Positive affect</span>
+              <span class="chip">Self-compassion</span>
+              <span class="chip">Attention retraining</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-n">6</div>
+          <div>
+            <div class="step-time">Evening · 5 min</div>
+            <div class="step-title">Evening Wind-down</div>
+            <div class="step-desc">Close the day: how it felt, what you're releasing, one gentle intention for tomorrow.
+              This closes the mental "open tabs" before sleep so they stop running through the night.</div>
+            <div class="step-chips">
+              <span class="chip">Sleep hygiene</span>
+              <span class="chip">Emotional closure</span>
+              <span class="chip">Intention setting</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCIENCE -->
+  <section class="science-section" id="science">
+    <div class="container">
+      <span class="tag">The research</span>
+      <h2 class="h2">This isn't just journaling.<br>It's applied psychology.</h2>
+      <p class="lead">Every section is built on peer-reviewed research. Here's what the science says.</p>
+
+      <div class="science-grid">
+        <div class="science-card">
+          <div class="science-stat">15 min</div>
+          <div class="science-label">of writing = measurable anxiety reduction</div>
+          <div class="science-src">Pennebaker & Beall (1986): writing about emotional experiences for 15 minutes over 4
+            days reduced anxiety, improved immune markers, and lowered health clinic visits for months after.</div>
+        </div>
+        <div class="science-card">
+          <div class="science-stat">30%</div>
+          <div class="science-label">felt calm after a single brain dump session</div>
+          <div class="science-src">Klein & Boals (2001): 30% of participants reported feeling calm or peaceful
+            immediately after writing. Working memory capacity also significantly improved.</div>
+        </div>
+        <div class="science-card">
+          <div class="science-stat">↓</div>
+          <div class="science-label">Intrusive thoughts drop after expressive writing</div>
+          <div class="science-src">Lepore et al. (2002): expressive writing diminishes intrusive, avoidant thoughts —
+            freeing the mind for other mental activities. Published in Journal of Consulting & Clinical Psychology.
+          </div>
+        </div>
+        <div class="science-card">
+          <div class="science-stat">4-7-8</div>
+          <div class="science-label">Breathing activates calm response in seconds</div>
+          <div class="science-src">Extended-exhale breathing activates the parasympathetic nervous system. Even one
+            round shifts cortisol levels. Built into the journal as an on-demand reset.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features-section" id="features">
+    <div class="container">
+      <span class="tag">What's inside</span>
+      <h2 class="h2">Everything you need.<br>Nothing you don't.</h2>
+
+      <div class="features-grid">
+        <div class="feat"><span class="feat-icon">⏱</span>
+          <div class="feat-title">10-minute writing timer</div>
+          <div class="feat-desc">Countdown for the Brain Dump keeps you writing without watching the clock.</div>
+        </div>
+        <div class="feat"><span class="feat-icon">🅿</span>
+          <div class="feat-title">Worry Parking Lot</div>
+          <div class="feat-desc">List, park, and schedule worries. Stops the all-day anxiety loop with one ritual.</div>
+        </div>
+        <div class="feat"><span class="feat-icon">🌬</span>
+          <div class="feat-title">Breathing exercise</div>
+          <div class="feat-desc">Animated 4-7-8 breathing guide. One round takes under a minute.</div>
+        </div>
+        <div class="feat"><span class="feat-icon">📅</span>
+          <div class="feat-title">History & date nav</div>
+          <div class="feat-desc">Go back and read past entries. See your patterns. Watch yourself improve.</div>
+        </div>
+        <div class="feat"><span class="feat-icon">🔥</span>
+          <div class="feat-title">Streak tracker</div>
+          <div class="feat-desc">Tracks consecutive days. Consistency is what makes this work long-term.</div>
+        </div>
+        <div class="feat"><span class="feat-icon">💾</span>
+          <div class="feat-title">Auto-saves as you type</div>
+          <div class="feat-desc">Everything saves automatically. No account. No cloud. Just yours.</div>
+        </div>
+        <div class="feat"><span class="feat-icon">🔒</span>
+          <div class="feat-title">100% private</div>
+          <div class="feat-desc">Nothing leaves your device. No servers, no data collection, no login required.</div>
+        </div>
+        <div class="feat"><span class="feat-icon">✦</span>
+          <div class="feat-title">Daily quote</div>
+          <div class="feat-desc">A grounding quote each morning to start your session with intention.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUOTE -->
+  <section class="quote-section">
+    <span class="quote-mark">"</span>
+    <p class="big-quote">You don't have to control your thoughts. You just have to stop letting them control you.</p>
+    <div class="quote-attr">— Dan Millman</div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2 class="cta-h reveal">Start tomorrow morning.</h2>
+    <p class="cta-sub reveal">Open the journal before you pick up your phone. Even 5 minutes of Brain Dump will make the
+      day feel lighter.</p>
+    <a href="mind-journal.html" class="btn-primary reveal" style="font-size: 17px; padding: 18px 46px;">Open Your
+      Journal →</a>
+    <p style="margin-top: 20px; font-size: 13px; color: var(--muted); position: relative; z-index: 1;">Free · No account
+      · Stays on your device</p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">mind <span>journal</span></div>
+    <div class="footer-note">Built with care · Grounded in science · Made for you</div>
+  </footer>
+
+  <script>
+    /* ── ANIMATED BACKGROUND ─────────────────────────── */
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let W, H, particles;
+
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+
+    function initParticles() {
+      particles = Array.from({ length: 28 }, () => ({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: 1.5 + Math.random() * 3,
+        vx: (Math.random() - 0.5) * 0.18,
+        vy: -0.08 - Math.random() * 0.14,
+        alpha: 0.06 + Math.random() * 0.12,
+        color: Math.random() > 0.5 ? '79,134,87' : '192,122,62',
+      }));
+    }
+
+    function drawParticles() {
+      ctx.clearRect(0, 0, W, H);
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${p.color},${p.alpha})`;
+        ctx.fill();
+
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.y < -10) { p.y = H + 10; p.x = Math.random() * W; }
+        if (p.x < -10) p.x = W + 10;
+        if (p.x > W + 10) p.x = -10;
+      });
+      requestAnimationFrame(drawParticles);
+    }
+
+    resize();
+    initParticles();
+    drawParticles();
+    window.addEventListener('resize', () => { resize(); });
+
+    /* ── NAV SCROLL ──────────────────────────────────── */
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    /* ── TYPEWRITER ──────────────────────────────────── */
+    const phrases = [
+      "Right now I'm thinking about everything at once...",
+      "My brain feels like 40 tabs open and none loading...",
+      "I want to feel lighter today. Just a little...",
+      "There's this background hum of worry I can't place...",
+    ];
+    let pi = 0, ci = 0, deleting = false;
+    const el = document.getElementById('typed-text');
+
+    function type() {
+      const phrase = phrases[pi];
+      if (!deleting) {
+        el.textContent = phrase.slice(0, ++ci);
+        if (ci === phrase.length) { deleting = true; setTimeout(type, 2200); return; }
+        setTimeout(type, 42 + Math.random() * 28);
+      } else {
+        el.textContent = phrase.slice(0, --ci);
+        if (ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; setTimeout(type, 400); return; }
+        setTimeout(type, 22);
+      }
+    }
+    setTimeout(type, 1600);
+
+    /* ── SCROLL REVEAL ───────────────────────────────── */
+    const revealObs = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 90);
+          revealObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.step, .science-card, .feat, .pain-card, .reveal, .big-quote').forEach(el => {
+      revealObs.observe(el);
+    });
+
+    /* ── SMOOTH ACTIVE NAV ───────────────────────────── */
+    const sections = document.querySelectorAll('section[id]');
+    const navAs = document.querySelectorAll('.nav-links a[href^="#"]');
+    window.addEventListener('scroll', () => {
+      let cur = '';
+      sections.forEach(s => { if (window.scrollY >= s.offsetTop - 90) cur = s.id; });
+      navAs.forEach(a => {
+        a.style.color = a.getAttribute('href') === '#' + cur ? 'var(--green)' : '';
+      });
+    }, { passive: true });
+  </script>
+</body>
+
+</html>

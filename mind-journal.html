@@ -1,0 +1,2121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="brain.png" type="image/x-icon">
+
+  <title>Mind Journal</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #f7f5f0;
+      --surface: #ffffff;
+      --surface2: #f0ede8;
+      --border: #e4dfd7;
+      --text: #2c2825;
+      --text-soft: #7a7068;
+      --text-muted: #b0a89e;
+      --accent: #6b8f71;
+      --accent-light: #e8f0e9;
+      --accent2: #8b7355;
+      --accent2-light: #f5ede0;
+      --red: #c0504d;
+      --red-light: #fdf0ef;
+      --blue: #5b7fa6;
+      --blue-light: #edf2f8;
+      --purple: #7b6fa0;
+      --purple-light: #f0edf8;
+      --warm: #c8894a;
+      --warm-light: #fdf3e8;
+      --radius: 14px;
+      --radius-sm: 8px;
+      --shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.10);
+    }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: normal;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+
+    .logo span {
+      color: var(--accent);
+    }
+
+    .date-nav {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Georgia', serif;
+    }
+
+    .date-nav button {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      cursor: pointer;
+      color: var(--text-soft);
+      font-size: 16px;
+      transition: all 0.15s;
+    }
+
+    .date-nav button:hover {
+      background: var(--surface2);
+    }
+
+    #current-date {
+      font-size: 14px;
+      color: var(--text-soft);
+      min-width: 160px;
+      text-align: center;
+    }
+
+    .streak {
+      font-size: 13px;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    /* TABS */
+    .tabs {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+    }
+
+    .tab {
+      padding: 14px 20px;
+      font-size: 13px;
+      font-family: 'Georgia', serif;
+      cursor: pointer;
+      color: var(--text-soft);
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      white-space: nowrap;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tab:hover {
+      color: var(--text);
+    }
+
+    .tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .tab .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--text-muted);
+    }
+
+    .tab.done .dot {
+      background: var(--accent);
+    }
+
+    /* MAIN */
+    .main {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* SECTIONS */
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .section-header {
+      margin-bottom: 28px;
+    }
+
+    .section-title {
+      font-size: 26px;
+      font-weight: normal;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .section-desc {
+      font-size: 14px;
+      color: var(--text-soft);
+      line-height: 1.6;
+    }
+
+    /* CARD */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-label {
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-label .icon {
+      font-size: 14px;
+    }
+
+    /* MOOD PICKER */
+    .mood-grid {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .mood-btn {
+      padding: 10px 18px;
+      border-radius: 30px;
+      border: 1.5px solid var(--border);
+      background: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-family: 'Georgia', serif;
+      color: var(--text-soft);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mood-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .mood-btn.selected {
+      background: var(--accent-light);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ENERGY SLIDER */
+    .energy-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .energy-label {
+      font-size: 13px;
+      color: var(--text-soft);
+      width: 80px;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      flex: 1;
+      height: 4px;
+      background: var(--border);
+      border-radius: 4px;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .energy-val {
+      font-size: 14px;
+      color: var(--accent);
+      width: 30px;
+      text-align: right;
+      font-family: 'Georgia', serif;
+    }
+
+    /* TEXTAREA */
+    .journal-area {
+      width: 100%;
+      min-height: 160px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      font-family: 'Georgia', serif;
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--text);
+      background: var(--surface);
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .journal-area:focus {
+      border-color: var(--accent);
+    }
+
+    .journal-area::placeholder {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .char-count {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      text-align: right;
+    }
+
+    /* TIMER */
+    .timer-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .timer-display {
+      font-size: 22px;
+      font-family: monospace;
+      color: var(--accent);
+      min-width: 60px;
+    }
+
+    .timer-btn {
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1.5px solid var(--accent);
+      background: none;
+      color: var(--accent);
+      font-size: 13px;
+      cursor: pointer;
+      font-family: 'Georgia', serif;
+      transition: all 0.2s;
+    }
+
+    .timer-btn:hover,
+    .timer-btn.running {
+      background: var(--accent);
+      color: white;
+    }
+
+    .timer-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* WORRY LIST */
+    .worry-input-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .worry-input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-family: 'Georgia', serif;
+      color: var(--text);
+      background: var(--surface);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .worry-input:focus {
+      border-color: var(--red);
+    }
+
+    .add-btn {
+      padding: 10px 18px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 14px;
+      font-family: 'Georgia', serif;
+      transition: opacity 0.2s;
+    }
+
+    .add-btn:hover {
+      opacity: 0.85;
+    }
+
+    .worry-list {
+      list-style: none;
+    }
+
+    .worry-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      animation: slideIn 0.2s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .worry-item:last-child {
+      border-bottom: none;
+    }
+
+    .worry-text {
+      flex: 1;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    .worry-text.parked {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .park-btn {
+      padding: 4px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: none;
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--text-soft);
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .park-btn:hover {
+      background: var(--accent-light);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .park-btn.parked {
+      background: var(--accent-light);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .delete-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 2px 4px;
+      transition: color 0.2s;
+    }
+
+    .delete-btn:hover {
+      color: var(--red);
+    }
+
+    /* GRATITUDE */
+    .gratitude-inputs {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .g-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .g-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .g-input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-family: 'Georgia', serif;
+      color: var(--text);
+      background: var(--surface);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .g-input:focus {
+      border-color: var(--warm);
+    }
+
+    /* REFRAME */
+    .reframe-step {
+      margin-bottom: 16px;
+    }
+
+    .reframe-q {
+      font-size: 13px;
+      color: var(--text-soft);
+      margin-bottom: 8px;
+      font-style: italic;
+    }
+
+    /* PROMPTS */
+    .prompt-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .prompt-chip {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--text-soft);
+      font-family: 'Georgia', serif;
+      transition: all 0.2s;
+    }
+
+    .prompt-chip:hover {
+      background: var(--accent-light);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* PROGRESS BAR */
+    .progress-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    /* INSIGHT CARD */
+    .insight {
+      background: var(--accent-light);
+      border: 1px solid #c5dac8;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    }
+
+    .insight p {
+      font-size: 14px;
+      color: #3d6b44;
+      line-height: 1.7;
+      font-style: italic;
+    }
+
+    .insight-author {
+      font-size: 12px;
+      color: var(--accent);
+      margin-top: 8px;
+    }
+
+    /* SAVE BTN */
+    .save-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 24px;
+      gap: 10px;
+    }
+
+    .save-btn {
+      padding: 12px 28px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 14px;
+      font-family: 'Georgia', serif;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(107, 143, 113, 0.3);
+    }
+
+    .save-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .save-btn:active {
+      transform: translateY(0);
+    }
+
+    .saved-badge {
+      display: none;
+      font-size: 13px;
+      color: var(--accent);
+      align-items: center;
+      gap: 6px;
+    }
+
+    .saved-badge.show {
+      display: flex;
+    }
+
+    /* HISTORY VIEW */
+    /* HISTORY */
+    .history-entry {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+
+    .history-entry:hover {
+      box-shadow: var(--shadow);
+    }
+
+    .history-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .history-header:hover {
+      background: var(--surface2);
+    }
+
+    .history-header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .history-date {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .history-mood {
+      font-size: 14px;
+      color: var(--text-soft);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .history-energy {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .history-chevron {
+      font-size: 16px;
+      color: var(--text-muted);
+      transition: transform 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .history-entry.open .history-chevron {
+      transform: rotate(180deg);
+    }
+
+    .history-body {
+      display: none;
+      border-top: 1px solid var(--border);
+      padding: 20px 24px;
+    }
+
+    .history-body-inner {
+      overflow: hidden;
+    }
+
+    .hist-section {
+      margin-bottom: 18px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hist-section:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .hist-section-label {
+      font-size: 10px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .hist-section-content {
+      font-size: 14px;
+      color: var(--text-soft);
+      line-height: 1.75;
+      white-space: pre-wrap;
+    }
+
+    .hist-mood-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 6px;
+    }
+
+    .hist-worry-item {
+      font-size: 13px;
+      color: var(--text-soft);
+      padding: 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hist-worry-item.parked {
+      color: var(--text-muted);
+      text-decoration: line-through;
+    }
+
+    .hist-worry-item::before {
+      content: '·';
+      color: var(--text-muted);
+    }
+
+    .hist-gratitude-item {
+      font-size: 13px;
+      color: var(--text-soft);
+      padding: 3px 0;
+      display: flex;
+      gap: 8px;
+    }
+
+    .hist-g-num {
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* EMPTY STATE */
+    .empty {
+      text-align: center;
+      padding: 60px 24px;
+      color: var(--text-muted);
+    }
+
+    .empty .icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .empty p {
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* COMPLETION RING */
+    .completion-ring {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .ring-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--border);
+      title: attr(data-label);
+    }
+
+    .ring-dot.filled {
+      background: var(--accent);
+    }
+
+    /* BREATHE */
+    .breathe-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+    }
+
+    .breathe-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      border: 3px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--accent);
+      transition: all 4s ease-in-out;
+      margin-bottom: 20px;
+    }
+
+    .breathe-circle.expand {
+      width: 180px;
+      height: 180px;
+      background: var(--accent);
+      color: white;
+    }
+
+    .breathe-text {
+      font-size: 18px;
+      color: var(--text-soft);
+      margin-bottom: 8px;
+    }
+
+    .breathe-subtext {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .breathe-btn {
+      margin-top: 20px;
+      padding: 10px 24px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 24px;
+      font-size: 14px;
+      font-family: 'Georgia', serif;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .breathe-btn:hover {
+      opacity: 0.85;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      background: var(--text);
+      color: white;
+      padding: 14px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: 'Georgia', serif;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* YOUR NAME + APPRECIATION */
+    .name-btn {
+      font: inherit;
+      color: #3d6b44;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      border-bottom: 1.5px dashed var(--border);
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .name-btn:hover,
+    .name-btn:focus-visible {
+      border-bottom-color: var(--accent);
+      color: var(--accent);
+      outline: none;
+    }
+
+    .name-edit {
+      font-size: 15px;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-left: 8px;
+      vertical-align: middle;
+      opacity: 0.6;
+      transition: opacity 0.2s, color 0.2s;
+    }
+
+    .name-edit:hover,
+    .name-edit:focus-visible {
+      opacity: 1;
+      color: var(--accent);
+      outline: none;
+    }
+
+    .appreciation {
+      margin-top: 14px;
+      padding: 12px 16px;
+      background: var(--warm-light);
+      border-left: 3px solid var(--warm);
+      border-radius: var(--radius-sm);
+      color: #7a4f24;
+      font-size: 14px;
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .appreciation:empty {
+      display: none;
+    }
+
+    .toast {
+      max-width: min(380px, calc(100vw - 48px));
+      line-height: 1.5;
+    }
+
+    .name-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(44, 40, 37, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+    }
+
+    .name-overlay.show {
+      display: flex;
+    }
+
+    .name-dialog {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      padding: 32px 28px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      animation: dialogIn 0.35s ease;
+    }
+
+    @keyframes dialogIn {
+      from { transform: scale(0.97); opacity: 0.4; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .name-dialog .wave {
+      font-size: 34px;
+    }
+
+    .name-dialog h2 {
+      font-weight: normal;
+      font-size: 22px;
+      margin: 10px 0 6px;
+      color: var(--text);
+    }
+
+    .name-dialog p {
+      color: var(--text-soft);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    .name-dialog input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: 'Georgia', serif;
+      font-size: 16px;
+      text-align: center;
+      background: var(--bg);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .name-dialog input:focus {
+      border-color: var(--accent);
+      background: var(--surface);
+    }
+
+    .name-dialog .actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    .name-dialog .ghost-btn {
+      padding: 12px 22px;
+      background: none;
+      color: var(--text-soft);
+      border: 1.5px solid var(--border);
+      border-radius: 30px;
+      font-size: 14px;
+      font-family: 'Georgia', serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .name-dialog .ghost-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .header {
+        padding: 0 16px;
+      }
+
+      .tabs {
+        padding: 0 16px;
+      }
+
+      .main {
+        padding: 24px 16px 80px;
+      }
+
+      .section-title {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="logo">mind <span>journal</span></div>
+    <div class="date-nav">
+      <button onclick="changeDay(-1)">‹</button>
+      <div id="current-date"></div>
+      <button onclick="changeDay(1)">›</button>
+    </div>
+    <div class="streak" id="streak-badge">🌱 Day 1</div>
+  </header>
+
+  <!-- TABS -->
+  <nav class="tabs">
+    <button class="tab active" onclick="showTab('checkin')" id="tab-checkin">
+      <span class="dot" id="dot-checkin"></span> Check-in
+    </button>
+    <button class="tab" onclick="showTab('braindump')" id="tab-braindump">
+      <span class="dot" id="dot-braindump"></span> Brain Dump
+    </button>
+    <button class="tab" onclick="showTab('worry')" id="tab-worry">
+      <span class="dot" id="dot-worry"></span> Worry Parking
+    </button>
+    <button class="tab" onclick="showTab('reframe')" id="tab-reframe">
+      <span class="dot" id="dot-reframe"></span> Reframe
+    </button>
+    <button class="tab" onclick="showTab('gratitude')" id="tab-gratitude">
+      <span class="dot" id="dot-gratitude"></span> Gratitude
+    </button>
+    <button class="tab" onclick="showTab('evening')" id="tab-evening">
+      <span class="dot" id="dot-evening"></span> Evening
+    </button>
+    <button class="tab" onclick="showTab('breathe')" id="tab-breathe">
+      ✦ Breathe
+    </button>
+    <button class="tab" onclick="showTab('history')" id="tab-history">
+      History
+    </button>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- CHECK-IN -->
+    <section class="section active" id="section-checkin">
+      <div class="section-header">
+        <h1 class="section-title"><span id="greet-word">Hello</span>, <button type="button" class="name-btn" id="name-btn" title="Change your name"><span id="name-text">friend</span></button>.<button type="button" class="name-edit" id="name-edit-btn" title="Change your name" aria-label="Change your name">✎</button></h1>
+        <p class="section-desc">Just a quick check before we begin. No judgement — just honest.</p>
+        <p class="appreciation" id="mj-cheer"></p>
+      </div>
+
+      <div class="insight">
+        <p id="daily-quote">"You don't have to control your thoughts. You just have to stop letting them control you."
+        </p>
+        <div class="insight-author">— Dan Millman</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label"><span class="icon">🌡</span> How are you feeling right now?</div>
+        <div class="mood-grid">
+          <button class="mood-btn" data-mood="heavy" onclick="selectMood(this, 'heavy')">😔 Heavy</button>
+          <button class="mood-btn" data-mood="anxious" onclick="selectMood(this, 'anxious')">😰 Anxious</button>
+          <button class="mood-btn" data-mood="flat" onclick="selectMood(this, 'flat')">😶 Flat</button>
+          <button class="mood-btn" data-mood="restless" onclick="selectMood(this, 'restless')">😤 Restless</button>
+          <button class="mood-btn" data-mood="okay" onclick="selectMood(this, 'okay')">🙂 Okay</button>
+          <button class="mood-btn" data-mood="calm" onclick="selectMood(this, 'calm')">😌 Calm</button>
+          <button class="mood-btn" data-mood="good" onclick="selectMood(this, 'good')">😊 Good</button>
+          <button class="mood-btn" data-mood="light" onclick="selectMood(this, 'light')">✨ Light</button>
+        </div>
+
+        <div class="energy-row">
+          <div class="energy-label">Energy</div>
+          <input type="range" id="energy-slider" min="1" max="10" value="5" oninput="updateEnergy(this.value)">
+          <div class="energy-val" id="energy-val">5</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label"><span class="icon">💭</span> One sentence — what's sitting heaviest right now?</div>
+        <input type="text" class="worry-input" id="heaviest-thought" placeholder="Just one thing on top of your mind..."
+          style="width:100%">
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">You'll address this in the journal —
+          for now, just name it.</div>
+      </div>
+
+      <div class="save-row">
+        <div class="saved-badge" id="save-badge-checkin">✓ Saved</div>
+        <button class="save-btn" onclick="saveSection('checkin')">Save & Continue →</button>
+      </div>
+    </section>
+
+    <!-- BRAIN DUMP -->
+    <section class="section" id="section-braindump">
+      <div class="section-header">
+        <h1 class="section-title">Brain Dump</h1>
+        <p class="section-desc">Get everything out of your head and onto the page. No grammar. No structure. No
+          judgement. Just write whatever is there — even if it's "I don't know what to write."</p>
+      </div>
+
+      <div class="card">
+        <div class="card-label"><span class="icon">⏱</span> Timed writing — 10 minutes</div>
+        <div class="timer-row">
+          <div class="timer-display" id="dump-timer">10:00</div>
+          <button class="timer-btn" id="dump-timer-btn" onclick="toggleTimer('dump')">Start</button>
+          <button class="timer-btn" onclick="resetTimer('dump')"
+            style="border-color: var(--border); color: var(--text-soft);">Reset</button>
+          <div class="timer-hint">Write until the timer ends. Don't stop.</div>
+        </div>
+
+        <div class="prompt-chips">
+          <div style="font-size: 12px; color: var(--text-muted); margin-right: 4px; align-self: center;">Stuck? Try:
+          </div>
+          <span class="prompt-chip" onclick="addPrompt('braindump', this.innerText)">Right now I'm thinking
+            about...</span>
+          <span class="prompt-chip" onclick="addPrompt('braindump', this.innerText)">What's bothering me is...</span>
+          <span class="prompt-chip" onclick="addPrompt('braindump', this.innerText)">I keep coming back to...</span>
+          <span class="prompt-chip" onclick="addPrompt('braindump', this.innerText)">My body feels...</span>
+          <span class="prompt-chip" onclick="addPrompt('braindump', this.innerText)">I wish I could stop thinking
+            about...</span>
+        </div>
+
+        <textarea class="journal-area" id="braindump-text"
+          placeholder="Start writing. Anything. Everything. Just let it flow..." style="min-height: 280px;"
+          oninput="countChars('braindump')"></textarea>
+        <div class="char-count" id="braindump-count">0 words</div>
+      </div>
+
+      <div class="card" style="background: var(--surface2); border-style: dashed;">
+        <div style="font-size: 13px; color: var(--text-soft); line-height: 1.7;">
+          <strong style="color: var(--text);">Why this works:</strong> Research by James Pennebaker (Harvard, 1997)
+          found that 15 minutes of free emotional writing reduced anxiety, lowered stress hormones, and improved working
+          memory. When thoughts stay in your head, they loop. Writing them down tells your brain: "stored — you can let
+          go now."
+        </div>
+      </div>
+
+      <div class="save-row">
+        <div class="saved-badge" id="save-badge-braindump">✓ Saved</div>
+        <button class="save-btn" onclick="saveSection('braindump')">Save & Continue →</button>
+      </div>
+    </section>
+
+    <!-- WORRY PARKING -->
+    <section class="section" id="section-worry">
+      <div class="section-header">
+        <h1 class="section-title">Worry Parking Lot</h1>
+        <p class="section-desc">Write every worry down, then "park" it. You're telling your brain: "I see you. I'll deal
+          with you later." This stops the loop.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-label"><span class="icon">🅿</span> Add a worry</div>
+        <div class="worry-input-row">
+          <input type="text" class="worry-input" id="worry-input" placeholder="What's worrying you?"
+            onkeydown="if(event.key==='Enter') addWorry()">
+          <button class="add-btn" onclick="addWorry()">Park it</button>
+        </div>
+        <ul class="worry-list" id="worry-list">
+          <!-- worries added here -->
+        </ul>
+        <div id="worry-empty"
+          style="font-size: 14px; color: var(--text-muted); text-align: center; padding: 20px; display: none;">
+          No worries parked yet. Add one above.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label"><span class="icon">🗓</span> Scheduled worry time</div>
+        <div style="font-size: 13px; color: var(--text-soft); line-height: 1.7; margin-bottom: 12px;">
+          Pick a 15-minute window today to actually think about these worries. Outside of that time, when a worry shows
+          up, say: <em>"I've parked you. I'll think about you at [time]."</em> Then redirect.
+        </div>
+        <input type="time" id="worry-time"
+          style="padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; font-family: Georgia; color: var(--text); background: var(--surface);">
+        <span style="font-size: 13px; color: var(--text-soft); margin-left: 10px;">— my worry window today</span>
+      </div>
+
+      <div class="save-row">
+        <div class="saved-badge" id="save-badge-worry">✓ Saved</div>
+        <button class="save-btn" onclick="saveSection('worry')">Save & Continue →</button>
+      </div>
+    </section>
+
+    <!-- REFRAME -->
+    <section class="section" id="section-reframe">
+      <div class="section-header">
+        <h1 class="section-title">Thought Reframe</h1>
+        <p class="section-desc">Take one heavy thought and walk it through this process. You're not trying to think
+          positive — you're trying to think accurately.</p>
+      </div>
+
+      <div class="card">
+        <div class="reframe-step">
+          <div class="card-label"><span class="icon">1.</span> The thought as it is</div>
+          <div class="reframe-q">Write it exactly as it appears in your head, unfiltered.</div>
+          <textarea class="journal-area" id="reframe-1"
+            placeholder="e.g. My mind is blank, I can't do anything, something is wrong with me..."
+            style="min-height: 80px;"></textarea>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="reframe-step">
+          <div class="card-label"><span class="icon">2.</span> Is this fact or feeling?</div>
+          <div class="reframe-q">A fact can be verified. A feeling is real but not always accurate. Which is this?</div>
+          <textarea class="journal-area" id="reframe-2"
+            placeholder="e.g. It's a feeling. I have had moments where I could think clearly. This is a temporary state, not a permanent one."
+            style="min-height: 80px;"></textarea>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="reframe-step">
+          <div class="card-label"><span class="icon">3.</span> What would I tell a friend?</div>
+          <div class="reframe-q">If your best friend had this exact thought, what would you tell them?</div>
+          <textarea class="journal-area" id="reframe-3"
+            placeholder="e.g. I'd tell them that feeling stuck doesn't mean being broken. It means your mind needs rest, not pressure."
+            style="min-height: 80px;"></textarea>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="reframe-step">
+          <div class="card-label"><span class="icon">4.</span> A more accurate thought</div>
+          <div class="reframe-q">Write a version of this thought that is more balanced and truthful (not forced
+            positivity).</div>
+          <textarea class="journal-area" id="reframe-4"
+            placeholder="e.g. I'm going through a hard period mentally. This is real, but it is not permanent and I am taking steps to understand it."
+            style="min-height: 80px;"></textarea>
+        </div>
+      </div>
+
+      <div class="save-row">
+        <div class="saved-badge" id="save-badge-reframe">✓ Saved</div>
+        <button class="save-btn" onclick="saveSection('reframe')">Save & Continue →</button>
+      </div>
+    </section>
+
+    <!-- GRATITUDE -->
+    <section class="section" id="section-gratitude">
+      <div class="section-header">
+        <h1 class="section-title">Small Wins & Gratitude</h1>
+        <p class="section-desc">Anxiety focuses on what's wrong. This section trains your brain to also see what's okay
+          — even tiny things count.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-label"><span class="icon">🌿</span> 3 things I'm grateful for today</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">Can be tiny — a good cup of chai,
+          waking up, a message from a friend.</div>
+        <div class="gratitude-inputs">
+          <div class="g-row">
+            <div class="g-num">1</div>
+            <input type="text" class="g-input" id="gratitude-1" placeholder="Something good, however small...">
+          </div>
+          <div class="g-row">
+            <div class="g-num">2</div>
+            <input type="text" class="g-input" id="gratitude-2" placeholder="Another one...">
+          </div>
+          <div class="g-row">
+            <div class="g-num">3</div>
+            <input type="text" class="g-input" id="gratitude-3" placeholder="And one more...">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label"><span class="icon">⭐</span> One thing I did okay today</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">Not a big achievement. Just
+          something you showed up for.</div>
+        <input type="text" class="g-input" id="win-today" placeholder="I showed up for..." style="width: 100%;">
+      </div>
+
+      <div class="card">
+        <div class="card-label"><span class="icon">💌</span> One kind thing to say to yourself today</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">Talk to yourself like you'd talk to
+          someone you care about.</div>
+        <input type="text" class="g-input" id="self-kind" placeholder="e.g. I'm trying, and that matters."
+          style="width: 100%;">
+      </div>
+
+      <div class="save-row">
+        <div class="saved-badge" id="save-badge-gratitude">✓ Saved</div>
+        <button class="save-btn" onclick="saveSection('gratitude')">Save & Continue →</button>
+      </div>
+    </section>
+
+    <!-- EVENING -->
+    <section class="section" id="section-evening">
+      <div class="section-header">
+        <h1 class="section-title">Evening Wind-down</h1>
+        <p class="section-desc">Close the day. Release what happened. Set a light intention for tomorrow — nothing
+          heavy.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-label"><span class="icon">🌙</span> How did the day feel?</div>
+        <textarea class="journal-area" id="evening-day"
+          placeholder="A few honest sentences. What happened? How did you feel through it? No pressure to make it sound okay if it wasn't."
+          style="min-height: 120px;"></textarea>
+      </div>
+
+      <div class="card">
+        <div class="card-label"><span class="icon">📤</span> What am I releasing from today?</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Write what you don't want to carry
+          into sleep. Then let it go.</div>
+        <textarea class="journal-area" id="evening-release"
+          placeholder="e.g. I'm releasing the anxiety I felt this morning. I'm releasing the pressure I put on myself. It's done now."
+          style="min-height: 100px;"></textarea>
+      </div>
+
+      <div class="card">
+        <div class="card-label"><span class="icon">☀️</span> One gentle intention for tomorrow</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Not a to-do list. Just one thing
+          you'd like to feel or do.</div>
+        <input type="text" class="g-input" id="tomorrow-intention"
+          placeholder="e.g. I want to be a little kinder to myself." style="width: 100%;">
+      </div>
+
+      <div class="save-row">
+        <div class="saved-badge" id="save-badge-evening">✓ Saved</div>
+        <button class="save-btn" onclick="saveSection('evening')">Save ✓</button>
+      </div>
+    </section>
+
+    <!-- BREATHE -->
+    <section class="section" id="section-breathe">
+      <div class="section-header">
+        <h1 class="section-title">Breathe</h1>
+        <p class="section-desc">A 4-7-8 breathing exercise. One round takes under a minute. Activates your body's calm
+          response.</p>
+      </div>
+
+      <div class="card">
+        <div class="breathe-container">
+          <div class="breathe-circle" id="breathe-circle">Breathe</div>
+          <div class="breathe-text" id="breathe-text">Ready when you are</div>
+          <div class="breathe-subtext" id="breathe-subtext">4 counts in · 7 hold · 8 out</div>
+          <button class="breathe-btn" id="breathe-btn" onclick="startBreathe()">Begin</button>
+        </div>
+      </div>
+
+      <div class="card" style="background: var(--surface2); border-style: dashed;">
+        <div style="font-size: 13px; color: var(--text-soft); line-height: 1.7;">
+          <strong style="color: var(--text);">Why 4-7-8:</strong> The extended exhale (8 counts) activates the
+          parasympathetic nervous system — your body's "rest and digest" mode. Even one round shifts your nervous system
+          out of alert mode. Dr. Andrew Weil calls it "a natural tranquillizer."
+        </div>
+      </div>
+    </section>
+
+    <!-- HISTORY -->
+    <section class="section" id="section-history">
+      <div class="section-header">
+        <h1 class="section-title">Your Journal History</h1>
+        <p class="section-desc">Past entries. Tap any to review.</p>
+      </div>
+      <div id="history-list">
+        <div class="empty">
+          <div class="icon">📖</div>
+          <p>No entries yet.<br>Complete your first journal session to start tracking.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- NAME DIALOG -->
+  <div class="name-overlay" id="name-overlay" role="dialog" aria-modal="true" aria-labelledby="name-dialog-title">
+    <div class="name-dialog">
+      <div class="wave">🌿</div>
+      <h2 id="name-dialog-title">Welcome. What should I call you?</h2>
+      <p id="name-dialog-desc">This space is yours — adding your name makes it feel that way.</p>
+      <input type="text" id="name-input" maxlength="30" placeholder="Your first name" autocomplete="given-name">
+      <div class="actions">
+        <button type="button" class="ghost-btn" id="name-skip-btn">Maybe later</button>
+        <button type="button" class="save-btn" id="name-save-btn">Let's begin</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ─── STATE ───────────────────────────────────────────────────────
+    let currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
+    const quotes = [
+      { text: "You don't have to control your thoughts. You just have to stop letting them control you.", author: "Dan Millman" },
+      { text: "The present moment is the only moment available to us, and it is the door to all moments.", author: "Thich Nhat Hanh" },
+      { text: "You are allowed to be both a masterpiece and a work in progress simultaneously.", author: "Sophia Bush" },
+      { text: "Almost everything will work again if you unplug it for a few minutes — including you.", author: "Anne Lamott" },
+      { text: "Your mind will answer most questions if you learn to relax and wait for the answer.", author: "William S. Burroughs" },
+      { text: "Peace is the result of retraining your mind to process life as it is, rather than as you think it should be.", author: "Wayne Dyer" },
+      { text: "What you resist, persists. What you accept, transforms.", author: "Carl Jung" },
+      { text: "Not everything that is faced can be changed. But nothing can be changed until it is faced.", author: "James Baldwin" },
+    ];
+
+    let worries = [];
+    let timers = {};
+    let breatheInterval = null;
+
+    // ─── DATE ────────────────────────────────────────────────────────
+    function formatDate(d) {
+      return d.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' });
+    }
+
+    function getDateKey(d) {
+      return d.toISOString().split('T')[0];
+    }
+
+    function updateDateDisplay() {
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      const isToday = currentDate.getTime() === today.getTime();
+      document.getElementById('current-date').textContent = isToday ? 'Today, ' + currentDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'long' }) : formatDate(currentDate);
+      loadDayData();
+    }
+
+    function changeDay(dir) {
+      const d = new Date(currentDate);
+      d.setDate(d.getDate() + dir);
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      if (d > today) return;
+      currentDate = d;
+      updateDateDisplay();
+    }
+
+    // ─── STORAGE ──────────────────────────────────────────────────────
+    function getKey(section) {
+      return `mj_${getDateKey(currentDate)}_${section}`;
+    }
+
+    function saveData(section, data) {
+      localStorage.setItem(getKey(section), JSON.stringify(data));
+    }
+
+    function loadData(section) {
+      const raw = localStorage.getItem(getKey(section));
+      return raw ? JSON.parse(raw) : null;
+    }
+
+    // ─── TABS ─────────────────────────────────────────────────────────
+    function showTab(name) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('section-' + name).classList.add('active');
+      document.getElementById('tab-' + name).classList.add('active');
+    }
+
+    // ─── MOOD ─────────────────────────────────────────────────────────
+    function selectMood(btn, mood) {
+      document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      btn.dataset.mood = mood;
+    }
+
+    function updateEnergy(val) {
+      document.getElementById('energy-val').textContent = val;
+    }
+
+    // ─── SAVE SECTIONS ────────────────────────────────────────────────
+    function saveSection(section, navigate = true) {
+      let data = {};
+      if (section === 'checkin') {
+        const moodBtn = document.querySelector('.mood-btn.selected');
+        data = {
+          mood: moodBtn ? moodBtn.dataset.mood : '',
+          moodLabel: moodBtn ? moodBtn.textContent.trim() : '',
+          energy: document.getElementById('energy-slider').value,
+          heaviest: document.getElementById('heaviest-thought').value,
+        };
+      } else if (section === 'braindump') {
+        data = { text: document.getElementById('braindump-text').value };
+      } else if (section === 'worry') {
+        data = { worries, time: document.getElementById('worry-time').value };
+      } else if (section === 'reframe') {
+        data = {
+          r1: document.getElementById('reframe-1').value,
+          r2: document.getElementById('reframe-2').value,
+          r3: document.getElementById('reframe-3').value,
+          r4: document.getElementById('reframe-4').value,
+        };
+      } else if (section === 'gratitude') {
+        data = {
+          g1: document.getElementById('gratitude-1').value,
+          g2: document.getElementById('gratitude-2').value,
+          g3: document.getElementById('gratitude-3').value,
+          win: document.getElementById('win-today').value,
+          kind: document.getElementById('self-kind').value,
+        };
+      } else if (section === 'evening') {
+        data = {
+          day: document.getElementById('evening-day').value,
+          release: document.getElementById('evening-release').value,
+          intention: document.getElementById('tomorrow-intention').value,
+        };
+      }
+
+      saveData(section, data);
+      showSavedBadge(section);
+      markDot(section);
+      if (navigate) cheerSave(section);
+      else showToast('Saved ✓');
+      updateStreak();
+      updateHistory();
+
+      // Navigate to next tab (only when user clicks Save & Continue, not on autosave)
+      if (navigate) {
+        const order = ['checkin', 'braindump', 'worry', 'reframe', 'gratitude', 'evening'];
+        const idx = order.indexOf(section);
+        if (idx !== -1 && idx < order.length - 1) {
+          setTimeout(() => showTab(order[idx + 1]), 400);
+        }
+      }
+    }
+
+    function showSavedBadge(section) {
+      const badge = document.getElementById('save-badge-' + section);
+      if (badge) {
+        badge.classList.add('show');
+        setTimeout(() => badge.classList.remove('show'), 2000);
+      }
+    }
+
+    function markDot(section) {
+      const dot = document.getElementById('dot-' + section);
+      const tab = document.getElementById('tab-' + section);
+      if (dot) { dot.style.background = 'var(--accent)'; }
+      if (tab) { tab.classList.add('done'); }
+    }
+
+    // ─── LOAD DAY DATA ────────────────────────────────────────────────
+    function loadDayData() {
+      // Check-in
+      const ci = loadData('checkin');
+      if (ci) {
+        document.getElementById('energy-slider').value = ci.energy || 5;
+        document.getElementById('energy-val').textContent = ci.energy || 5;
+        document.getElementById('heaviest-thought').value = ci.heaviest || '';
+        document.querySelectorAll('.mood-btn').forEach(b => {
+          b.classList.remove('selected');
+          if (b.dataset.mood === ci.mood) b.classList.add('selected');
+        });
+        markDot('checkin');
+      } else {
+        document.getElementById('energy-slider').value = 5;
+        document.getElementById('energy-val').textContent = 5;
+        document.getElementById('heaviest-thought').value = '';
+        document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+      }
+
+      // Brain dump
+      const bd = loadData('braindump');
+      document.getElementById('braindump-text').value = bd ? bd.text || '' : '';
+      countChars('braindump');
+      if (bd) markDot('braindump');
+
+      // Worry
+      const wr = loadData('worry');
+      if (wr) {
+        worries = wr.worries || [];
+        document.getElementById('worry-time').value = wr.time || '';
+        markDot('worry');
+      } else {
+        worries = [];
+        document.getElementById('worry-time').value = '';
+      }
+      renderWorries();
+
+      // Reframe
+      const rf = loadData('reframe');
+      ['reframe-1', 'reframe-2', 'reframe-3', 'reframe-4'].forEach((id, i) => {
+        document.getElementById(id).value = rf ? (rf['r' + (i + 1)] || '') : '';
+      });
+      if (rf) markDot('reframe');
+
+      // Gratitude
+      const gr = loadData('gratitude');
+      document.getElementById('gratitude-1').value = gr ? gr.g1 || '' : '';
+      document.getElementById('gratitude-2').value = gr ? gr.g2 || '' : '';
+      document.getElementById('gratitude-3').value = gr ? gr.g3 || '' : '';
+      document.getElementById('win-today').value = gr ? gr.win || '' : '';
+      document.getElementById('self-kind').value = gr ? gr.kind || '' : '';
+      if (gr) markDot('gratitude');
+
+      // Evening
+      const ev = loadData('evening');
+      document.getElementById('evening-day').value = ev ? ev.day || '' : '';
+      document.getElementById('evening-release').value = ev ? ev.release || '' : '';
+      document.getElementById('tomorrow-intention').value = ev ? ev.intention || '' : '';
+      if (ev) markDot('evening');
+
+      // Quote
+      const q = quotes[new Date().getDay() % quotes.length];
+      document.getElementById('daily-quote').textContent = '"' + q.text + '"';
+      document.querySelector('.insight-author').textContent = '— ' + q.author;
+    }
+
+    // ─── WORRY ────────────────────────────────────────────────────────
+    function addWorry() {
+      const input = document.getElementById('worry-input');
+      const text = input.value.trim();
+      if (!text) return;
+      worries.push({ text, parked: false, id: Date.now() });
+      input.value = '';
+      renderWorries();
+    }
+
+    function renderWorries() {
+      const list = document.getElementById('worry-list');
+      const empty = document.getElementById('worry-empty');
+      if (worries.length === 0) {
+        list.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+      list.innerHTML = worries.map((w, i) => `
+    <li class="worry-item">
+      <div class="worry-text ${w.parked ? 'parked' : ''}">${escHtml(w.text)}</div>
+      <button class="park-btn ${w.parked ? 'parked' : ''}" onclick="togglePark(${i})">${w.parked ? '✓ Parked' : 'Park it'}</button>
+      <button class="delete-btn" onclick="removeWorry(${i})">×</button>
+    </li>
+  `).join('');
+    }
+
+    function togglePark(i) {
+      worries[i].parked = !worries[i].parked;
+      renderWorries();
+    }
+
+    function removeWorry(i) {
+      worries.splice(i, 1);
+      renderWorries();
+    }
+
+    function escHtml(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // ─── TIMER ────────────────────────────────────────────────────────
+    function toggleTimer(id) {
+      if (timers[id] && timers[id].running) {
+        clearInterval(timers[id].interval);
+        timers[id].running = false;
+        document.getElementById(id + '-timer-btn').textContent = 'Resume';
+        document.getElementById(id + '-timer-btn').classList.remove('running');
+      } else {
+        if (!timers[id]) timers[id] = { seconds: 10 * 60, running: false };
+        timers[id].running = true;
+        document.getElementById(id + '-timer-btn').textContent = 'Pause';
+        document.getElementById(id + '-timer-btn').classList.add('running');
+        timers[id].interval = setInterval(() => {
+          timers[id].seconds--;
+          updateTimerDisplay(id);
+          if (timers[id].seconds <= 0) {
+            clearInterval(timers[id].interval);
+            timers[id].running = false;
+            document.getElementById(id + '-timer-btn').textContent = 'Done!';
+            document.getElementById(id + '-timer-btn').classList.remove('running');
+            showToast('Time\'s up! Great job writing, ' + displayName() + ' ✓', 3000);
+          }
+        }, 1000);
+      }
+    }
+
+    function resetTimer(id) {
+      if (timers[id]) {
+        clearInterval(timers[id].interval);
+        timers[id] = null;
+      }
+      document.getElementById(id + '-timer').textContent = '10:00';
+      document.getElementById(id + '-timer-btn').textContent = 'Start';
+      document.getElementById(id + '-timer-btn').classList.remove('running');
+    }
+
+    function updateTimerDisplay(id) {
+      const s = timers[id].seconds;
+      const m = Math.floor(s / 60);
+      const sec = s % 60;
+      document.getElementById(id + '-timer').textContent = m + ':' + String(sec).padStart(2, '0');
+    }
+
+    // ─── PROMPTS ──────────────────────────────────────────────────────
+    function addPrompt(section, text) {
+      const ta = document.getElementById(section + '-text');
+      const val = ta.value;
+      ta.value = val + (val && !val.endsWith('\n') ? '\n\n' : '') + text + ' ';
+      ta.focus();
+      countChars(section);
+    }
+
+    // ─── CHAR COUNT ───────────────────────────────────────────────────
+    function countChars(section) {
+      const ta = document.getElementById(section + '-text');
+      const words = ta.value.trim().split(/\s+/).filter(w => w).length;
+      document.getElementById(section + '-count').textContent = words + (words === 1 ? ' word' : ' words');
+    }
+
+    // ─── BREATHE ──────────────────────────────────────────────────────
+    function startBreathe() {
+      const circle = document.getElementById('breathe-circle');
+      const text = document.getElementById('breathe-text');
+      const sub = document.getElementById('breathe-subtext');
+      const btn = document.getElementById('breathe-btn');
+      btn.style.display = 'none';
+
+      let round = 0;
+      const maxRounds = 4;
+
+      function phase(name, duration, label, sublabel, expand) {
+        return new Promise(resolve => {
+          text.textContent = label;
+          sub.textContent = sublabel;
+          if (expand) circle.classList.add('expand');
+          else circle.classList.remove('expand');
+          circle.textContent = name;
+          setTimeout(resolve, duration);
+        });
+      }
+
+      async function doRound() {
+        if (round >= maxRounds) {
+          text.textContent = 'Well done, ' + displayName() + ' 🌿';
+          sub.textContent = 'Take a moment to notice how you feel';
+          circle.textContent = '✓';
+          circle.classList.remove('expand');
+          btn.textContent = 'Again';
+          btn.style.display = 'block';
+          btn.onclick = () => { round = 0; btn.style.display = 'none'; doRound(); };
+          return;
+        }
+        round++;
+        sub.textContent = `Round ${round} of ${maxRounds}`;
+        await phase('Breathe in', 4000, 'Breathe in...', `Round ${round} of ${maxRounds}`, true);
+        await phase('Hold', 7000, 'Hold...', `Round ${round} of ${maxRounds}`, true);
+        await phase('Breathe out', 8000, 'Breathe out...', `Round ${round} of ${maxRounds}`, false);
+        doRound();
+      }
+
+      doRound();
+    }
+
+    // ─── STREAK ───────────────────────────────────────────────────────
+    function updateStreak() {
+      let streak = 0;
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      let d = new Date(today);
+      while (true) {
+        const key = getDateKey(d);
+        const hasEntry = ['checkin', 'braindump', 'gratitude', 'evening'].some(s =>
+          localStorage.getItem(`mj_${key}_${s}`) !== null
+        );
+        if (!hasEntry) break;
+        streak++;
+        d.setDate(d.getDate() - 1);
+      }
+      const badge = document.getElementById('streak-badge');
+      if (streak === 0) badge.textContent = '🌱 Start today';
+      else if (streak === 1) badge.textContent = '🌱 Day 1';
+      else badge.textContent = `🔥 ${streak} day streak`;
+      currentStreak = streak;
+      renderMjCheer();
+    }
+
+    // ─── HISTORY ──────────────────────────────────────────────────────
+    function updateHistory() {
+      const container = document.getElementById('history-list');
+      const entries = [];
+
+      for (let i = 0; i < 60; i++) {
+        const d = new Date(); d.setHours(0, 0, 0, 0);
+        d.setDate(d.getDate() - i);
+        const key = getDateKey(d);
+        const sections = ['checkin', 'braindump', 'worry', 'reframe', 'gratitude', 'evening'];
+        const data = {};
+        let hasAny = false;
+        sections.forEach(s => {
+          const raw = localStorage.getItem(`mj_${key}_${s}`);
+          if (raw) { data[s] = JSON.parse(raw); hasAny = true; }
+        });
+        if (hasAny) entries.push({ date: d, dateKey: key, data });
+      }
+
+      if (entries.length === 0) {
+        container.innerHTML = `<div class="empty"><div class="icon">📖</div><p>No entries yet.<br>Your story starts with your first entry, ${escHtml(displayName())} 🌱</p></div>`;
+        return;
+      }
+
+      container.innerHTML = entries.map((e, idx) => {
+        const ci = e.data.checkin || {};
+        const bd = e.data.braindump || {};
+        const wr = e.data.worry || {};
+        const rf = e.data.reframe || {};
+        const gr = e.data.gratitude || {};
+        const ev = e.data.evening || {};
+
+        const sections = [];
+
+        // Check-in
+        if (ci.moodLabel || ci.heaviest) {
+          let html = '';
+          if (ci.moodLabel) html += `<div class="hist-mood-badge">${ci.moodLabel}</div>`;
+          if (ci.energy) html += `<div class="history-energy" style="margin-top:4px">Energy: ${ci.energy}/10</div>`;
+          if (ci.heaviest) html += `<div class="hist-section-content" style="margin-top:8px">${escHtml(ci.heaviest)}</div>`;
+          sections.push({ label: 'Check-in', html });
+        }
+
+        // Brain dump
+        if (bd.text && bd.text.trim()) {
+          sections.push({ label: 'Brain Dump', html: `<div class="hist-section-content">${escHtml(bd.text.trim())}</div>` });
+        }
+
+        // Worry
+        if (wr.worries && wr.worries.length) {
+          const items = wr.worries.map(w =>
+            `<div class="hist-worry-item ${w.parked ? 'parked' : ''}">${escHtml(w.text)}</div>`
+          ).join('');
+          sections.push({ label: 'Worry Parking', html: items });
+        }
+
+        // Reframe
+        const rfParts = [
+          rf.r1 && `<div style="margin-bottom:10px"><div class="hist-section-label" style="font-size:10px;color:var(--text-muted);margin-bottom:4px">The thought</div><div class="hist-section-content">${escHtml(rf.r1)}</div></div>`,
+          rf.r2 && `<div style="margin-bottom:10px"><div class="hist-section-label" style="font-size:10px;color:var(--text-muted);margin-bottom:4px">Fact or feeling?</div><div class="hist-section-content">${escHtml(rf.r2)}</div></div>`,
+          rf.r3 && `<div style="margin-bottom:10px"><div class="hist-section-label" style="font-size:10px;color:var(--text-muted);margin-bottom:4px">What I'd tell a friend</div><div class="hist-section-content">${escHtml(rf.r3)}</div></div>`,
+          rf.r4 && `<div><div class="hist-section-label" style="font-size:10px;color:var(--text-muted);margin-bottom:4px">More accurate thought</div><div class="hist-section-content">${escHtml(rf.r4)}</div></div>`,
+        ].filter(Boolean);
+        if (rfParts.length) sections.push({ label: 'Reframe', html: rfParts.join('') });
+
+        // Gratitude
+        const grParts = [
+          gr.g1 && `<div class="hist-gratitude-item"><span class="hist-g-num">1.</span>${escHtml(gr.g1)}</div>`,
+          gr.g2 && `<div class="hist-gratitude-item"><span class="hist-g-num">2.</span>${escHtml(gr.g2)}</div>`,
+          gr.g3 && `<div class="hist-gratitude-item"><span class="hist-g-num">3.</span>${escHtml(gr.g3)}</div>`,
+          gr.win && `<div style="margin-top:10px"><div class="hist-section-label" style="font-size:10px;color:var(--text-muted);margin-bottom:4px">Win</div><div class="hist-section-content">${escHtml(gr.win)}</div></div>`,
+          gr.kind && `<div style="margin-top:10px"><div class="hist-section-label" style="font-size:10px;color:var(--text-muted);margin-bottom:4px">Kind thing to self</div><div class="hist-section-content">${escHtml(gr.kind)}</div></div>`,
+        ].filter(Boolean);
+        if (grParts.length) sections.push({ label: 'Gratitude & Wins', html: grParts.join('') });
+
+        // Evening
+        const evParts = [
+          ev.day && `<div style="margin-bottom:10px"><div class="hist-section-label" style="font-size:10px;color:var(--text-muted);margin-bottom:4px">How the day felt</div><div class="hist-section-content">${escHtml(ev.day)}</div></div>`,
+          ev.release && `<div style="margin-bottom:10px"><div class="hist-section-label" style="font-size:10px;color:var(--text-muted);margin-bottom:4px">Released</div><div class="hist-section-content">${escHtml(ev.release)}</div></div>`,
+          ev.intention && `<div><div class="hist-section-label" style="font-size:10px;color:var(--text-muted);margin-bottom:4px">Intention for tomorrow</div><div class="hist-section-content">${escHtml(ev.intention)}</div></div>`,
+        ].filter(Boolean);
+        if (evParts.length) sections.push({ label: 'Evening Wind-down', html: evParts.join('') });
+
+        const bodyHtml = sections.map(s => `
+      <div class="hist-section">
+        <div class="hist-section-label">${s.label}</div>
+        ${s.html}
+      </div>
+    `).join('');
+
+        return `
+      <div class="history-entry" id="hist-${idx}">
+        <div class="history-header" onclick="toggleHistory(${idx})">
+          <div class="history-header-left">
+            <div class="history-date">${formatDate(e.date)}</div>
+            <div class="history-mood">${ci.moodLabel || '—'} ${ci.energy ? `<span class="history-energy">· Energy ${ci.energy}/10</span>` : ''}</div>
+          </div>
+          <div class="history-chevron">▾</div>
+        </div>
+        <div class="history-body">
+          <div class="history-body-inner">${bodyHtml}</div>
+        </div>
+      </div>
+    `;
+      }).join('');
+    }
+
+    function toggleHistory(idx) {
+      const entry = document.getElementById('hist-' + idx);
+      const body = entry.querySelector('.history-body');
+      const isOpen = entry.classList.contains('open');
+      entry.classList.toggle('open', !isOpen);
+      body.style.display = isOpen ? 'none' : 'grid';
+    }
+
+    // ─── TOAST ────────────────────────────────────────────────────────
+    function showToast(msg, ms) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => t.classList.remove('show'), ms || 2000);
+    }
+
+    // ─── AUTOSAVE ────────────────────────────────────────────────────
+    let autosaveTimeout = {};
+    function setupAutosave() {
+      const autoSaveSections = {
+        'braindump': ['braindump-text'],
+        'evening': ['evening-day', 'evening-release', 'tomorrow-intention'],
+        'reframe': ['reframe-1', 'reframe-2', 'reframe-3', 'reframe-4'],
+      };
+      for (const [section, ids] of Object.entries(autoSaveSections)) {
+        ids.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.addEventListener('input', () => {
+              clearTimeout(autosaveTimeout[section]);
+              autosaveTimeout[section] = setTimeout(() => saveSection(section, false), 1500);
+            });
+          }
+        });
+      }
+    }
+
+    // ─── YOUR NAME + APPRECIATION ────────────────────────────────────
+    // Stored under its own key (not a dated entry) and shared with the Daily
+    // Planner, so setting it once personalises both pages.
+    const NAME_KEY = 'mindjournal_userName';
+    const NAME_ASKED_KEY = 'mindjournal_nameAsked';
+    let currentStreak = 0;
+
+    function getName() {
+      try { return (localStorage.getItem(NAME_KEY) || '').trim(); } catch (e) { return ''; }
+    }
+    function setName(n) {
+      try { n ? localStorage.setItem(NAME_KEY, n) : localStorage.removeItem(NAME_KEY); } catch (e) { }
+    }
+    function nameAsked() {
+      try { return !!localStorage.getItem(NAME_ASKED_KEY); } catch (e) { return true; }
+    }
+    function markNameAsked() {
+      try { localStorage.setItem(NAME_ASKED_KEY, '1'); } catch (e) { }
+    }
+    function displayName() { return getName() || 'friend'; }
+    function withName(str) { return str.replace(/\{name\}/g, displayName()); }
+    function greetingWord() {
+      const h = new Date().getHours();
+      if (h < 5) return 'Still up';
+      if (h < 12) return 'Good morning';
+      if (h < 17) return 'Good afternoon';
+      return 'Good evening';
+    }
+
+    const GENTLE_NOTES = [
+      'Thank you for making a little time for yourself today, {name}.',
+      'However today feels, you\'re allowed to feel it, {name}. You\'re doing better than you think.',
+      'Pausing like this is a quiet act of strength, {name}.',
+      'You don\'t have to have it all figured out. Being here is enough, {name}.',
+      'Be gentle with yourself today, {name} — you\'re carrying more than anyone sees.',
+      'You matter, {name}. So does how you feel.',
+      'Every time you come back here, you\'re choosing yourself. That\'s worth something, {name}.',
+    ];
+    const SAVE_CHEERS = {
+      checkin: 'Thank you for checking in, {name} 🌿',
+      braindump: 'Out of your head and onto the page — well done, {name}.',
+      worry: 'Worries parked. You don\'t have to carry them right now, {name}.',
+      reframe: 'Questioning a hard thought takes courage. Nicely done, {name}.',
+      gratitude: 'Look at all the good you noticed today, {name} 🌿',
+      evening: 'You made it through today, {name}. Rest well 🌙',
+    };
+    const ALL_SECTIONS = ['checkin', 'braindump', 'worry', 'reframe', 'gratitude', 'evening'];
+
+    function renderGreeting() {
+      document.getElementById('greet-word').textContent = greetingWord();
+      document.getElementById('name-text').textContent = displayName();
+      document.title = getName() ? 'Mind Journal — ' + getName() : 'Mind Journal';
+    }
+
+    function renderMjCheer() {
+      const d = new Date();
+      const dayOfYear = Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000);
+      let msg;
+      if (currentStreak >= 2) msg = `You've shown up for yourself ${currentStreak} days in a row, {name}. That's something to be proud of 🌿`;
+      else if (currentStreak === 1) msg = 'You\'ve already shown up for yourself today, {name}. Thank you for that.';
+      else msg = GENTLE_NOTES[dayOfYear % GENTLE_NOTES.length];
+      document.getElementById('mj-cheer').textContent = withName(msg);
+    }
+
+    function cheerSave(section) {
+      const allDone = ALL_SECTIONS.every(s => loadData(s) !== null);
+      if (section === 'evening' && allDone) {
+        showToast(withName('You showed up for every part of today, {name}. That\'s real self-care 💚'), 3500);
+      } else {
+        showToast(withName(SAVE_CHEERS[section] || 'Saved ✓'), 3000);
+      }
+    }
+
+    const nameOverlay = document.getElementById('name-overlay');
+    const nameInput = document.getElementById('name-input');
+
+    function openNameDialog(first) {
+      document.getElementById('name-dialog-title').textContent = first ? 'Welcome. What should I call you?' : 'What should I call you?';
+      document.getElementById('name-dialog-desc').textContent = first
+        ? 'This space is yours — adding your name makes it feel that way. It\'s saved only on this device.'
+        : 'Change it any time. It\'s saved only on this device, and your Daily Planner uses it too.';
+      document.getElementById('name-skip-btn').textContent = first ? 'Maybe later' : 'Cancel';
+      document.getElementById('name-save-btn').textContent = first ? 'Let\'s begin' : 'Save';
+      nameInput.value = getName();
+      nameOverlay.classList.add('show');
+      setTimeout(() => { nameInput.focus(); nameInput.select(); }, 30);
+    }
+    function closeNameDialog() {
+      nameOverlay.classList.remove('show');
+      markNameAsked();
+    }
+    function refreshNameEverywhere() {
+      renderGreeting();
+      renderMjCheer();
+      updateHistory();
+    }
+    function commitName() {
+      const n = nameInput.value.replace(/\s+/g, ' ').trim().slice(0, 30);
+      const had = getName();
+      setName(n);
+      closeNameDialog();
+      refreshNameEverywhere();
+      if (n && n !== had) showToast((had ? 'Got it — hi, ' : 'Lovely to meet you, ') + n + ' 🌿', 2600);
+      else if (!n && had) showToast('Name cleared');
+    }
+
+    document.getElementById('name-btn').addEventListener('click', () => openNameDialog(false));
+    document.getElementById('name-edit-btn').addEventListener('click', () => openNameDialog(false));
+    document.getElementById('name-save-btn').addEventListener('click', commitName);
+    document.getElementById('name-skip-btn').addEventListener('click', closeNameDialog);
+    nameOverlay.addEventListener('click', e => { if (e.target === nameOverlay) closeNameDialog(); });
+    nameInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') commitName();
+      if (e.key === 'Escape') closeNameDialog();
+    });
+    // pick up a name change made in the Daily Planner (another tab)
+    window.addEventListener('storage', e => { if (e.key === NAME_KEY) refreshNameEverywhere(); });
+    // keep "Good morning / afternoon / evening" in step with the clock
+    setInterval(renderGreeting, 60000);
+
+    // ─── INIT ─────────────────────────────────────────────────────────
+    renderGreeting();
+    updateDateDisplay();
+    updateStreak();
+    updateHistory();
+    setupAutosave();
+    if (!getName() && !nameAsked()) openNameDialog(true);
+  </script>
+</body>
+
+</html>
